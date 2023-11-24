@@ -1,18 +1,8 @@
 import 'dart:math';
 
-import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
-import 'package:awesome_bottom_bar/widgets/inspired/inspired.dart';
 import 'package:flutter/material.dart';
 import 'package:uber_doctor_flutter/src/model/data.dart';
 import 'package:uber_doctor_flutter/src/model/doctor_model.dart';
-import 'package:uber_doctor_flutter/src/pages/detail_page.dart';
-import 'package:uber_doctor_flutter/src/theme/extention.dart';
-import 'package:uber_doctor_flutter/src/theme/text_styles.dart';
-import 'package:uber_doctor_flutter/src/theme/theme.dart';
-import 'package:uber_doctor_flutter/src/widgets/BottomNavHexagon.dart';
-import 'package:uber_doctor_flutter/src/widgets/drawer_nav.dart';
-
-
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
@@ -23,23 +13,25 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<DoctorModel> doctorDataList = [];
-  int _selectedIndex = 0;
   int visit = 0;
   double height = 30;
-  Color colorSelect =const Color(0XFF0686F8);
+  Color colorSelect = const Color(0XFF0686F8);
   Color color = const Color(0XFF7AC0FF);
   Color color2 = const Color(0XFF96B1FD);
-  Color bgColor = const  Color(0XFF1752FE);
+  Color bgColor = const Color(0XFF1752FE);
+
   @override
   void initState() {
     doctorDataList = doctorMapList.map((x) => DoctorModel.fromJson(x)).toList();
     super.initState();
   }
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  void _navigateToDoctorDetail(DoctorModel doctorModel) {
+    Navigator.pushNamed(
+      context,
+      "/pages/detail_page",
+      arguments: doctorModel,
+    );
   }
 
   Widget _header() {
@@ -208,99 +200,104 @@ class _HomePageState extends State<HomePage> {
                   "Top Doctors",
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
-                IconButton(
-                  icon: Icon(
-                    Icons.sort,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                  onPressed: () {
-                    // Xử lý sự kiện khi nhấn vào nút sắp xếp (nếu cần).
-                  },
-                ),
+                // IconButton(
+                //   icon: Icon(
+                //     Icons.sort,
+                //     color: Theme.of(context).primaryColor,
+                //   ),
+                //   onPressed: () {
+                //     // Xử lý sự kiện khi nhấn vào nút sắp xếp (nếu cần).
+                //   },
+                // ),
               ],
             ),
           ),
-          ListView.builder(
+          ListView.separated(
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             itemCount: doctorDataList.length,
+            separatorBuilder: (context, index) => SizedBox(height: 10),
             itemBuilder: (context, index) {
+              final doctorModel = doctorDataList[index];
               return GestureDetector(
                 onTap: () {
-                  Navigator.pushNamed(
-                    context,
-                    "/pages/detail_page",
-                    arguments: doctorDataList[
-                        index], // Truyền model từ danh sách vào arguments
-                  );
+                  // Navigator.pushNamed(
+                  //   context,
+                  //   "/pages/detail_page",
+                  //   arguments: doctorModel,
+                  // );
+                   _navigateToDoctorDetail(doctorModel);
                 },
-                child: _doctorTile(doctorDataList[index]),
+                child: Container(
+                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    boxShadow: <BoxShadow>[
+                      BoxShadow(
+                        offset: Offset(4, 4),
+                        blurRadius: 10,
+                        color: Colors.grey.withOpacity(0.2),
+                      ),
+                      BoxShadow(
+                        offset: Offset(-3, 0),
+                        blurRadius: 15,
+                        color: Colors.grey.withOpacity(0.1),
+                      )
+                    ],
+                  ),
+                  child: InkWell(
+                    onTap: () {
+                      // Navigator.pushNamed(context, "/pages/detail_page",
+                      //     arguments: doctorModel);
+                        _navigateToDoctorDetail(doctorModel);
+                    },
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    child: Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                      child: ListTile(
+                        contentPadding: EdgeInsets.all(0),
+                        leading: ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(13)),
+                          child: Container(
+                            height: 55,
+                            width: 55,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                              color: randomColor(),
+                            ),
+                            child: Image.asset(
+                              doctorModel.image,
+                              height: 50,
+                              width: 50,
+                              fit: BoxFit.contain,
+                            ),
+                          ),
+                        ),
+                        title: Text(
+                          doctorModel.name,
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Text(
+                          doctorModel.type,
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        trailing: Icon(
+                          Icons.keyboard_arrow_right,
+                          size: 30,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               );
             },
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _doctorTile(DoctorModel model) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.all(Radius.circular(20)),
-        boxShadow: <BoxShadow>[
-          BoxShadow(
-            offset: Offset(4, 4),
-            blurRadius: 10,
-            color: Colors.grey.withOpacity(0.2),
-          ),
-          BoxShadow(
-            offset: Offset(-3, 0),
-            blurRadius: 15,
-            color: Colors.grey.withOpacity(0.1),
-          )
-        ],
-      ),
-      child: InkWell(
-        onTap: () {
-          Navigator.pushNamed(context, "/pages/detail_page", arguments: model);
-        },
-        borderRadius: BorderRadius.all(Radius.circular(20)),
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-          child: ListTile(
-            contentPadding: EdgeInsets.all(0),
-            leading: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(13)),
-              child: Container(
-                height: 55,
-                width: 55,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  color: randomColor(),
-                ),
-                child: Image.asset(
-                  model.image,
-                  height: 50,
-                  width: 50,
-                  fit: BoxFit.contain,
-                ),
-              ),
-            ),
-            title: Text(model.name,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            subtitle: Text(
-              model.type,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            trailing: Icon(
-              Icons.keyboard_arrow_right,
-              size: 30,
-              color: Theme.of(context).primaryColor,
-            ),
-          ),
-        ),
       ),
     );
   }
@@ -324,150 +321,55 @@ class _HomePageState extends State<HomePage> {
     return color;
   }
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     appBar: AppBar(
-  //       elevation: 0,
-  //       backgroundColor: Theme.of(context).backgroundColor,
-  //       leading: Icon(
-  //         Icons.short_text,
-  //         size: 30,
-  //         color: Colors.black,
-  //       ),
-  //       actions: <Widget>[
-  //         Icon(
-  //           Icons.notifications_active,
-  //           size: 30,
-  //           color: Colors.grey,
-  //         ),
-  //         ClipRRect(
-  //           borderRadius: BorderRadius.all(Radius.circular(20)),
-  //           child: Padding(
-  //             padding: EdgeInsets.all(8),
-  //             child: Container(
-  //               decoration: BoxDecoration(
-  //                 color: Theme.of(context).backgroundColor,
-  //               ),
-  //               child: ClipRRect(
-  //                 borderRadius: BorderRadius.circular(30.0), 
-  //                 child:
-  //                     Image.asset("assets/images/harry.jpg", fit: BoxFit.fill),
-  //               ),
-  //             ),
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //     backgroundColor: Theme.of(context).backgroundColor,
-  //     body: CustomScrollView(
-  //       slivers: <Widget>[
-  //         SliverList(
-  //           delegate: SliverChildListDelegate(
-  //             [
-  //               _header(),
-  //               _searchField(),
-  //               _category(),
-  //             ],
-  //           ),
-  //         ),
-  //         _doctorsList()
-  //       ],
-  //     ),
-      
-  //     bottomNavigationBar: BottomNavigationBar(
-  //         onTap: (index) => _onItemTapped(index),
-  //         currentIndex: _selectedIndex,
-  //         backgroundColor: Colors.white, // Đặt màu nền là màu xanh
-  //         unselectedItemColor:
-  //             Colors.black, // Đặt màu của icon chưa được chọn là màu trắng
-  //         selectedItemColor: Colors.blueAccent,
-  //         items: [
-  //           BottomNavigationBarItem(
-  //               icon: Icon(Icons.home_rounded), label: 'Home'),
-  //           BottomNavigationBarItem(icon: Icon(Icons.phone), label: 'Phone'),
-  //           BottomNavigationBarItem(
-  //               icon: Icon(Icons.coronavirus), label: 'virus'),
-  //           BottomNavigationBarItem(
-  //               icon: Icon(Icons.calendar_month), label: 'Booking'),
-  //           BottomNavigationBarItem(
-  //               icon: Icon(Icons.person_2_rounded), label: 'Account'),
-                
-  //         ]),
-  //   );
-  // }
-  
-
   @override
   Widget build(BuildContext context) {
-  return Scaffold(
-    appBar: AppBar(
-      elevation: 0,
-      backgroundColor: Theme.of(context).backgroundColor,
-      leading: Icon(
-        Icons.short_text,
-        size: 30,
-        color: Colors.black,
-      ),
-      actions: <Widget>[
-        Icon(
-          Icons.notifications_active,
-          size: 30,
-          color: Colors.grey,
-        ),
-        ClipRRect(
-          borderRadius: BorderRadius.all(Radius.circular(20)),
-          child: Padding(
-            padding: EdgeInsets.all(8),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).backgroundColor,
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(30.0),
-                child: Image.asset("assets/images/harry.jpg", fit: BoxFit.fill),
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+         backgroundColor: Theme.of(context).backgroundColor,
+        // leading: Icon(
+        //   Icons.short_text,
+        //   size: 30,
+        //   color: Colors.black,
+        // ),
+        actions: <Widget>[
+          Icon(
+            Icons.notifications_active,
+            size: 30,
+            color: Colors.grey,
+          ),
+          ClipRRect(
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+            child: Padding(
+              padding: EdgeInsets.all(8),
+              child: Container(
+                // decoration: BoxDecoration(
+                //   color: Theme.of(context).backgroundColor,
+                // ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(30.0),
+                  child:
+                      Image.asset("assets/images/harry.jpg", fit: BoxFit.fill),
+                ),
               ),
             ),
           ),
-        ),
-      ],
-    ),
-    drawer: CurrentPage(
-    selectedIndex: _selectedIndex, 
-    onItemTapped: _onItemTapped,
-  ),
-  bottomNavigationBar: BottomBarInspiredOutside(
-    items: items,
-        backgroundColor: bgColor,
-        color: color2,
-        colorSelected: Colors.white,
-        indexSelected: visit,
-        onTap: (index) => setState(() {
-          visit = index;
-        }),
-        top: -25,
-        animated: true,
-        itemStyle: ItemStyle.hexagon,
-         chipStyle: const ChipStyle(drawHexagon: true),
-         
-         
+        ],
       ),
-  
-  body: CustomScrollView(
-    slivers: <Widget>[
-      SliverList(
-        delegate: SliverChildListDelegate(
-          [
-            _header(),
-            _searchField(),
-            _category(),
-          ],
-        ),
+      body: CustomScrollView(
+        slivers: <Widget>[
+          SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                _header(),
+                _searchField(),
+                _category(),
+              ],
+            ),
+          ),
+          _doctorsList(),
+        ],
       ),
-      _doctorsList(),
-    ],
-    
-  ),
-  );
-}
+    );
+  }
 }

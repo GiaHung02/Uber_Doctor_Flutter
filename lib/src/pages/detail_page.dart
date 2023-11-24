@@ -8,9 +8,10 @@ import 'package:uber_doctor_flutter/src/widgets/progress_widget.dart';
 import 'package:uber_doctor_flutter/src/widgets/rating_start.dart';
 
 class DetailPage extends StatefulWidget {
-  final DoctorModel model;
+  // final DoctorModel model;
 
-  DetailPage({required this.model});
+  // DetailPage({required this.model});
+
 
   @override
   _DetailPageState createState() => _DetailPageState();
@@ -19,11 +20,11 @@ class DetailPage extends StatefulWidget {
 class _DetailPageState extends State<DetailPage> {
   late DoctorModel model;
 
-  @override
-  void initState() {
-    model = widget.model;
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   model = widget.model;
+  //   super.initState();
+  // }
 
   Widget _appBar() {
     return Row(
@@ -47,6 +48,8 @@ class _DetailPageState extends State<DetailPage> {
 
   @override
   Widget build(BuildContext context) {
+   final DoctorModel doctorModel = ModalRoute.of(context)!.settings.arguments as DoctorModel;
+
     TextStyle titleStyle = TextStyles.title
         .copyWith(fontSize: 25)
         .copyWith(fontWeight: FontWeight.bold);

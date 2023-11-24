@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:awesome_bottom_bar/widgets/inspired/inspired.dart';
 import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:uber_doctor_flutter/src/pages/booking_page.dart';
+import 'package:uber_doctor_flutter/src/pages/detail_page.dart';
 import 'package:uber_doctor_flutter/src/pages/home_page.dart';
+import 'package:uber_doctor_flutter/src/pages/login_page.dart';
 import 'package:uber_doctor_flutter/src/pages/phone_page.dart';
+import 'package:uber_doctor_flutter/src/pages/profile_page.dart';
+import 'package:uber_doctor_flutter/src/pages/splash_page.dart';
 import 'package:uber_doctor_flutter/src/widgets/Visit_Provider.dart';
 
 const List<TabItem> items = [
   TabItem(
     icon: Icons.home,
     title: 'Home',
-    
   ),
   TabItem(
     icon: Icons.phone,
@@ -28,43 +31,46 @@ const List<TabItem> items = [
     icon: Icons.account_box,
     title: 'profile',
   ),
+  TabItem(
+    icon: Icons.login_rounded,
+    title: 'login',
+  ),
+  TabItem(
+    icon: Icons.details_rounded,
+    title: 'detail',
+  ),
 ];
 
-
-
 class CurrentPage extends StatelessWidget {
-    Color colorSelect =const Color(0XFF0686F8);
+  Color colorSelect = const Color(0XFF0686F8);
   Color color = const Color(0XFF7AC0FF);
   Color color2 = const Color(0XFF96B1FD);
-  Color bgColor = const  Color(0XFF1752FE);
+  Color bgColor = const Color(0XFF1752FE);
   final int selectedIndex;
   final void Function(int) onItemTapped;
 
-  
+  CurrentPage(
+      {super.key, required this.selectedIndex, required this.onItemTapped});
 
-  CurrentPage({super.key, required this.selectedIndex, required this.onItemTapped});
-
- 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _buildContent(context), 
+      body: _buildContent(context),
       bottomNavigationBar: BottomBarInspiredOutside(
         items: items,
         backgroundColor: bgColor,
         color: color2,
         colorSelected: Colors.white,
-        indexSelected: context.watch<VisitProvider>().visit, 
+        indexSelected: context.watch<VisitProvider>().visit,
         onTap: (int index) {
-          context.read<VisitProvider>().updateVisit(index); 
+          context.read<VisitProvider>().updateVisit(index);
         },
       ),
-      
     );
   }
 
   Widget _buildContent(BuildContext context) {
-    final visit = context.watch<VisitProvider>().visit; 
+    final visit = context.watch<VisitProvider>().visit;
 
     switch (visit) {
       case 0:
@@ -72,11 +78,18 @@ class CurrentPage extends StatelessWidget {
       case 1:
         return Phone();
       case 2:
-        return HomePage();
+        return SplashPage();
+      case 3:
+        return BookingPage();
+      case 4:
+        return ProfilePage();
+      case 5:
+        return LoginPage();
+      case 6:
+        return DetailPage();
       default:
         // Trang mặc định hoặc xử lý ngoại lệ
         return Container();
     }
   }
 }
-

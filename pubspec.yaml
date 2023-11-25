@@ -40,6 +40,7 @@ dependencies:
   go_router: ^12.1.0
   awesome_bottom_bar: ^1.2.4
   curved_navigation_bar: ^1.0.3
+  http: ^1.1.0
 
 dev_dependencies:
   flutter_test:

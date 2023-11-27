@@ -7,48 +7,16 @@ import 'package:uber_doctor_flutter/src/theme/theme.dart';
 import 'package:uber_doctor_flutter/src/widgets/progress_widget.dart';
 import 'package:uber_doctor_flutter/src/widgets/rating_start.dart';
 
-class DetailPage extends StatefulWidget {
-  // final DoctorModel model;
-
-  // DetailPage({required this.model});
-
-
-  @override
-  _DetailPageState createState() => _DetailPageState();
-}
-
-class _DetailPageState extends State<DetailPage> {
-  late DoctorModel model;
-
-  // @override
-  // void initState() {
-  //   model = widget.model;
-  //   super.initState();
-  // }
-
-  Widget _appBar() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        BackButton(color: Theme.of(context).primaryColor),
-        IconButton(
-          icon: Icon(
-            model.isfavourite ? Icons.favorite : Icons.favorite_border,
-            color: model.isfavourite ? Colors.red : LightColor.grey,
-          ),
-          onPressed: () {
-            setState(() {
-              model.isfavourite = !model.isfavourite;
-            });
-          },
-        ),
-      ],
-    );
-  }
-
+class DetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-   final DoctorModel doctorModel = ModalRoute.of(context)!.settings.arguments as DoctorModel;
+    final DoctorModel? doctorModel =
+        ModalRoute.of(context)?.settings.arguments as DoctorModel?;
+
+    if (doctorModel == null) {
+      // Handle the case where the doctorModel is null, e.g., show an error message
+      return Scaffold(body: Center(child: Text('Error: Doctor not found')));
+    }
 
     TextStyle titleStyle = TextStyles.title
         .copyWith(fontSize: 25)
@@ -58,13 +26,25 @@ class _DetailPageState extends State<DetailPage> {
           .copyWith(fontSize: 23)
           .copyWith(fontWeight: FontWeight.bold);
     }
+
     return Scaffold(
       backgroundColor: LightColor.extraLightBlue,
       body: SafeArea(
         bottom: false,
         child: Stack(
           children: <Widget>[
-            Image.asset(model.image),
+            Container(
+              width: double.infinity,
+              height: AppTheme.fullHeight(context) * 0.45,
+              decoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image:
+                      AssetImage(doctorModel.image),
+                ),
+              ),
+            ),
             DraggableScrollableSheet(
               maxChildSize: .8,
               initialChildSize: .6,
@@ -92,7 +72,7 @@ class _DetailPageState extends State<DetailPage> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
                               Text(
-                                model.name,
+                                doctorModel.name,
                                 style: titleStyle,
                               ),
                               SizedBox(
@@ -105,12 +85,12 @@ class _DetailPageState extends State<DetailPage> {
                               ),
                               Spacer(),
                               RatingStar(
-                                rating: model.rating,
+                                rating: doctorModel.rating,
                               )
                             ],
                           ),
                           subtitle: Text(
-                            model.type,
+                            doctorModel.type,
                             style: TextStyles.bodySm.subTitleColor
                                 .copyWith(fontWeight: FontWeight.bold),
                           ),
@@ -122,7 +102,7 @@ class _DetailPageState extends State<DetailPage> {
                         Row(
                           children: <Widget>[
                             ProgressWidget(
-                              value: model.goodReviews,
+                              value: doctorModel.goodReviews,
                               totalValue: 100,
                               activeColor: LightColor.purpleExtraLight,
                               backgroundColor: LightColor.grey.withOpacity(.3),
@@ -130,7 +110,7 @@ class _DetailPageState extends State<DetailPage> {
                               durationTime: 500,
                             ),
                             ProgressWidget(
-                              value: model.totalScore,
+                              value: doctorModel.totalScore,
                               totalValue: 100,
                               activeColor: LightColor.purpleLight,
                               backgroundColor: LightColor.grey.withOpacity(.3),
@@ -138,7 +118,7 @@ class _DetailPageState extends State<DetailPage> {
                               durationTime: 300,
                             ),
                             ProgressWidget(
-                              value: model.satisfaction,
+                              value: doctorModel.satisfaction,
                               totalValue: 100,
                               activeColor: LightColor.purple,
                               backgroundColor: LightColor.grey.withOpacity(.3),
@@ -153,71 +133,93 @@ class _DetailPageState extends State<DetailPage> {
                         ),
                         Text("About", style: titleStyle).vP16,
                         Text(
-                          model.description,
+                          doctorModel.description,
                           style: TextStyles.body.subTitleColor,
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Container(
-                              height: 45,
-                              width: 45,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: LightColor.grey.withAlpha(150),
-                              ),
-                              child: Icon(
-                                Icons.call,
-                                color: Colors.white,
-                              ),
-                            ).ripple(() {},
-                                borderRadius: BorderRadius.circular(10)),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Container(
-                              height: 45,
-                              width: 45,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: LightColor.grey.withAlpha(150),
-                              ),
-                              child: Icon(
-                                Icons.chat_bubble,
-                                color: Colors.white,
-                              ),
-                            ).ripple(() {},
-                                borderRadius: BorderRadius.circular(10)),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            ElevatedButton(
-                              onPressed: () {},
-                              style: ElevatedButton.styleFrom(
-                                primary: Theme.of(context).primaryColor,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Text(
-                                  "Make an appointment",
-                                  style: TextStyles.titleNormal.white,
-                                ),
-                              ),
-                            )
-                          ],
-                        ).vP16
                       ],
                     ),
                   ),
                 );
               },
             ),
-            _appBar(),
+            _appBar(context, doctorModel),
+            Positioned(
+              top: AppTheme.fullHeight(context) * 0.45,
+              left: 0,
+              right: 0,
+              child: _buildInfoCards(context, doctorModel),
+            ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _appBar(BuildContext context, DoctorModel model) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        BackButton(color: Theme.of(context).primaryColor),
+        IconButton(
+          icon: Icon(
+            model.isfavourite ? Icons.favorite : Icons.favorite_border,
+            color: model.isfavourite ? Colors.red : LightColor.grey,
+          ),
+          onPressed: () {
+            // Handle favorite button tap
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildInfoCards(BuildContext context, DoctorModel doctorModel) {
+    return Row(
+        // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        // children: <Widget>[
+        //   _buildInfoCard("Experience", "${doctorModel.goodReviews} years"),
+        //   _buildInfoCard("Patients", "${doctorModel.totalScore}k+"),
+        //   _buildInfoCard("Certifications", "${doctorModel.satisfaction}"),
+        // ],
+        );
+  }
+
+  Widget _buildInfoCard(String title, String value) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 1,
+            blurRadius: 5,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: LightColor.purple,
+            ),
+          ),
+          SizedBox(height: 8),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: Colors.black,
+            ),
+          ),
+        ],
       ),
     );
   }

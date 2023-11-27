@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:uber_doctor_flutter/src/model/data.dart';
 import 'package:uber_doctor_flutter/src/model/doctor_model.dart';
+import 'package:uber_doctor_flutter/src/pages/search_page.dart';
+
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
@@ -34,6 +36,16 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void _navigateToSearchPage() {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => SearchPageWidget(),
+    ),
+  );
+}
+
+
   Widget _header() {
     return Padding(
       padding: EdgeInsets.all(16),
@@ -49,7 +61,16 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _searchField() {
-    return Container(
+  return GestureDetector(
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SearchPageWidget(), 
+        ),
+      );
+    },
+    child: Container(
       height: 55,
       margin: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       width: MediaQuery.of(context).size.width,
@@ -61,23 +82,30 @@ class _HomePageState extends State<HomePage> {
             color: Colors.grey.withOpacity(0.3),
             blurRadius: 15,
             offset: Offset(5, 5),
-          )
+          ),
         ],
       ),
-      child: TextField(
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-          border: InputBorder.none,
-          hintText: "Search",
-          hintStyle: TextStyle(color: Colors.grey),
-          suffixIcon: SizedBox(
-            width: 50,
-            child: Icon(Icons.search, color: Colors.purple),
-          ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                "Search",
+                style: TextStyle(color: Colors.grey),
+              ),
+            ),
+            SizedBox(
+              width: 50,
+              child: Icon(Icons.search, color: Colors.purple),
+            ),
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
+
 
   Widget _category() {
     return Column(
@@ -200,15 +228,6 @@ class _HomePageState extends State<HomePage> {
                   "Top Doctors",
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
-                // IconButton(
-                //   icon: Icon(
-                //     Icons.sort,
-                //     color: Theme.of(context).primaryColor,
-                //   ),
-                //   onPressed: () {
-                //     // Xử lý sự kiện khi nhấn vào nút sắp xếp (nếu cần).
-                //   },
-                // ),
               ],
             ),
           ),
@@ -221,12 +240,7 @@ class _HomePageState extends State<HomePage> {
               final doctorModel = doctorDataList[index];
               return GestureDetector(
                 onTap: () {
-                  // Navigator.pushNamed(
-                  //   context,
-                  //   "/pages/detail_page",
-                  //   arguments: doctorModel,
-                  // );
-                   _navigateToDoctorDetail(doctorModel);
+                  _navigateToDoctorDetail(doctorModel);
                 },
                 child: Container(
                   margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -248,9 +262,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   child: InkWell(
                     onTap: () {
-                      // Navigator.pushNamed(context, "/pages/detail_page",
-                      //     arguments: doctorModel);
-                        _navigateToDoctorDetail(doctorModel);
+                      _navigateToDoctorDetail(doctorModel);
                     },
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                     child: Container(
@@ -326,13 +338,16 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-         backgroundColor: Theme.of(context).backgroundColor,
-        // leading: Icon(
-        //   Icons.short_text,
-        //   size: 30,
-        //   color: Colors.black,
-        // ),
+        backgroundColor: Theme.of(context).backgroundColor,
         actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.search,
+              size: 30,
+              color: Colors.grey,
+            ),
+            onPressed: _navigateToSearchPage,
+          ),
           Icon(
             Icons.notifications_active,
             size: 30,
@@ -343,13 +358,9 @@ class _HomePageState extends State<HomePage> {
             child: Padding(
               padding: EdgeInsets.all(8),
               child: Container(
-                // decoration: BoxDecoration(
-                //   color: Theme.of(context).backgroundColor,
-                // ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(30.0),
-                  child:
-                      Image.asset("assets/images/harry.jpg", fit: BoxFit.fill),
+                  child: Image.asset("assets/images/harry.jpg", fit: BoxFit.fill),
                 ),
               ),
             ),

@@ -6,15 +6,23 @@ import 'package:uber_doctor_flutter/src/pages/booking_page.dart';
 import 'package:uber_doctor_flutter/src/pages/detail_page.dart';
 import 'package:uber_doctor_flutter/src/pages/home_page.dart';
 import 'package:uber_doctor_flutter/src/pages/login_page.dart';
+import 'package:uber_doctor_flutter/src/pages/payment_page.dart';
 import 'package:uber_doctor_flutter/src/pages/phone_page.dart';
 import 'package:uber_doctor_flutter/src/pages/profile_page.dart';
 import 'package:uber_doctor_flutter/src/pages/symptom_page.dart';
 import 'package:uber_doctor_flutter/src/theme/theme.dart';
 import 'package:uber_doctor_flutter/src/widgets/BottomNavHexagon.dart';
 
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zego_uikit/zego_uikit.dart';
+import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+import 'constants.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+  // final GlobalKey<NavigatorState> navigatorKey;
   const MyApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -24,7 +32,8 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => MyHomePage(title: 'nav'),
-        '/pages/detail_page': (context) => DetailPage(), // Thay thế DoctorModel() bằng đối tượng DoctorModel bạn muốn hiển thị chi tiết.
+        '/pages/detail_page': (context) =>
+            DetailPage(), // Thay thế DoctorModel() bằng đối tượng DoctorModel bạn muốn hiển thị chi tiết.
       },
       debugShowCheckedModeBanner: false,
     );
@@ -38,17 +47,20 @@ class MyHomePage extends StatefulWidget {
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
+
 // khai bao cac trang de dieu huong den
 class _MyHomePageState extends State<MyHomePage> {
   var _page = 0;
   final pages = [
     HomePage(),
-    Phone(),
+    Call(navigatorKey:GlobalKey()),
     SymptomPage(),
     BookingPage(),
     ProfilePage(),
     LoginPage(),
     DetailPage(),
+    PaymentPage(),
+
   ];
   int visit = 0;
   double height = 30;
@@ -57,13 +69,14 @@ class _MyHomePageState extends State<MyHomePage> {
   Color color2 = const Color(0XFF96B1FD);
   Color bgColor = const Color(0XFF1752FE);
   // dieu hướng từ HomePage den detail
- void _navigateToDoctorDetail(DoctorModel doctorModel) {
+  void _navigateToDoctorDetail(DoctorModel doctorModel) {
     Navigator.pushNamed(
       context,
       "/pages/detail_page",
       arguments: doctorModel,
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -111,3 +124,17 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+
+// class MyApp extends StatefulWidget {
+//   final GlobalKey<NavigatorState> navigatorKey;
+
+//   const MyApp({
+//     required this.navigatorKey,
+//     Key? key,
+//   }) : super(key: key);
+
+//   @override
+//   State<StatefulWidget> createState() => MyAppState();
+// }
+
+

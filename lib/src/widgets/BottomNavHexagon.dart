@@ -5,6 +5,7 @@ import 'package:uber_doctor_flutter/src/pages/booking_page.dart';
 import 'package:uber_doctor_flutter/src/pages/detail_page.dart';
 import 'package:uber_doctor_flutter/src/pages/home_page.dart';
 import 'package:uber_doctor_flutter/src/pages/login_page.dart';
+import 'package:uber_doctor_flutter/src/pages/payment_page.dart';
 import 'package:uber_doctor_flutter/src/pages/phone_page.dart';
 import 'package:uber_doctor_flutter/src/pages/profile_page.dart';
 import 'package:uber_doctor_flutter/src/pages/splash_page.dart';
@@ -38,6 +39,9 @@ const List<TabItem> items = [
   TabItem(
     icon: Icons.details_rounded,
     title: 'detail',
+  ),  TabItem(
+    icon: Icons.payment_outlined,
+    title: 'payment',
   ),
 ];
 
@@ -76,7 +80,7 @@ class CurrentPage extends StatelessWidget {
       case 0:
         return HomePage();
       case 1:
-        return Phone();
+        return Call(navigatorKey: GlobalKey(),);
       case 2:
         return SplashPage();
       case 3:
@@ -87,6 +91,8 @@ class CurrentPage extends StatelessWidget {
         return LoginPage();
       case 6:
         return DetailPage();
+      case 7:
+        return PaymentPage();
       default:
         // Trang mặc định hoặc xử lý ngoại lệ
         return Container();

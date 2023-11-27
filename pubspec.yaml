@@ -41,6 +41,12 @@ dependencies:
   awesome_bottom_bar: ^1.2.4
   curved_navigation_bar: ^1.0.3
   http: ^1.1.0
+  zego_uikit_prebuilt_call: ^3.17.9
+  zego_uikit_signaling_plugin: ^2.6.6
+  flutter_screenutil: ^5.9.0
+
+  device_info_plus: ^9.1.1
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:

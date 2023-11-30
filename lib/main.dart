@@ -2,12 +2,14 @@ import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
 import 'package:awesome_bottom_bar/widgets/inspired/inspired.dart';
 import 'package:flutter/material.dart';
 import 'package:uber_doctor_flutter/src/model/doctor_model.dart';
+import 'package:uber_doctor_flutter/src/pages/appointment_page.dart';
 import 'package:uber_doctor_flutter/src/pages/booking_page.dart';
 import 'package:uber_doctor_flutter/src/pages/detail_page.dart';
 import 'package:uber_doctor_flutter/src/pages/home_page.dart';
 import 'package:uber_doctor_flutter/src/pages/login_page.dart';
 import 'package:uber_doctor_flutter/src/pages/phone_page.dart';
 import 'package:uber_doctor_flutter/src/pages/profile_page.dart';
+import 'package:uber_doctor_flutter/src/pages/splash_page.dart';
 import 'package:uber_doctor_flutter/src/pages/symptom_page.dart';
 import 'package:uber_doctor_flutter/src/theme/theme.dart';
 import 'package:uber_doctor_flutter/src/widgets/BottomNavHexagon.dart';
@@ -18,12 +20,13 @@ class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    DoctorModel model ;
     return MaterialApp(
       title: 'UberDoctor',
       theme: AppTheme.lightTheme,
       initialRoute: '/',
       routes: {
-        '/': (context) => MyHomePage(title: 'nav'),
+        '/': (context) =>SplashPage(),
         '/pages/detail_page': (context) => DetailPage(), // Thay thế DoctorModel() bằng đối tượng DoctorModel bạn muốn hiển thị chi tiết.
       },
       debugShowCheckedModeBanner: false,
@@ -32,7 +35,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+  const MyHomePage(String s, {Key? key, required this.title}) : super(key: key);
   final String title;
 
   @override
@@ -48,7 +51,8 @@ class _MyHomePageState extends State<MyHomePage> {
     BookingPage(),
     ProfilePage(),
     LoginPage(),
-    DetailPage(),
+    // DetailPage(),
+    AppointmentPage()
   ];
   int visit = 0;
   double height = 30;
@@ -57,13 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Color color2 = const Color(0XFF96B1FD);
   Color bgColor = const Color(0XFF1752FE);
   // dieu hướng từ HomePage den detail
- void _navigateToDoctorDetail(DoctorModel doctorModel) {
-    Navigator.pushNamed(
-      context,
-      "/pages/detail_page",
-      arguments: doctorModel,
-    );
-  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

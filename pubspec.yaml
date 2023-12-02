@@ -41,6 +41,9 @@ dependencies:
   awesome_bottom_bar: ^1.2.4
   curved_navigation_bar: ^1.0.3
   table_calendar: ^3.0.9
+  http: ^1.1.0
+  lottie: ^2.7.0
+  flutter_map: ^6.0.1
 
 dev_dependencies:
   flutter_test:

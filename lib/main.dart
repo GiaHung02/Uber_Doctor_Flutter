@@ -2,14 +2,17 @@ import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
 import 'package:awesome_bottom_bar/widgets/inspired/inspired.dart';
 import 'package:flutter/material.dart';
 import 'package:uber_doctor_flutter/src/model/doctor_model.dart';
-import 'package:uber_doctor_flutter/src/pages/appointment_page.dart';
-import 'package:uber_doctor_flutter/src/pages/booking_page.dart';
+import 'package:uber_doctor_flutter/src/pages/booking/appointment_page.dart';
+import 'package:uber_doctor_flutter/src/pages/booking/booking_detail_page.dart';
+import 'package:uber_doctor_flutter/src/pages/booking/booking_doctor_list_page.dart';
+import 'package:uber_doctor_flutter/src/pages/booking/booking_page.dart';
 import 'package:uber_doctor_flutter/src/pages/detail_page.dart';
 import 'package:uber_doctor_flutter/src/pages/home_page.dart';
 import 'package:uber_doctor_flutter/src/pages/login_page.dart';
 import 'package:uber_doctor_flutter/src/pages/phone_page.dart';
 import 'package:uber_doctor_flutter/src/pages/profile_page.dart';
 import 'package:uber_doctor_flutter/src/pages/splash_page.dart';
+import 'package:uber_doctor_flutter/src/pages/booking/success_booked.dart';
 import 'package:uber_doctor_flutter/src/pages/symptom_page.dart';
 import 'package:uber_doctor_flutter/src/theme/theme.dart';
 import 'package:uber_doctor_flutter/src/widgets/BottomNavHexagon.dart';
@@ -18,16 +21,27 @@ void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
+   //this is for push navigator
+  static final navigatorKey = GlobalKey<NavigatorState>();
+
   @override
   Widget build(BuildContext context) {
     DoctorModel model ;
+    
     return MaterialApp(
       title: 'UberDoctor',
       theme: AppTheme.lightTheme,
       initialRoute: '/',
       routes: {
         '/': (context) =>SplashPage(),
-        '/pages/detail_page': (context) => DetailPage(), // Thay thế DoctorModel() bằng đối tượng DoctorModel bạn muốn hiển thị chi tiết.
+        '/home_page': (context) =>MyHomePage(title: 'home',"home"),
+        '/pages/detail_page': (context) => SliverDoctorDetail(),
+         '/success_booking': (context) => AppointmentBooked(), 
+         '/booking_page': (context) => BookingPage(), 
+         '/booking_list_page': (context) => BookingDoctorListPage(),
+         '/booking_detail_page': (context) => BookingDetailPage(),
+
+      
       },
       debugShowCheckedModeBanner: false,
     );
@@ -48,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
     HomePage(),
     Phone(),
     SymptomPage(),
-    BookingPage(),
+    BookingDoctorListPage(),
     ProfilePage(),
     LoginPage(),
     // DetailPage(),

@@ -1,5 +1,3 @@
-// import 'package:doctor_appointment_app/main.dart';
-
 // import 'package:doctor_appointment_app/providers/dio_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -7,7 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:uber_doctor_flutter/src/config/config.dart';
 import 'package:uber_doctor_flutter/src/model/booking_date_convert.dart';
-import 'package:uber_doctor_flutter/src/widgets/button.dart';
+import 'package:uber_doctor_flutter/src/theme/button.dart';
 import 'package:uber_doctor_flutter/src/widgets/custom_appbar.dart';
 
 class BookingPage extends StatefulWidget {
@@ -26,7 +24,25 @@ class _BookingPageState extends State<BookingPage> {
   bool _isWeekend = false;
   bool _dateSelected = false;
   bool _timeSelected = false;
-  String? token; //get token for insert booking date and time into database
+  String? token;
+
+  var doctor = {
+    "id": 5,
+    "phoneNumber": "0909222009",
+    "password": "123123",
+    "fullName": "kim le",
+    "email": "kim@tiwi.vn",
+    "wallet": 100000.0,
+    "bankingAccount": "115115678678",
+    "departments": {
+      "id": "tim",
+      "departmentName": "khoa tim",
+      "number_of_Doctors": 100,
+      "pathologycal": [],
+      "description": "tim",
+      "status": true
+    }
+  }; //get token for insert booking date and time into database
 
   // Future<void> getToken() async {
   //   final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -53,6 +69,7 @@ class _BookingPageState extends State<BookingPage> {
           SliverToBoxAdapter(
             child: Column(
               children: <Widget>[
+                AboutDoctor(doctor: doctor),
                 _tableCalendar(),
                 const Padding(
                   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 25),
@@ -97,7 +114,7 @@ class _BookingPageState extends State<BookingPage> {
                           });
                         },
                         child: Container(
-                          margin: const EdgeInsets.all(5),
+                          margin: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
                             border: Border.all(
                               color: _currentIndex == index
@@ -128,10 +145,10 @@ class _BookingPageState extends State<BookingPage> {
                 ),
           SliverToBoxAdapter(
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 80),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 50),
               child: Button(
                 width: double.infinity,
-                title: 'Make Appointment',
+                title: 'Book Appointment',
                 onPressed: () async {
                   //convert date/day/time into string first
                   final getDate = DateConverted.getDate(_currentDay);
@@ -144,8 +161,7 @@ class _BookingPageState extends State<BookingPage> {
                   //if booking return status code 200, then redirect to success booking page
 
                   // if (booking == 200) {
-                  //   MyApp.navigatorKey.currentState!
-                  //       .pushNamed('success_booking');
+                  Navigator.of(context).pushNamed('/booking_detail_page');
                   // }
                 },
                 disable: _timeSelected && _dateSelected ? false : true,
@@ -162,7 +178,7 @@ class _BookingPageState extends State<BookingPage> {
     return TableCalendar(
       focusedDay: _focusDay,
       firstDay: DateTime.now(),
-      lastDay: DateTime(2023, 12, 31),
+      lastDay: DateTime(2024, 03, 31),
       calendarFormat: _format,
       currentDay: _currentDay,
       rowHeight: 48,
@@ -194,6 +210,58 @@ class _BookingPageState extends State<BookingPage> {
           }
         });
       }),
+    );
+  }
+}
+
+// About Doctor widget
+class AboutDoctor extends StatelessWidget {
+  const AboutDoctor({Key? key, required this.doctor}) : super(key: key);
+
+  final Map<dynamic, dynamic> doctor;
+
+  @override
+  Widget build(BuildContext context) {
+    Config().init(context);
+    return Container(
+      width: double.infinity,
+      color:  Color.fromARGB(255, 176, 212, 241),
+      child: Column(
+        children: <Widget>[
+          Config.spaceSmall,
+          CircleAvatar(
+            radius: 95.0,
+            backgroundImage: NetworkImage(
+              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREpIkClC9oX1l5NYvDU-9sRGZufk18bvSFEA&usqp=CAU",
+            ),
+            backgroundColor: Colors.white,
+          ),
+          Config.spaceSmall,
+          Text(
+            "DR. Nguyen Minh Hoang",
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 24.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(
+            width: Config.widthSize * 0.75,
+            child: Text(
+              'Chuyên Khoa Tim',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+                fontSize: 15,
+              ),
+              softWrap: true,
+              textAlign: TextAlign.center,
+            ),
+          ),
+
+          Config.spaceSmall,
+        ],
+      ),
     );
   }
 }

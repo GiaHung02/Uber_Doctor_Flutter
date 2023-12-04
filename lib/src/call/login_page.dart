@@ -3,11 +3,10 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Package imports:
-import 'package:shared_preferences/shared_preferences.dart';
 
 // Project imports:
-import '../../constants.dart';
+import 'constants.dart';
+import 'login_service.dart';
 import 'util.dart';
 
 class LoginPage extends StatefulWidget {
@@ -63,14 +62,14 @@ class LoginPageState extends State<LoginPage> {
     return Center(
       child: RichText(
         text: const TextSpan(
-          text: 'ZE',
+          text: 'UBER',
           style: TextStyle(color: Colors.black, fontSize: 20),
           children: <TextSpan>[
             TextSpan(
-              text: 'GO',
+              text: 'DO',
               style: TextStyle(color: Colors.blue),
             ),
-            TextSpan(text: 'CLOUD'),
+            TextSpan(text: 'TOR'),
           ],
         ),
       ),
@@ -113,16 +112,17 @@ class LoginPageState extends State<LoginPage> {
       onPressed: _userIDTextCtrl.text.isEmpty
           ? null
           : () async {
-              final prefs = await SharedPreferences.getInstance();
-              prefs.setString(cacheUserIDKey, _userIDTextCtrl.text);
+              login(
+                userID: _userIDTextCtrl.text,
+                userName: 'user_${_userIDTextCtrl.text}',
+              ).then((value) {
+                onUserLogin();
 
-              currentUser.id = _userIDTextCtrl.text;
-              currentUser.name = 'user_${_userIDTextCtrl.text}';
-
-              Navigator.pushNamed(
-                context,
-                PageRouteNames.home,
-              );
+                Navigator.pushNamed(
+                  context,
+                  PageRouteNames.home,
+                );
+              });
             },
       child: const Text('Sign In', style: textStyle),
     );

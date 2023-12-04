@@ -1,6 +1,7 @@
 import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
 import 'package:awesome_bottom_bar/widgets/inspired/inspired.dart';
 import 'package:flutter/material.dart';
+import 'package:uber_doctor_flutter/src/call/call.dart';
 import 'package:uber_doctor_flutter/src/model/doctor_model.dart';
 import 'package:uber_doctor_flutter/src/pages/booking_page.dart';
 import 'package:uber_doctor_flutter/src/pages/detail_page.dart';
@@ -18,7 +19,7 @@ import 'package:zego_uikit/zego_uikit.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import 'constants.dart';
+import 'src/call/constants.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {

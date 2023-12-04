@@ -44,9 +44,19 @@ dependencies:
   zego_uikit_prebuilt_call: ^3.17.9
   zego_uikit_signaling_plugin: ^2.6.6
   flutter_screenutil: ^5.9.0
+  flutter_styled_toast: ^2.2.1
+  shared_preferences: ^2.2.2
+  faker: ^2.1.0
+  cached_network_image: ^3.3.0
+  zego_uikit: ^2.14.9
+  intl: ^0.18.1
+  import_sorter: ^4.6.0
+  firebase_core: ^2.24.0
+  firebase_messaging: ^14.7.6
+  firebase_auth: ^4.15.0
 
   device_info_plus: ^9.1.1
-  shared_preferences: ^2.2.2
+ 
 
 dev_dependencies:
   flutter_test:

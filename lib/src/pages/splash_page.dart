@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uber_doctor_flutter/main.dart';
 import 'package:uber_doctor_flutter/src/pages/home_page.dart';
 
 import 'package:uber_doctor_flutter/src/theme/extention.dart';
@@ -17,11 +18,11 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
      Future.delayed(Duration(seconds: 2)).then((_) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => HomePage()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => MyHomePage('0', title: 'Home page',)));
     });
     super.initState();
   }
-  @override
+  @override 
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(

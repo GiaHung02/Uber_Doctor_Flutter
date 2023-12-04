@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:uber_doctor_flutter/src/model/data.dart';
 import 'package:uber_doctor_flutter/src/model/doctor_model.dart';
+import 'package:uber_doctor_flutter/src/pages/detail_page.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
@@ -221,12 +222,7 @@ class _HomePageState extends State<HomePage> {
               final doctorModel = doctorDataList[index];
               return GestureDetector(
                 onTap: () {
-                  // Navigator.pushNamed(
-                  //   context,
-                  //   "/pages/detail_page",
-                  //   arguments: doctorModel,
-                  // );
-                   _navigateToDoctorDetail(doctorModel);
+                  _navigateToDoctorDetail(doctorModel);
                 },
                 child: Container(
                   margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -248,9 +244,12 @@ class _HomePageState extends State<HomePage> {
                   ),
                   child: InkWell(
                     onTap: () {
-                      // Navigator.pushNamed(context, "/pages/detail_page",
-                      //     arguments: doctorModel);
-                        _navigateToDoctorDetail(doctorModel);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SliverDoctorDetail(),
+                          ));
+                      // _navigateToDoctorDetail(doctorModel);
                     },
                     borderRadius: BorderRadius.all(Radius.circular(20)),
                     child: Container(
@@ -326,7 +325,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-         backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Theme.of(context).backgroundColor,
         // leading: Icon(
         //   Icons.short_text,
         //   size: 30,

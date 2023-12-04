@@ -40,6 +40,14 @@ dependencies:
   go_router: ^12.1.0
   awesome_bottom_bar: ^1.2.4
   curved_navigation_bar: ^1.0.3
+  pinput: ^2.2.12
+  firebase_core: ^2.23.0
+  firebase_auth: ^4.14.0
+  cloud_firestore: ^4.13.1
+  get: ^4.6.6
+  http: ^1.1.0
+  quickalert: ^1.0.2
+
 
 dev_dependencies:
   flutter_test:

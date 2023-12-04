@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "28272589749",
+    "project_id": "login-opt-d6071",
+    "storage_bucket": "login-opt-d6071.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:28272589749:android:58ca1267e3ac200c2e77fc",
+        "android_client_info": {
+          "package_name": "com.example.login_otp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8jBBHasKdbnkkBNkePjlNeI0lLA4Tvlg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:28272589749:android:058e229ec0ec0d952e77fc",
+        "android_client_info": {
+          "package_name": "com.example.uber_doctor_flutter"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8jBBHasKdbnkkBNkePjlNeI0lLA4Tvlg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

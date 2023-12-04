@@ -1,18 +1,37 @@
 import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
 import 'package:awesome_bottom_bar/widgets/inspired/inspired.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:uber_doctor_flutter/firebase_options.dart';
 import 'package:uber_doctor_flutter/src/model/doctor_model.dart';
 import 'package:uber_doctor_flutter/src/pages/booking_page.dart';
 import 'package:uber_doctor_flutter/src/pages/detail_page.dart';
+import 'package:uber_doctor_flutter/src/pages/doctor_register_page.dart';
 import 'package:uber_doctor_flutter/src/pages/home_page.dart';
 import 'package:uber_doctor_flutter/src/pages/login_page.dart';
+import 'package:uber_doctor_flutter/src/pages/patient_register_page.dart';
 import 'package:uber_doctor_flutter/src/pages/phone_page.dart';
 import 'package:uber_doctor_flutter/src/pages/profile_page.dart';
 import 'package:uber_doctor_flutter/src/pages/symptom_page.dart';
+import 'package:uber_doctor_flutter/src/pages/verify.dart';
+import 'package:uber_doctor_flutter/src/pages/verify_register.dart';
 import 'package:uber_doctor_flutter/src/theme/theme.dart';
 import 'package:uber_doctor_flutter/src/widgets/BottomNavHexagon.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  runApp(MyApp()
+      // MaterialApp(
+      //   initialRoute: 'home',
+      //   debugShowCheckedModeBanner: false,
+      //   routes: {
+
+      //   },
+      // )
+
+      );
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -21,10 +40,16 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'UberDoctor',
       theme: AppTheme.lightTheme,
-      initialRoute: '/',
+      initialRoute: 'home',
       routes: {
-        '/': (context) => MyHomePage(title: 'nav'),
-        '/pages/detail_page': (context) => DetailPage(), // Thay thế DoctorModel() bằng đối tượng DoctorModel bạn muốn hiển thị chi tiết.
+        'home': (context) => MyHomePage(title: 'nav'),
+        'phone': (context) => LoginPage(),
+        'verify': (context) => MyVerify(),
+        'verify_register': (context) => MyVerifyRegister(),
+        'doctor/register': (context) => DoctorRegisterPage(),
+        'patient/register': (context) => PatientRegisterPage(),
+        'pages/detail_page': (context) =>
+            DetailPage(), // Thay thế DoctorModel() bằng đối tượng DoctorModel bạn muốn hiển thị chi tiết.
       },
       debugShowCheckedModeBanner: false,
     );
@@ -38,6 +63,7 @@ class MyHomePage extends StatefulWidget {
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
+
 // khai bao cac trang de dieu huong den
 class _MyHomePageState extends State<MyHomePage> {
   var _page = 0;
@@ -57,13 +83,14 @@ class _MyHomePageState extends State<MyHomePage> {
   Color color2 = const Color(0XFF96B1FD);
   Color bgColor = const Color(0XFF1752FE);
   // dieu hướng từ HomePage den detail
- void _navigateToDoctorDetail(DoctorModel doctorModel) {
+  void _navigateToDoctorDetail(DoctorModel doctorModel) {
     Navigator.pushNamed(
       context,
       "/pages/detail_page",
       arguments: doctorModel,
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -25,7 +25,8 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => MyHomePage(title: 'nav'),
-        '/pages/detail_page': (context) => DetailPage(),
+        '/pages/detail_page': (context) => DetailPage(doctors: [], selectedIndex: 0,),
+
         '/pages/search_page': (context) => SearchPageWidget(),
       },
       debugShowCheckedModeBanner: false,
@@ -50,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
     BookingPage(),
     ProfilePage(),
     LoginPage(),
-    DetailPage(),
+    DetailPage(doctors: [], selectedIndex: 0,),
   ];
   int visit = 0;
   double height = 30;

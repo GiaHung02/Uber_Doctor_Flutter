@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:uber_doctor_flutter/src/model/doctor_model.dart';
+import 'package:uber_doctor_flutter/src/model/doctor.dart'; // Assuming Doctor model is in this path
 import 'package:uber_doctor_flutter/src/theme/extention.dart';
 import 'package:uber_doctor_flutter/src/theme/light_color.dart';
 import 'package:uber_doctor_flutter/src/theme/text_styles.dart';
@@ -8,15 +8,18 @@ import 'package:uber_doctor_flutter/src/widgets/progress_widget.dart';
 import 'package:uber_doctor_flutter/src/widgets/rating_start.dart';
 
 class DetailPage extends StatelessWidget {
+  final List<Doctor> doctors;
+  final int selectedIndex;
+
+  DetailPage({required this.doctors, required this.selectedIndex});
+
   @override
   Widget build(BuildContext context) {
-    final DoctorModel? doctorModel =
-        ModalRoute.of(context)?.settings.arguments as DoctorModel?;
-
-    if (doctorModel == null) {
-      // Handle the case where the doctorModel is null, e.g., show an error message
-      return Scaffold(body: Center(child: Text('Error: Doctor not found')));
-    }
+    // Check if the doctors list is not empty and selectedIndex is valid
+    Doctor selectedDoctor =
+        (doctors.isNotEmpty && selectedIndex < doctors.length)
+            ? doctors[selectedIndex]
+            : Doctor(); // Replace Doctor() with the default value for a Doctor object
 
     TextStyle titleStyle = TextStyles.title
         .copyWith(fontSize: 25)
@@ -40,8 +43,7 @@ class DetailPage extends StatelessWidget {
                 shape: BoxShape.rectangle,
                 image: DecorationImage(
                   fit: BoxFit.cover,
-                  image:
-                      AssetImage(doctorModel.image),
+                  image: AssetImage('assets/images/goku.jpg'),
                 ),
               ),
             ),
@@ -72,7 +74,7 @@ class DetailPage extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
                               Text(
-                                doctorModel.name,
+                                '${selectedDoctor.fullName}',
                                 style: titleStyle,
                               ),
                               SizedBox(
@@ -85,12 +87,12 @@ class DetailPage extends StatelessWidget {
                               ),
                               Spacer(),
                               RatingStar(
-                                rating: doctorModel.rating,
+                                rating: (selectedDoctor.rate ?? 0).toDouble(),
                               )
                             ],
                           ),
                           subtitle: Text(
-                            doctorModel.type,
+                            '${selectedDoctor.spectiality}',
                             style: TextStyles.bodySm.subTitleColor
                                 .copyWith(fontWeight: FontWeight.bold),
                           ),
@@ -102,24 +104,24 @@ class DetailPage extends StatelessWidget {
                         Row(
                           children: <Widget>[
                             ProgressWidget(
-                              value: doctorModel.goodReviews,
-                              totalValue: 100,
+                              value: (selectedDoctor.id ?? 0).toDouble(),
+                              totalValue: 10,
                               activeColor: LightColor.purpleExtraLight,
                               backgroundColor: LightColor.grey.withOpacity(.3),
                               title: "Good Review",
                               durationTime: 500,
                             ),
                             ProgressWidget(
-                              value: doctorModel.totalScore,
-                              totalValue: 100,
+                              value: (selectedDoctor.exp ?? 0).toDouble(),
+                              totalValue: 10,
                               activeColor: LightColor.purpleLight,
                               backgroundColor: LightColor.grey.withOpacity(.3),
                               title: "Total Score",
                               durationTime: 300,
                             ),
                             ProgressWidget(
-                              value: doctorModel.satisfaction,
-                              totalValue: 100,
+                              value: (selectedDoctor.rate ?? 0).toDouble(),
+                              totalValue: 5,
                               activeColor: LightColor.purple,
                               backgroundColor: LightColor.grey.withOpacity(.3),
                               title: "Satisfaction",
@@ -133,7 +135,7 @@ class DetailPage extends StatelessWidget {
                         ),
                         Text("About", style: titleStyle).vP16,
                         Text(
-                          doctorModel.description,
+                          selectedDoctor.email ?? '',
                           style: TextStyles.body.subTitleColor,
                         ),
                       ],
@@ -142,12 +144,12 @@ class DetailPage extends StatelessWidget {
                 );
               },
             ),
-            _appBar(context, doctorModel),
+            _appBar(context),
             Positioned(
               top: AppTheme.fullHeight(context) * 0.45,
               left: 0,
               right: 0,
-              child: _buildInfoCards(context, doctorModel),
+              child: _buildInfoCards(context),
             ),
           ],
         ),
@@ -155,33 +157,26 @@ class DetailPage extends StatelessWidget {
     );
   }
 
-  Widget _appBar(BuildContext context, DoctorModel model) {
+  Widget _appBar(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         BackButton(color: Theme.of(context).primaryColor),
-        IconButton(
-          icon: Icon(
-            model.isfavourite ? Icons.favorite : Icons.favorite_border,
-            color: model.isfavourite ? Colors.red : LightColor.grey,
-          ),
-          onPressed: () {
-            // Handle favorite button tap
-          },
-        ),
+        // You can add more app bar actions or icons here if needed
       ],
     );
   }
 
-  Widget _buildInfoCards(BuildContext context, DoctorModel doctorModel) {
+  Widget _buildInfoCards(BuildContext context) {
+    // Customize this part based on the information you want to display
     return Row(
-        // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        // children: <Widget>[
-        //   _buildInfoCard("Experience", "${doctorModel.goodReviews} years"),
-        //   _buildInfoCard("Patients", "${doctorModel.totalScore}k+"),
-        //   _buildInfoCard("Certifications", "${doctorModel.satisfaction}"),
-        // ],
-        );
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+        // _buildInfoCard("Experience", "${selectedDoctor.goodReviews} years"),
+        // _buildInfoCard("Patients", "${selectedDoctor.totalScore}k+"),
+        // _buildInfoCard("Certifications", "${selectedDoctor.satisfaction}"),
+      ],
+    );
   }
 
   Widget _buildInfoCard(String title, String value) {

@@ -1,33 +1,49 @@
-import 'dart:ffi';
+import 'dart:convert';
+import 'dart:typed_data';
+
 
 class Doctor {
   int? id;
-  String? name;
+  String? fullName;
   String? email;
   String? spectiality;
+  int? exp;
+  int? rate;
+  List<int>? image; // Change the type to List<int> for image data
 
   Doctor({
     this.id,
-    this.name,
+    this.fullName,
     this.email,
     this.spectiality,
+    this.exp,
+    this.rate,
+    this.image,
   });
 
   factory Doctor.fromJson(Map<String, dynamic>? json) {
     return Doctor(
       id: json?['id'],
-      name: json?['name'],
+      fullName: json?['fullName'],
       email: json?['email'],
       spectiality: json?['spectiality'],
+      exp: json?['exp'],
+      rate: json?['rate'],
+      image: json?['image'] != null
+          ? base64Decode(json?['image'])
+          : null, // Decode base64 string to List<int>
     );
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = {
       'id': id,
-      'name': name,
+      'fullName': fullName,
       'email': email,
       'spectiality': spectiality,
+      'exp': exp,
+      'rate': rate,
+      'image': image != null ? base64Encode(Uint8List.fromList(image!)) : null, // Encode List<int> to base64 string
     };
     return data;
   }

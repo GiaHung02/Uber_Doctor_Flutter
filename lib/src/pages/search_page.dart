@@ -10,7 +10,7 @@ class SearchPageWidget extends StatefulWidget {
 
 class _SearchPageWidgetState extends State<SearchPageWidget> {
   FetchSymptomList _symptomList = FetchSymptomList();
-  FetchRecommendList _recommendList = FetchRecommendList();
+  // FetchRecommendList _recommendList = FetchRecommendList();
   TextEditingController _searchController = TextEditingController();
   List<Symptomslist> _symptomsList = [];
   List<Doctor> _recommendedDoctorsList = [];
@@ -27,7 +27,7 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
           ),
           onChanged: (query) {
             _getSymptomsList(query);
-            _getRecommendedDoctorsList(query);
+            // _getRecommendedDoctorsList(query);
           },
         ),
         actions: [
@@ -150,13 +150,13 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
     });
   }
 
-  void _getRecommendedDoctorsList(String query) {
-    _recommendList.getRecommendList(query: query).then((doctorsList) {
-      setState(() {
-        _recommendedDoctorsList = doctorsList;
-      });
-    });
-  }
+  // void _getRecommendedDoctorsList(String query) {
+  //   _recommendList.getRecommendList(query: query).then((doctorsList) {
+  //     setState(() {
+  //       _recommendedDoctorsList = doctorsList;
+  //     });
+  //   });
+  // }
 
   void _clearLists() {
     setState(() {

@@ -87,7 +87,8 @@ class CurrentPage extends StatelessWidget {
       case 5:
         return LoginPage();
       case 6:
-        return DetailPage();
+        return DetailPage(doctors: [], selectedIndex: 0,);
+;
       default:
         // Trang mặc định hoặc xử lý ngoại lệ
         return Container();

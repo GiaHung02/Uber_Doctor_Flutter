@@ -4,7 +4,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:uber_doctor_flutter/firebase_options.dart';
 import 'package:uber_doctor_flutter/src/model/doctor_model.dart';
-import 'package:uber_doctor_flutter/src/pages/booking_page.dart';
+import 'package:uber_doctor_flutter/src/pages/booking/appointment_page.dart';
+import 'package:uber_doctor_flutter/src/pages/booking/booking_detail_page.dart';
+import 'package:uber_doctor_flutter/src/pages/booking/booking_doctor_list_page.dart';
+import 'package:uber_doctor_flutter/src/pages/booking/booking_page.dart';
 import 'package:uber_doctor_flutter/src/pages/detail_page.dart';
 import 'package:uber_doctor_flutter/src/pages/doctor_register_page.dart';
 import 'package:uber_doctor_flutter/src/pages/home_page.dart';
@@ -12,6 +15,8 @@ import 'package:uber_doctor_flutter/src/pages/login_page.dart';
 import 'package:uber_doctor_flutter/src/pages/patient_register_page.dart';
 import 'package:uber_doctor_flutter/src/pages/phone_page.dart';
 import 'package:uber_doctor_flutter/src/pages/profile_page.dart';
+import 'package:uber_doctor_flutter/src/pages/splash_page.dart';
+import 'package:uber_doctor_flutter/src/pages/booking/success_booked.dart';
 import 'package:uber_doctor_flutter/src/pages/symptom_page.dart';
 import 'package:uber_doctor_flutter/src/pages/verify.dart';
 import 'package:uber_doctor_flutter/src/pages/verify_register.dart';
@@ -35,21 +40,33 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
+   //this is for push navigator
+  static final navigatorKey = GlobalKey<NavigatorState>();
+
   @override
   Widget build(BuildContext context) {
+    DoctorModel model ;
+    
     return MaterialApp(
       title: 'UberDoctor',
       theme: AppTheme.lightTheme,
       initialRoute: 'home',
       routes: {
-        'home': (context) => MyHomePage(title: 'nav'),
+        'home': (context) =>SplashPage(),
+        '/home_page': (context) =>MyHomePage(title: 'home',"home"),
         'phone': (context) => LoginPage(),
         'verify': (context) => MyVerify(),
         'verify_register': (context) => MyVerifyRegister(),
         'doctor/register': (context) => DoctorRegisterPage(),
         'patient/register': (context) => PatientRegisterPage(),
         'pages/detail_page': (context) =>
-            DetailPage(), // Thay thế DoctorModel() bằng đối tượng DoctorModel bạn muốn hiển thị chi tiết.
+            SliverDoctorDetail(),
+         '/success_booking': (context) => AppointmentBooked(), 
+         '/booking_page': (context) => BookingPage(), 
+         '/booking_list_page': (context) => BookingDoctorListPage(),
+         '/booking_detail_page': (context) => BookingDetailPage(),
+
+      
       },
       debugShowCheckedModeBanner: false,
     );
@@ -57,7 +74,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+  const MyHomePage(String s, {Key? key, required this.title}) : super(key: key);
   final String title;
 
   @override
@@ -71,10 +88,11 @@ class _MyHomePageState extends State<MyHomePage> {
     HomePage(),
     Phone(),
     SymptomPage(),
-    BookingPage(),
+    BookingDoctorListPage(),
     ProfilePage(),
     LoginPage(),
-    DetailPage(),
+    // DetailPage(),
+    AppointmentPage()
   ];
   int visit = 0;
   double height = 30;

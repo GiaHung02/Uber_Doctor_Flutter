@@ -86,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
   var _page = 0;
   final pages = [
     HomePage(),
-    Phone(),
+    Call(navigatorKey: GlobalKey()),
     SymptomPage(),
     BookingDoctorListPage(),
     ProfilePage(),

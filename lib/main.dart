@@ -61,12 +61,12 @@ class MyApp extends StatelessWidget {
         'doctor/register': (context) => DoctorRegisterPage(),
         'patient/register': (context) => PatientRegisterPage(),
         'pages/detail_page': (context) =>
-            SliverDoctorDetail(),
+            DetailPage(doctors: [], selectedIndex: 0,),
          '/success_booking': (context) => AppointmentBooked(), 
          '/booking_page': (context) => BookingPage(), 
          '/booking_list_page': (context) => BookingDoctorListPage(),
          '/booking_detail_page': (context) => BookingDetailPage(),
-
+          '/pages/search_page': (context) => SearchPageWidget(),
       
       },
       debugShowCheckedModeBanner: false,
@@ -92,7 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
     BookingDoctorListPage(),
     ProfilePage(),
     LoginPage(),
-    // DetailPage(doctors: [], selectedIndex: 0,),
+     DetailPage(doctors: [], selectedIndex: 0,),
     AppointmentPage()
   ];
   int visit = 0;

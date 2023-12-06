@@ -13,7 +13,7 @@ class FetchSymptomList {
   var data = <String, dynamic>{};
   List<Symptomslist> results = [];
   String urlList =
-      'http://172.16.0.122:8080/Uber_Doctor/api/v1/pathologycal/list';
+      'http://192.168.26.102:8080/Uber_Doctor/api/v1/pathologycal/list';
 
   Future<List<Symptomslist>> getsymptomList({String? query}) async {
     var url = Uri.parse(urlList);
@@ -56,7 +56,7 @@ class FetchSymptomList {
 class FetchDoctorList {
   var data = <String, dynamic>{};
   List<Doctor> results = [];
-  String urlList = 'http://172.16.0.122:8080/Uber_Doctor/api/v1/doctor/list';
+  String urlList = 'http://192.168.26.102:8080/Uber_Doctor/api/v1/doctor/list';
 
   Future<List<Doctor>> getDoctorList({String? query}) async {
     var url = Uri.parse(urlList);

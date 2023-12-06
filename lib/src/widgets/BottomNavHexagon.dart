@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:uber_doctor_flutter/src/model/doctor_model.dart';
-import 'package:uber_doctor_flutter/src/pages/booking_page.dart';
+import 'package:uber_doctor_flutter/src/pages/booking/booking_page.dart';
+
 import 'package:uber_doctor_flutter/src/pages/detail_page.dart';
 import 'package:uber_doctor_flutter/src/pages/home_page.dart';
 import 'package:uber_doctor_flutter/src/pages/login_page.dart';
@@ -77,7 +78,7 @@ class CurrentPage extends StatelessWidget {
       case 0:
         return HomePage();
       case 1:
-        return Phone();
+        // return Phone();
       case 2:
         return SplashPage();
       case 3:

@@ -15,6 +15,7 @@ import 'package:uber_doctor_flutter/src/pages/login_page.dart';
 import 'package:uber_doctor_flutter/src/pages/patient_register_page.dart';
 import 'package:uber_doctor_flutter/src/pages/phone_page.dart';
 import 'package:uber_doctor_flutter/src/pages/profile_page.dart';
+import 'package:uber_doctor_flutter/src/pages/search_page.dart';
 import 'package:uber_doctor_flutter/src/pages/splash_page.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/success_booked.dart';
 import 'package:uber_doctor_flutter/src/pages/symptom_page.dart';
@@ -60,12 +61,12 @@ class MyApp extends StatelessWidget {
         'doctor/register': (context) => DoctorRegisterPage(),
         'patient/register': (context) => PatientRegisterPage(),
         'pages/detail_page': (context) =>
-            SliverDoctorDetail(),
+            DetailPage(doctors: [], selectedIndex: 0,),
          '/success_booking': (context) => AppointmentBooked(), 
          '/booking_page': (context) => BookingPage(), 
          '/booking_list_page': (context) => BookingDoctorListPage(),
          '/booking_detail_page': (context) => BookingDetailPage(),
-
+          '/pages/search_page': (context) => SearchPageWidget(),
       
       },
       debugShowCheckedModeBanner: false,
@@ -91,7 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
     BookingDoctorListPage(),
     ProfilePage(),
     LoginPage(),
-    // DetailPage(),
+     DetailPage(doctors: [], selectedIndex: 0,),
     AppointmentPage()
   ];
   int visit = 0;

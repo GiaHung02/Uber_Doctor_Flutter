@@ -40,7 +40,29 @@ dependencies:
   go_router: ^12.1.0
   awesome_bottom_bar: ^1.2.4
   curved_navigation_bar: ^1.0.3
+  pinput: ^2.2.12
+  firebase_core: ^2.23.0
+  firebase_auth: ^4.14.0
+  cloud_firestore: ^4.13.1
+  get: ^4.6.6
   http: ^1.1.0
+  quickalert: ^1.0.2
+
+  table_calendar: ^3.0.9
+  lottie: ^2.7.0
+  flutter_map: ^6.0.1
+  zego_uikit_prebuilt_call: ^3.17.9
+  zego_uikit_signaling_plugin: ^2.6.7
+  flutter_styled_toast: ^2.2.1
+  device_info_plus: ^9.1.1
+  shared_preferences: ^2.2.2
+  faker: ^2.1.0
+  cached_network_image: ^3.3.0
+  zego_uikit: ^2.14.9
+  intl: ^0.18.1
+  import_sorter: ^4.6.0
+  firebase_messaging: ^14.7.6
+  
 
 dev_dependencies:
   flutter_test:

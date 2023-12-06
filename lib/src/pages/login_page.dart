@@ -1,7 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:uber_doctor_flutter/src/controllers/auth/login_controller.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  static String verify = "";
+  static String phoneNum = "";
+  
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -9,8 +15,19 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  TextEditingController countryController = TextEditingController();
+  var phone = "";
+  final loginController = LoginController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    countryController.text = "+84";
+    super.initState();
+  }
 
   bool _isChecked = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,10 +35,10 @@ class _LoginPageState extends State<LoginPage> {
         child: Container(
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
-          decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage('images/background.jpg'),
-                  fit: BoxFit.cover)),
+          // decoration: BoxDecoration(
+          //     image: DecorationImage(
+          //         image: AssetImage('assets/images/background.jpg'),
+          //         fit: BoxFit.cover)),
           child: Form(
             key: _formKey,
             // autovalidateMode: AutovalidateMode.always,
@@ -29,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
-                  height: 15,
+                  height: 90,
                 ),
                 Container(
                   height: 600,
@@ -40,112 +57,80 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   child: Column(
                     children: [
+                      Image.asset(
+                        'assets/images/img1.jpg',
+                        width: 300,
+                        height: 170,
+                      ),
                       SizedBox(
-                        height: 30,
+                        height: 25,
                       ),
                       Text(
-                        'Login',
-                        style: TextStyle(fontSize: 30),
+                        "Login",
+                        style: TextStyle(
+                            fontSize: 22, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
                         height: 10,
                       ),
-                      
-                      // SizedBox(
-                      //   height: 20,
-                      // ),
-                      // Text(
-                      //   'or with name and password',
-                      //   style: TextStyle(
-                      //     fontSize: 15,
-                      //     color: Color.fromARGB(255, 200, 67, 10),
-                      //   ),
-                      // ),
-                      SizedBox(
-                        height: 20,
+                      Text(
+                        "We need to register your phone without getting started!",
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
                       SizedBox(
-                        width: 300,
-                        child: TextFormField(
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(50),
+                        height: 30,
+                      ),
+                      Container(
+                        height: 55,
+                        decoration: BoxDecoration(
+                            border: Border.all(width: 1, color: Colors.grey),
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 10,
                             ),
-                            prefixIcon: Icon(Icons.lock),
-                            hintText: 'User Name...',
-                          ),
-                          keyboardType: TextInputType.text,
-                          validator: (value) {
-                            if (value != null && value.isEmpty) {
-                              return 'Please enter your User Name';
-                            }
-
-                            return null;
-                          },
+                            SizedBox(
+                              width: 40,
+                              child: TextField(
+                                controller: countryController,
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                ),
+                              ),
+                            ),
+                            Text(
+                              "|",
+                              style:
+                                  TextStyle(fontSize: 33, color: Colors.grey),
+                            ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Expanded(
+                                child: TextField(
+                              keyboardType: TextInputType.phone,
+                              onChanged: (value) {
+                                phone = value;
+                                LoginPage.phoneNum = value;
+                              },
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "Phone",
+                              ),
+                            ))
+                          ],
                         ),
                       ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      SizedBox(
-                        width: 300,
-                        child: TextFormField(
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            prefixIcon: Icon(Icons.mail),
-                            hintText: 'nguyen@gmail.com',
-                          ),
-                          keyboardType: TextInputType.emailAddress,
-                          validator: (value) {
-                            if (value != null && value.isNotEmpty) {
-                              if (value.contains('@')) {
-                                return null;
-                              } else {
-                                return 'Please enter a VALID EMAIL ';
-                              }
-                            } else {
-                              return 'Please enter your EMAIL';
-                            }
-                          },
-                        ),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      SizedBox(
-                        width: 300,
-                        child: TextFormField(
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            prefixIcon: Icon(Icons.lock),
-                            hintText: 'Password (length > 8 )',
-                          ),
-                          keyboardType: TextInputType.text,
-                          validator: (value) {
-                            if (value != null && value.isNotEmpty) {
-                              if (value.length > 8) {
-                                return null;
-                              } else {
-                                return 'Please enter password with length >8';
-                              }
-                            } else {
-                              return 'Please enter password';
-                            }
-                          },
-                        ),
-                      ),
-                      // SizedBox(
-                      //   height: 20,
-                      // ),
-
                       SizedBox(
                         width: 300,
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Checkbox(
                               value: _isChecked,
@@ -157,7 +142,7 @@ class _LoginPageState extends State<LoginPage> {
                               activeColor: Colors.blue,
                             ),
                             Text(
-                              'I Agree with the terms and conditions',
+                              'You are Doctor',
                               style: TextStyle(
                                   fontSize: 15,
                                   color: Color.fromARGB(255, 157, 156, 156)),
@@ -165,42 +150,67 @@ class _LoginPageState extends State<LoginPage> {
                           ],
                         ),
                       ),
-
-                      Center(
-                        child: Stack(
-                          alignment: Alignment.bottomCenter,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(18.0),
-                              child: SizedBox(
-                                width: 150,
-                                height: 50,
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    if (_formKey.currentState!.validate()) {
-                                      print('form submiitted');
-                                    }
-                                  },
-                                  style: ButtonStyle(
-                                    shape: MaterialStateProperty.all(
-                                        RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(30))),
-                                    backgroundColor: MaterialStateProperty.all(
-                                        Color.fromARGB(255, 242, 218, 221)),
-                                  ),
-                                  child: Text(
-                                    'Login',
-                                    style: TextStyle(
-                                        color: Color.fromARGB(255, 239, 9, 224),
-                                        fontSize: 18),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                      SizedBox(
+                        height: 20,
                       ),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 45,
+                        child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                primary: Colors.blue.shade600,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10))),
+                            onPressed: () async {
+                              if (_isChecked) {
+                                var check = loginController.loginDoctor(phone);
+
+                                if (await check) {
+                      
+                                  await FirebaseAuth.instance.verifyPhoneNumber(
+                                    phoneNumber:
+                                        '${countryController.text + phone}',
+                                    verificationCompleted:
+                                        (PhoneAuthCredential credential) {},
+                                    verificationFailed:
+                                        (FirebaseAuthException e) {},
+                                    codeSent: (String verificationId,
+                                        int? resendToken) {
+                                      LoginPage.verify = verificationId;
+                                      Navigator.pushNamed(context, 'verify');
+                                    },
+                                    codeAutoRetrievalTimeout:
+                                        (String verificationId) {},
+                                  );
+                                } else {
+                                
+                                   Navigator.pushNamed(context, 'doctor/register');
+                                }
+                              } else {
+                                var check = loginController.loginPatient(phone);
+                                if (await check) {
+                                  await FirebaseAuth.instance.verifyPhoneNumber(
+                                    phoneNumber:
+                                        '${countryController.text + phone}',
+                                    verificationCompleted:
+                                        (PhoneAuthCredential credential) {},
+                                    verificationFailed:
+                                        (FirebaseAuthException e) {},
+                                    codeSent: (String verificationId,
+                                        int? resendToken) {
+                                      LoginPage.verify = verificationId;
+                                      Navigator.pushNamed(context, 'verify');
+                                    },
+                                    codeAutoRetrievalTimeout:
+                                        (String verificationId) {},
+                                  );
+                                } else {
+                                 Navigator.pushNamed(context, 'patient/register');
+                                }
+                              }
+                            },
+                            child: Text("Send the code")),
+                      )
                     ],
                   ),
                 ),

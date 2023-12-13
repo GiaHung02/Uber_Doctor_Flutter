@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:uber_doctor_flutter/src/model/doctor_model.dart';
+import 'package:uber_doctor_flutter/src/pages/booking/booking_list_page.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/booking_page.dart';
 
 import 'package:uber_doctor_flutter/src/pages/detail_page.dart';
@@ -35,7 +36,7 @@ const List<TabItem> items = [
   ),
   TabItem(
     icon: Icons.login_rounded,
-    title: 'login',
+    title: 'bookinglist',
   ),
   TabItem(
     icon: Icons.details_rounded,
@@ -86,7 +87,7 @@ class CurrentPage extends StatelessWidget {
       case 4:
         return ProfilePage();
       case 5:
-        return LoginPage();
+        return BookingListPage();
       case 6:
         return DetailPage(doctors: [], selectedIndex: 0,);
 ;

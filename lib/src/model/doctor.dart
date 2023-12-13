@@ -9,6 +9,7 @@ class Doctor {
   String? spectiality;
   int? exp;
   int? rate;
+  double? price;
   List<int>? image; // Change the type to List<int> for image data
 
   Doctor({
@@ -18,6 +19,7 @@ class Doctor {
     this.spectiality,
     this.exp,
     this.rate,
+    this.price,
     this.image,
   });
 
@@ -29,6 +31,7 @@ class Doctor {
       spectiality: json?['spectiality'],
       exp: json?['exp'],
       rate: json?['rate'],
+      price: json?['price'],
       image: json?['image'] != null
           ? base64Decode(json?['image'])
           : null, // Decode base64 string to List<int>
@@ -43,6 +46,7 @@ class Doctor {
       'spectiality': spectiality,
       'exp': exp,
       'rate': rate,
+      'price':price,
       'image': image != null ? base64Encode(Uint8List.fromList(image!)) : null, // Encode List<int> to base64 string
     };
     return data;

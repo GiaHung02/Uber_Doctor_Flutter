@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:uber_doctor_flutter/src/model/doctor.dart'; // Assuming Doctor model is in this path
+import 'package:uber_doctor_flutter/src/theme/button.dart';
 import 'package:uber_doctor_flutter/src/theme/extention.dart';
 import 'package:uber_doctor_flutter/src/theme/light_color.dart';
 import 'package:uber_doctor_flutter/src/theme/text_styles.dart';
 import 'package:uber_doctor_flutter/src/theme/theme.dart';
+import 'package:uber_doctor_flutter/src/widgets/custom_appbar.dart';
 import 'package:uber_doctor_flutter/src/widgets/progress_widget.dart';
 import 'package:uber_doctor_flutter/src/widgets/rating_start.dart';
 
@@ -16,10 +19,10 @@ class DetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Check if the doctors list is not empty and selectedIndex is valid
-    Doctor selectedDoctor =
-        (doctors.isNotEmpty && selectedIndex < doctors.length)
-            ? doctors[selectedIndex]
-            : Doctor(); // Replace Doctor() with the default value for a Doctor object
+    Doctor selectedDoctor = (doctors.isNotEmpty &&
+            selectedIndex < doctors.length)
+        ? doctors[selectedIndex]
+        : Doctor(); // Replace Doctor() with the default value for a Doctor object
 
     TextStyle titleStyle = TextStyles.title
         .copyWith(fontSize: 25)
@@ -31,7 +34,12 @@ class DetailPage extends StatelessWidget {
     }
 
     return Scaffold(
+         appBar: CustomAppBar(
+        appTitle: 'Doctor detail',
+        icon: const FaIcon(Icons.arrow_back_ios),
+      ),
       backgroundColor: LightColor.extraLightBlue,
+      
       body: SafeArea(
         bottom: false,
         child: Stack(
@@ -138,13 +146,26 @@ class DetailPage extends StatelessWidget {
                           selectedDoctor.email ?? '',
                           style: TextStyles.body.subTitleColor,
                         ),
+                        Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Button(
+                            width: double.infinity,
+                            title: 'Book Appointment',
+                            onPressed: () {
+                              Navigator.of(context).pushNamed(
+                                  '/booking_page',
+                                  arguments: selectedDoctor);
+                            },
+                            disable: false,
+                          ),
+                        ),
                       ],
                     ),
                   ),
                 );
               },
             ),
-            _appBar(context),
+            // _appBar(context),
             Positioned(
               top: AppTheme.fullHeight(context) * 0.45,
               left: 0,
@@ -157,15 +178,15 @@ class DetailPage extends StatelessWidget {
     );
   }
 
-  Widget _appBar(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        BackButton(color: Theme.of(context).primaryColor),
-        // You can add more app bar actions or icons here if needed
-      ],
-    );
-  }
+  // Widget _appBar(BuildContext context) {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //     children: <Widget>[
+  //       BackButton(color: Theme.of(context).primaryColor),
+  //       // You can add more app bar actions or icons here if needed
+  //     ],
+  //   );
+  // }
 
   Widget _buildInfoCards(BuildContext context) {
     // Customize this part based on the information you want to display

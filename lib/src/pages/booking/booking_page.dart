@@ -1,10 +1,14 @@
 // import 'package:doctor_appointment_app/providers/dio_provider.dart';
+import 'dart:collection';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:uber_doctor_flutter/src/config/config.dart';
 import 'package:uber_doctor_flutter/src/model/booking_date_convert.dart';
+import 'package:uber_doctor_flutter/src/model/doctor.dart';
 import 'package:uber_doctor_flutter/src/theme/button.dart';
 import 'package:uber_doctor_flutter/src/widgets/custom_appbar.dart';
 
@@ -25,24 +29,7 @@ class _BookingPageState extends State<BookingPage> {
   bool _dateSelected = false;
   bool _timeSelected = false;
   String? token;
-
-  var doctor = {
-    "id": 5,
-    "phoneNumber": "0909222009",
-    "password": "123123",
-    "fullName": "kim le",
-    "email": "kim@tiwi.vn",
-    "wallet": 100000.0,
-    "bankingAccount": "115115678678",
-    "departments": {
-      "id": "tim",
-      "departmentName": "khoa tim",
-      "number_of_Doctors": 100,
-      "pathologycal": [],
-      "description": "tim",
-      "status": true
-    }
-  }; //get token for insert booking date and time into database
+//get token for insert booking date and time into database
 
   // Future<void> getToken() async {
   //   final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -57,6 +44,8 @@ class _BookingPageState extends State<BookingPage> {
 
   @override
   Widget build(BuildContext context) {
+    final doctor = (ModalRoute.of(context)!.settings.arguments as Doctor);
+
     Config().init(context);
     // final doctor = ModalRoute.of(context)!.settings.arguments as Map;
     return Scaffold(
@@ -75,7 +64,7 @@ class _BookingPageState extends State<BookingPage> {
                   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 25),
                   child: Center(
                     child: Text(
-                      'Select Consultation Time',
+                      'Select Time',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 20,
@@ -154,14 +143,22 @@ class _BookingPageState extends State<BookingPage> {
                   final getDate = DateConverted.getDate(_currentDay);
                   final getDay = DateConverted.getDay(_currentDay.weekday);
                   final getTime = DateConverted.getTime(_currentIndex!);
-
+                  final Map<String, String> bookingDetail = HashMap();
+                  bookingDetail.addAll({
+                    "getDate": getDate,
+                    "getDay": getDay,
+                    "getTime": getTime,
+                    "doctor": jsonEncode(doctor)
+                  });
+                  Navigator.of(context)
+                      .pushNamed('/booking_detail_page', arguments: bookingDetail);
                   // final booking = await DioProvider().bookAppointment(
                   //     getDate, getDay, getTime, doctor['doctor_id'], token!);
 
                   //if booking return status code 200, then redirect to success booking page
 
                   // if (booking == 200) {
-                  Navigator.of(context).pushNamed('/booking_detail_page');
+                  // Navigator.of(context).pushNamed('/booking_detail_page');
                   // }
                 },
                 disable: _timeSelected && _dateSelected ? false : true,
@@ -218,14 +215,15 @@ class _BookingPageState extends State<BookingPage> {
 class AboutDoctor extends StatelessWidget {
   const AboutDoctor({Key? key, required this.doctor}) : super(key: key);
 
-  final Map<dynamic, dynamic> doctor;
+  // final Map<dynamic, dynamic> doctor;
+  final Doctor doctor;
 
   @override
   Widget build(BuildContext context) {
     Config().init(context);
     return Container(
       width: double.infinity,
-      color:  Color.fromARGB(255, 176, 212, 241),
+      color: Color.fromARGB(255, 176, 212, 241),
       child: Column(
         children: <Widget>[
           Config.spaceSmall,
@@ -238,7 +236,7 @@ class AboutDoctor extends StatelessWidget {
           ),
           Config.spaceSmall,
           Text(
-            "DR. Nguyen Minh Hoang",
+            "DR. ${doctor.fullName}",
             style: const TextStyle(
               color: Colors.black,
               fontSize: 24.0,
@@ -248,7 +246,7 @@ class AboutDoctor extends StatelessWidget {
           SizedBox(
             width: Config.widthSize * 0.75,
             child: Text(
-              'Chuyên Khoa Tim',
+              'Chuyên Khoa: ${doctor.spectiality}',
               style: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
@@ -258,7 +256,14 @@ class AboutDoctor extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
           ),
-
+          Text(
+            "Experience: ${doctor.exp}",
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 16.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           Config.spaceSmall,
         ],
       ),

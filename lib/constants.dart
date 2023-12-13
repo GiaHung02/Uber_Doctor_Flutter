@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'call.dart';
-import 'login_page.dart';
+import 'src/call/call.dart';
+import 'src/call/login_page.dart';
 
 class PageRouteNames {
   static const String login = '/login';
@@ -18,7 +18,7 @@ const TextStyle textStyle = TextStyle(
 
 Map<String, WidgetBuilder> routes = {
   PageRouteNames.login: (context) => const LoginPage(),
-  PageRouteNames.home: (context) => const HomePage(),
+  PageRouteNames.home: (context) => const CallPage(),
 };
 
 class UserInfo {

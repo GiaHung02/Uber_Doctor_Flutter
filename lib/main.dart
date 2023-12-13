@@ -3,6 +3,7 @@ import 'package:awesome_bottom_bar/widgets/inspired/inspired.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:uber_doctor_flutter/firebase_options.dart';
+import 'package:uber_doctor_flutter/src/call/call.dart';
 import 'package:uber_doctor_flutter/src/model/doctor_model.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/appointment_page.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/booking_detail_page.dart';
@@ -40,33 +41,30 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
-   //this is for push navigator
+  //this is for push navigator
   static final navigatorKey = GlobalKey<NavigatorState>();
 
   @override
   Widget build(BuildContext context) {
-    DoctorModel model ;
-    
+    DoctorModel model;
+
     return MaterialApp(
       title: 'UberDoctor',
       theme: AppTheme.lightTheme,
       initialRoute: 'home',
       routes: {
-        'home': (context) =>SplashPage(),
-        '/home_page': (context) =>MyHomePage(title: 'home',"home"),
-        'phone': (context) => LoginPage(),
+        'home': (context) => SplashPage(),
+        '/home_page': (context) => MyHomePage(title: 'home', "home"),
+        'phone': (context) => Call(navigatorKey: GlobalKey()),
         'verify': (context) => MyVerify(),
         'verify_register': (context) => MyVerifyRegister(),
         'doctor/register': (context) => DoctorRegisterPage(),
         'patient/register': (context) => PatientRegisterPage(),
-        'pages/detail_page': (context) =>
-            SliverDoctorDetail(),
-         '/success_booking': (context) => AppointmentBooked(), 
-         '/booking_page': (context) => BookingPage(), 
-         '/booking_list_page': (context) => BookingDoctorListPage(),
-         '/booking_detail_page': (context) => BookingDetailPage(),
-
-      
+        'pages/detail_page': (context) => SliverDoctorDetail(),
+        '/success_booking': (context) => AppointmentBooked(),
+        '/booking_page': (context) => BookingPage(),
+        '/booking_list_page': (context) => BookingDoctorListPage(),
+        '/booking_detail_page': (context) => BookingDetailPage(),
       },
       debugShowCheckedModeBanner: false,
     );

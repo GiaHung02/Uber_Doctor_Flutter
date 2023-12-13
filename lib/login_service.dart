@@ -1,11 +1,12 @@
 // Package imports:
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 import 'package:zego_uikit_signaling_plugin/zego_uikit_signaling_plugin.dart';
 
 // Project imports:
-import 'common.dart';
+import 'src/call/common.dart';
 import 'constants.dart';
 
 ZegoUIKitPrebuiltCallController? callController;
@@ -18,7 +19,7 @@ Future<void> login({
   final prefs = await SharedPreferences.getInstance();
   prefs.setString(cacheUserIDKey, userID);
 
-  currentUser.id = userID;
+  currentUser.id = '123456';
   currentUser.name = 'user_$userID';
 }
 
@@ -32,12 +33,16 @@ Future<void> logout() async {
 void onUserLogin() {
   callController ??= ZegoUIKitPrebuiltCallController();
 
+  if (cacheUserIDKey == null) {
+    Set cacheUserIDKey = "123456" as Set;
+  }
+
   /// 4/5. initialized ZegoUIKitPrebuiltCallInvitationService when account is logged in or re-logged in
   ZegoUIKitPrebuiltCallInvitationService().init(
     appID: 586447036 /*input your AppID*/,
     appSign:
         "1c75d562e2b3bc38338660cc44e0373f4f0a1bab1a986f1bfacc54bf3ee24da9" /*input your AppSign*/,
-    userID: currentUser.id,
+    userID: cacheUserIDKey,
     userName: currentUser.name,
     androidNotificationConfig: ZegoAndroidNotificationConfig(
       channelID: "ZegoUIKit",

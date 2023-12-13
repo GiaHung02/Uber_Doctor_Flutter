@@ -4,8 +4,8 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'constants.dart';
-import 'login_service.dart';
+import '../../constants.dart';
+import '../../login_service.dart';
 import 'util.dart';
 
 class LoginPage extends StatefulWidget {
@@ -16,7 +16,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class LoginPageState extends State<LoginPage> {
-  final _userIDTextCtrl = TextEditingController(text: 'user_id');
+  final _userIDTextCtrl = TextEditingController(text: '123456');
   final _passwordVisible = ValueNotifier<bool>(false);
 
   @override
@@ -47,7 +47,7 @@ class LoginPageState extends State<LoginPage> {
               logo(),
               const SizedBox(height: 50),
               userIDEditor(),
-              passwordEditor(),
+              // passwordEditor(),
               const SizedBox(height: 30),
               signInButton(),
             ],
@@ -61,14 +61,14 @@ class LoginPageState extends State<LoginPage> {
     return Center(
       child: RichText(
         text: const TextSpan(
-          text: 'ZE',
+          text: 'UBER',
           style: TextStyle(color: Colors.black, fontSize: 20),
           children: <TextSpan>[
             TextSpan(
-              text: 'GO',
+              text: 'DOC',
               style: TextStyle(color: Colors.blue),
             ),
-            TextSpan(text: 'CLOUD'),
+            TextSpan(text: 'TOR'),
           ],
         ),
       ),
@@ -84,27 +84,27 @@ class LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget passwordEditor() {
-    return ValueListenableBuilder<bool>(
-      valueListenable: _passwordVisible,
-      builder: (context, isPasswordVisible, _) {
-        return TextFormField(
-          obscureText: !isPasswordVisible,
-          decoration: InputDecoration(
-            labelText: 'Password.(Any character for test)',
-            suffixIcon: IconButton(
-              icon: Icon(
-                isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-              ),
-              onPressed: () {
-                _passwordVisible.value = !_passwordVisible.value;
-              },
-            ),
-          ),
-        );
-      },
-    );
-  }
+  // Widget passwordEditor() {
+  //   return ValueListenableBuilder<bool>(
+  //     valueListenable: _passwordVisible,
+  //     builder: (context, isPasswordVisible, _) {
+  //       return TextFormField(
+  //         obscureText: !isPasswordVisible,
+  //         decoration: InputDecoration(
+  //           labelText: 'Password.(Any character for test)',
+  //           suffixIcon: IconButton(
+  //             icon: Icon(
+  //               isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+  //             ),
+  //             onPressed: () {
+  //               _passwordVisible.value = !_passwordVisible.value;
+  //             },
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   Widget signInButton() {
     return ElevatedButton(

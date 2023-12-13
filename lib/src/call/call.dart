@@ -5,23 +5,25 @@ import 'package:flutter/services.dart';
 // Package imports:
 import 'package:faker/faker.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
+import 'package:uber_doctor_flutter/constants.dart';
+import 'package:uber_doctor_flutter/login_service.dart';
 import 'package:zego_uikit/zego_uikit.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 
 // Project imports:
-import 'constants.dart';
-import 'login_service.dart';
+import '../../constants.dart';
+import '../../login_service.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class CallPage extends StatefulWidget {
+  const CallPage({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => HomePageState();
+  State<StatefulWidget> createState() => CallPageState();
 }
 
-class HomePageState extends State<HomePage> {
+class CallPageState extends State<CallPage> {
   final TextEditingController singleInviteeUserIDTextCtrl =
-      TextEditingController();
+      TextEditingController(text: '123456');
   final TextEditingController groupInviteeUserIDsTextCtrl =
       TextEditingController();
 
@@ -84,6 +86,8 @@ class HomePageState extends State<HomePage> {
   Widget userListView() {
     final RandomGenerator random = RandomGenerator();
     final Faker faker = Faker();
+    final TextEditingController singleInviteeUserIDTextCtrl =
+      TextEditingController(text: '123456');
 
     return Center(
       child: ListView.builder(
@@ -122,12 +126,12 @@ class HomePageState extends State<HomePage> {
               const Text(')'),
             ];
           } else {
-            inviteeUsersIDTextCtrl = TextEditingController();
+            inviteeUsersIDTextCtrl = TextEditingController(text: '123456');
             userInfo = [
               Text(
-                '${faker.person.firstName()}(${random.fromPattern([
-                      '######'
-                    ])})',
+                '${faker.person.firstName()}(${(
+                      '123456'
+                    )})',
                 style: textStyle,
               )
             ];

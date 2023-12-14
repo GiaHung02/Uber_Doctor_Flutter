@@ -8,6 +8,7 @@ import 'package:uber_doctor_flutter/src/pages/detail_page.dart';
 import 'package:uber_doctor_flutter/src/pages/home_page.dart';
 import 'package:uber_doctor_flutter/src/pages/login_page.dart';
 import 'package:uber_doctor_flutter/src/pages/phone_page.dart';
+import 'package:uber_doctor_flutter/src/pages/profile/doctor_profile.dart';
 import 'package:uber_doctor_flutter/src/pages/profile_page.dart';
 import 'package:uber_doctor_flutter/src/pages/splash_page.dart';
 import 'package:uber_doctor_flutter/src/widgets/Visit_Provider.dart';
@@ -78,7 +79,7 @@ class CurrentPage extends StatelessWidget {
       case 0:
         return HomePage();
       case 1:
-        // return Phone();
+      // return Phone();
       case 2:
         return SplashPage();
       case 3:
@@ -88,8 +89,12 @@ class CurrentPage extends StatelessWidget {
       case 5:
         return LoginPage();
       case 6:
-        return DetailPage(doctors: [], selectedIndex: 0,);
-;
+        // return DetailPage(
+        //   doctors: [],
+        //   selectedIndex: 0,
+        // );
+        return DoctorProfile();
+        ;
       default:
         // Trang mặc định hoặc xử lý ngoại lệ
         return Container();

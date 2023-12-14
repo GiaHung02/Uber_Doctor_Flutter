@@ -14,6 +14,7 @@ import 'package:uber_doctor_flutter/src/pages/home_page.dart';
 import 'package:uber_doctor_flutter/src/pages/login_page.dart';
 import 'package:uber_doctor_flutter/src/pages/patient_register_page.dart';
 import 'package:uber_doctor_flutter/src/pages/phone_page.dart';
+import 'package:uber_doctor_flutter/src/pages/profile/doctor_profile.dart';
 import 'package:uber_doctor_flutter/src/pages/profile_page.dart';
 import 'package:uber_doctor_flutter/src/pages/search_page.dart';
 import 'package:uber_doctor_flutter/src/pages/splash_page.dart';
@@ -41,33 +42,35 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
-   //this is for push navigator
+  //this is for push navigator
   static final navigatorKey = GlobalKey<NavigatorState>();
 
   @override
   Widget build(BuildContext context) {
-    DoctorModel model ;
-    
+    DoctorModel model;
+
     return MaterialApp(
       title: 'UberDoctor',
       theme: AppTheme.lightTheme,
       initialRoute: 'home',
       routes: {
-        'home': (context) =>SplashPage(),
-        '/home_page': (context) =>MyHomePage(title: 'home',"home"),
+        'home': (context) => SplashPage(),
+        '/home_page': (context) => MyHomePage(title: 'home', "home"),
         'phone': (context) => LoginPage(),
         'verify': (context) => MyVerify(),
         'verify_register': (context) => MyVerifyRegister(),
         'doctor/register': (context) => DoctorRegisterPage(),
         'patient/register': (context) => PatientRegisterPage(),
-        'pages/detail_page': (context) =>
-            DetailPage(doctors: [], selectedIndex: 0,),
-         '/success_booking': (context) => AppointmentBooked(), 
-         '/booking_page': (context) => BookingPage(), 
-         '/booking_list_page': (context) => BookingDoctorListPage(),
-         '/booking_detail_page': (context) => BookingDetailPage(),
-          '/pages/search_page': (context) => SearchPageWidget(),
-      
+        'pages/detail_page': (context) => DetailPage(
+              doctors: [],
+              selectedIndex: 0,
+            ),
+        '/success_booking': (context) => AppointmentBooked(),
+        '/booking_page': (context) => BookingPage(),
+        '/booking_list_page': (context) => BookingDoctorListPage(),
+        '/booking_detail_page': (context) => BookingDetailPage(),
+        '/pages/search_page': (context) => SearchPageWidget(),
+        '/doctor/doctor_profile': (context) => DoctorProfile(),
       },
       debugShowCheckedModeBanner: false,
     );
@@ -92,7 +95,11 @@ class _MyHomePageState extends State<MyHomePage> {
     BookingDoctorListPage(),
     ProfilePage(),
     LoginPage(),
-     DetailPage(doctors: [], selectedIndex: 0,),
+    DoctorProfile(),
+    // DetailPage(
+    //   doctors: [],
+    //   selectedIndex: 0,
+    // ),
     AppointmentPage()
   ];
   int visit = 0;

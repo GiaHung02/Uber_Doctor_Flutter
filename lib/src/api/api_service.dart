@@ -8,7 +8,8 @@ import 'package:uber_doctor_flutter/src/model/pathologycal.dart';
 ///////// FIX PORT /////////
 
 /// API SEARCH SYMPTOMS AND RECOMMEND DOCTORS ///
-const String domain = "http://172.16.3.113:8080";
+// const String domain = "http://192.168.1.105:8080";
+const String domain = "http://192.168.1.11:8080";
 class FetchSymptomList {
   var data = <String, dynamic>{};
   List<Symptomslist> results = [];
@@ -71,7 +72,7 @@ class FetchDoctorList {
                 .where((element) =>
                     element.fullName?.toLowerCase().contains(query.toLowerCase()) == true ||
                     element.spectiality?.toLowerCase().contains(query.toLowerCase()) == true ||
-                    element.image!.contains(query.toLowerCase()))
+                    element.imagePath!.contains(query.toLowerCase()))
                 .toList();
           }
           return results;
@@ -93,7 +94,7 @@ class FetchDoctorList {
 // class FetchBookingList {
 //   var data = <String, dynamic>{};
 //   List<Doctor> results = [];
-//   String urlList = '$domain/api/v1/booking/list';
+//   String urlList = 'http://192.168.1.11:8080/api/v1/booking/list';
 
 //   Future<List<Doctor>> getBookingList({String? query}) async {
 //     var url = Uri.parse(urlList);

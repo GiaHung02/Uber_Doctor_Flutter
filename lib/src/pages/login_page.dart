@@ -1,13 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:uber_doctor_flutter/src/controllers/auth/login_controller.dart';
+import 'package:uber_doctor_flutter/src/pages/verify.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
   static String verify = "";
+  static String approle = "";
   static String phoneNum = "";
-  
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -17,6 +18,8 @@ class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController countryController = TextEditingController();
   var phone = "";
+  bool showTermsError = false;
+
   final loginController = LoginController();
 
   @override
@@ -66,7 +69,7 @@ class _LoginPageState extends State<LoginPage> {
                         height: 25,
                       ),
                       Text(
-                        "Login",
+                        "Login or Register",
                         style: TextStyle(
                             fontSize: 22, fontWeight: FontWeight.bold),
                       ),
@@ -74,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
                         height: 10,
                       ),
                       Text(
-                        "We need to register your phone without getting started!",
+                        "If you don't have an account, you will be navigated to the registration page.",
                         style: TextStyle(
                           fontSize: 16,
                         ),
@@ -150,6 +153,19 @@ class _LoginPageState extends State<LoginPage> {
                           ],
                         ),
                       ),
+                      Container(
+                        width: 300,
+                        alignment: Alignment.center,
+                        child: Text(
+                          showTermsError
+                              ? 'Please enter a valid Phone Number '
+                              : '', // Nếu _isChecked là true, hiển thị chuỗi trống
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 214, 47, 35),
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
                       SizedBox(
                         height: 20,
                       ),
@@ -162,50 +178,80 @@ class _LoginPageState extends State<LoginPage> {
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10))),
                             onPressed: () async {
-                              if (_isChecked) {
-                                var check = loginController.loginDoctor(phone);
-
-                                if (await check) {
-                      
-                                  await FirebaseAuth.instance.verifyPhoneNumber(
-                                    phoneNumber:
-                                        '${countryController.text + phone}',
-                                    verificationCompleted:
-                                        (PhoneAuthCredential credential) {},
-                                    verificationFailed:
-                                        (FirebaseAuthException e) {},
-                                    codeSent: (String verificationId,
-                                        int? resendToken) {
-                                      LoginPage.verify = verificationId;
-                                      Navigator.pushNamed(context, 'verify');
-                                    },
-                                    codeAutoRetrievalTimeout:
-                                        (String verificationId) {},
-                                  );
-                                } else {
-                                
-                                   Navigator.pushNamed(context, 'doctor/register');
-                                }
+                              if (int.tryParse(phone) == null ||
+                                  phone.length < 8 ||
+                                  phone.length > 11) {
+                                setState(() {
+                                  showTermsError = true;
+                                });
                               } else {
-                                var check = loginController.loginPatient(phone);
-                                if (await check) {
-                                  await FirebaseAuth.instance.verifyPhoneNumber(
-                                    phoneNumber:
-                                        '${countryController.text + phone}',
-                                    verificationCompleted:
-                                        (PhoneAuthCredential credential) {},
-                                    verificationFailed:
-                                        (FirebaseAuthException e) {},
-                                    codeSent: (String verificationId,
-                                        int? resendToken) {
-                                      LoginPage.verify = verificationId;
-                                      Navigator.pushNamed(context, 'verify');
-                                    },
-                                    codeAutoRetrievalTimeout:
-                                        (String verificationId) {},
-                                  );
+                                setState(() {
+                                  showTermsError = false;
+                                });
+                                var sendPhone = int.parse(phone).toString();
+
+                                if (_isChecked) {
+                                  var check =
+                                      loginController.loginDoctor(sendPhone,context);
+
+                                  if (await check) {
+                                    await FirebaseAuth.instance
+                                        .verifyPhoneNumber(
+                                      phoneNumber:
+                                          '${countryController.text + sendPhone}',
+                                      verificationCompleted:
+                                          (PhoneAuthCredential credential) {},
+                                      verificationFailed:
+                                          (FirebaseAuthException e) {},
+                                      codeSent: (String verificationId,
+                                          int? resendToken) {
+                                        LoginPage.verify = verificationId;
+                                        LoginPage.approle = "Doctor";
+
+                                        Navigator.pushNamed(context, 'verify');
+                                      },
+                                      codeAutoRetrievalTimeout:
+                                          (String verificationId) {},
+                                    );
+                                  } else {
+                                    Navigator.pushNamed(
+                                        context, 'doctor/register');
+                                  }
                                 } else {
-                                 Navigator.pushNamed(context, 'patient/register');
+                                  var check =
+                                      loginController.loginPatient(sendPhone,context);
+
+                                  print(await check);
+
+                                  if (await check) {
+                                    await FirebaseAuth.instance
+                                        .verifyPhoneNumber(
+                                      phoneNumber:
+                                          '${countryController.text + sendPhone}',
+                                      verificationCompleted:
+                                          (PhoneAuthCredential credential) {},
+                                      verificationFailed:
+                                          (FirebaseAuthException e) {},
+                                      codeSent: (String verificationId,
+                                          int? resendToken) {
+                                        LoginPage.verify = verificationId;
+                                        LoginPage.approle = "Patient";
+                                        Navigator.pushNamed(context, 'verify');
+
+                                        // Navigator.pushReplacement(
+                                        //   context,
+                                        //   MaterialPageRoute(
+                                        //       builder: (context) =>
+                                        //           MyVerify()),
+                                        // );
+                                      },
+                                      codeAutoRetrievalTimeout:
+                                          (String verificationId) {},
+                                    );
+                                  } else {
+                                    Navigator.pushNamed(
+                                        context, 'patient/register');
+                                  }
                                 }
                               }
                             },

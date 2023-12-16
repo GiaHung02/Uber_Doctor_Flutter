@@ -13,6 +13,10 @@ import 'package:uber_doctor_flutter/src/pages/profile_page.dart';
 import 'package:uber_doctor_flutter/src/pages/splash_page.dart';
 import 'package:uber_doctor_flutter/src/widgets/Visit_Provider.dart';
 
+
+
+
+
 const List<TabItem> items = [
   TabItem(
     icon: Icons.home,
@@ -21,6 +25,7 @@ const List<TabItem> items = [
   TabItem(
     icon: Icons.phone,
     title: 'phone',
+    
   ),
   TabItem(
     icon: Icons.coronavirus,

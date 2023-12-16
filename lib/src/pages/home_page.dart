@@ -1,12 +1,9 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:uber_doctor_flutter/src/api/api_service.dart';
-import 'package:uber_doctor_flutter/src/model/data.dart';
 import 'package:uber_doctor_flutter/src/model/doctor.dart';
 import 'package:uber_doctor_flutter/src/pages/detail_page.dart';
 import 'package:uber_doctor_flutter/src/pages/search_page.dart';
-import 'dart:typed_data';
-
 class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
   List<Doctor> doctors = [];
@@ -54,19 +51,19 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _header() {
-    return Padding(
-      padding: EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text("Heil", style: TextStyle(fontSize: 24)),
-          Text("Hitler",
-              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
-        ],
-      ),
-    );
-  }
+  // Widget _header() {
+  //   return Padding(
+  //     padding: EdgeInsets.all(16),
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: <Widget>[
+  //         Text("Heil", style: TextStyle(fontSize: 24)),
+  //         Text("Hitler",
+  //             style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _searchField() {
     return GestureDetector(
@@ -136,16 +133,16 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         SizedBox(
-          height: MediaQuery.of(context).size.height * 0.28,
+          height: MediaQuery.of(context).size.height * 0.22,
           width: MediaQuery.of(context).size.width,
           child: ListView(
             scrollDirection: Axis.horizontal,
             children: <Widget>[
-              _categoryCard("Chemist & Drugist", "350 + Stores",
+              _categoryCard("Chemist ", "350 + Stores",
                   color: Colors.green, lightColor: Colors.lightGreen),
-              _categoryCard("Covid - 19 Specialist", "899 Doctors",
+              _categoryCard("Covid - 19 ", "899 Doctors",
                   color: Colors.blue, lightColor: Colors.lightBlue),
-              _categoryCard("Cardiologists Specialist", "500 + Doctors",
+              _categoryCard("Cardiologists", "500 + Doctors",
                   color: Colors.orange, lightColor: Colors.lightBlueAccent),
               _categoryCard("Dermatologist", "300 + Doctors",
                   color: Colors.green, lightColor: Colors.lightGreen),
@@ -198,7 +195,7 @@ class _HomePageState extends State<HomePage> {
                         padding: EdgeInsets.all(8),
                         child: Text(title,
                             style: TextStyle(
-                                fontSize: 24, fontWeight: FontWeight.bold)),
+                                fontSize: 20, fontWeight: FontWeight.bold)),
                       ),
                     ),
                     SizedBox(height: 10),
@@ -316,12 +313,12 @@ class _HomePageState extends State<HomePage> {
                                               .blue, // Update with your color logic
                                         ),
                                         child: doctor.imagePath != null &&
-                              doctor.imagePath!.isNotEmpty
-                          ? Image.network(
-                              "$domain/${doctor.imagePath!}",
-                              fit: BoxFit.cover,
-                            )
-                          : Container(),
+                                                doctor.imagePath!.isNotEmpty
+                                            ? Image.network(
+                                                "$domain/${doctor.imagePath!}",
+                                                fit: BoxFit.cover,
+                                              )
+                                            : Container(),
                                       ),
                                     ),
                                     title: Text(
@@ -414,7 +411,7 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _header(),
+          // _header(),
           _searchField(),
           _category(),
           Expanded(

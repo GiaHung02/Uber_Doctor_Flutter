@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:uber_doctor_flutter/src/api/api_service.dart';
 import 'package:uber_doctor_flutter/src/model/doctor.dart'; // Assuming Doctor model is in this path
 import 'package:uber_doctor_flutter/src/theme/button.dart';
 import 'package:uber_doctor_flutter/src/theme/extention.dart';
@@ -34,12 +35,11 @@ class DetailPage extends StatelessWidget {
     }
 
     return Scaffold(
-         appBar: CustomAppBar(
+      appBar: CustomAppBar(
         appTitle: 'Doctor detail',
         icon: const FaIcon(Icons.arrow_back_ios),
       ),
       backgroundColor: LightColor.extraLightBlue,
-      
       body: SafeArea(
         bottom: false,
         child: Stack(
@@ -49,12 +49,17 @@ class DetailPage extends StatelessWidget {
               height: AppTheme.fullHeight(context) * 0.45,
               decoration: BoxDecoration(
                 shape: BoxShape.rectangle,
-                image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: AssetImage('assets/images/goku.jpg'),
-                ),
+                image: selectedDoctor.imagePath != null &&
+                        selectedDoctor.imagePath!.isNotEmpty
+                    ? DecorationImage(
+                        fit: BoxFit.cover,
+                        image: NetworkImage(
+                            "$domain/${selectedDoctor.imagePath!}"),
+                      )
+                    : null,
               ),
             ),
+
             DraggableScrollableSheet(
               maxChildSize: .8,
               initialChildSize: .6,
@@ -112,27 +117,27 @@ class DetailPage extends StatelessWidget {
                         Row(
                           children: <Widget>[
                             ProgressWidget(
-                              value: (selectedDoctor.id ?? 0).toDouble(),
+                              value: (selectedDoctor.exp ?? 0).toDouble(),
                               totalValue: 10,
-                              activeColor: LightColor.purpleExtraLight,
+                              activeColor: Color.fromARGB(255, 210, 245, 13),
                               backgroundColor: LightColor.grey.withOpacity(.3),
-                              title: "Good Review",
+                              title: "EXP",
                               durationTime: 500,
                             ),
                             ProgressWidget(
-                              value: (selectedDoctor.exp ?? 0).toDouble(),
+                              value: (selectedDoctor.price ?? 0).toDouble(),
                               totalValue: 10,
-                              activeColor: LightColor.purpleLight,
+                              activeColor: Color.fromARGB(255, 12, 248, 103),
                               backgroundColor: LightColor.grey.withOpacity(.3),
-                              title: "Total Score",
+                              title: "Price",
                               durationTime: 300,
                             ),
                             ProgressWidget(
                               value: (selectedDoctor.rate ?? 0).toDouble(),
                               totalValue: 5,
-                              activeColor: LightColor.purple,
+                              activeColor: Color.fromARGB(255, 248, 14, 197),
                               backgroundColor: LightColor.grey.withOpacity(.3),
-                              title: "Satisfaction",
+                              title: "Like",
                               durationTime: 800,
                             ),
                           ],
@@ -152,8 +157,7 @@ class DetailPage extends StatelessWidget {
                             width: double.infinity,
                             title: 'Book Appointment',
                             onPressed: () {
-                              Navigator.of(context).pushNamed(
-                                  '/booking_page',
+                              Navigator.of(context).pushNamed('/booking_page',
                                   arguments: selectedDoctor);
                             },
                             disable: false,

@@ -9,7 +9,7 @@ import 'package:uber_doctor_flutter/src/model/pathologycal.dart';
 
 /// API SEARCH SYMPTOMS AND RECOMMEND DOCTORS ///
 // const String domain = "http://192.168.1.105:8080";
-const String domain = "http://192.168.1.11:8080";
+const String domain = "http://192.168.26.103:8080";
 class FetchSymptomList {
   var data = <String, dynamic>{};
   List<Symptomslist> results = [];

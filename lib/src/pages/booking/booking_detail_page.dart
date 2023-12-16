@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:uber_doctor_flutter/src/api/api_service.dart';
 import 'package:uber_doctor_flutter/src/model/doctor.dart';
 import 'package:uber_doctor_flutter/src/theme/button.dart';
 import 'package:uber_doctor_flutter/src/theme/colors.dart';
@@ -14,7 +15,7 @@ class BookingDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CustomAppBar(
+      appBar: CustomAppBar(
         appTitle: 'Appointment',
         icon: const FaIcon(Icons.arrow_back_ios),
       ),
@@ -76,7 +77,35 @@ class DetailBody extends StatelessWidget {
           SizedBox(
             height: 12,
           ),
-          // Time booking
+           // Time booking
+          Text(
+            'Time:',
+            style: kTitleStyle,
+          ),
+          Container(
+            padding: EdgeInsets.all(10.0),
+            decoration: BoxDecoration(
+              color: Color.fromARGB(255, 191, 212, 232),
+              borderRadius: BorderRadius.circular(10.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  blurRadius: 5.0,
+                  spreadRadius: 2.0,
+                ),
+              ],
+            ),
+            child: Text(
+              ' ${bookingDetail['getTime']}',
+              style: TextStyle(
+                color: Color.fromARGB(255, 114, 114, 114),
+                fontSize: 17.0,
+              ),
+            ),
+          ),
+            SizedBox(
+            height: 15,
+          ),
           Text(
             'Date booking:',
             style: kTitleStyle,
@@ -106,36 +135,7 @@ class DetailBody extends StatelessWidget {
             height: 15,
           ),
 
-          // Time booking
-          Text(
-            'Time:',
-            style: kTitleStyle,
-          ),
-          Container(
-            padding: EdgeInsets.all(10.0),
-            decoration: BoxDecoration(
-              color: Color.fromARGB(255, 191, 212, 232),
-              borderRadius: BorderRadius.circular(10.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  blurRadius: 5.0,
-                  spreadRadius: 2.0,
-                ),
-              ],
-            ),
-            child: Text(
-              ' ${bookingDetail['getTime']}',
-              style: TextStyle(
-                color: Color.fromARGB(255, 114, 114, 114),
-                fontSize: 17.0,
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 15,
-          ),
-
+        
           // Price booking
           Text(
             'Price:',
@@ -169,8 +169,7 @@ class DetailBody extends StatelessWidget {
             width: double.infinity,
             title: 'Payment',
             onPressed: () async {
-              Navigator.of(context)
-                  .pushNamed('/',arguments: bookingDetail);
+              Navigator.of(context).pushNamed('/', arguments: bookingDetail);
               // final booking = await DioProvider().bookAppointment(
               //     getDate, getDay, getTime, doctor['doctor_id'], token!);
 
@@ -324,12 +323,24 @@ class DetailDoctorCard extends StatelessWidget {
                   ],
                 ),
               ),
-              Image(
-                image: NetworkImage(
-                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREpIkClC9oX1l5NYvDU-9sRGZufk18bvSFEA&usqp=CAU",
+              ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(13)),
+                child: Container(
+                  height: 100,
+                  width: 100,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: Colors.blue, // Update with your color logic
+                  ),
+                  child:
+                      doctor.imagePath != null && doctor.imagePath!.isNotEmpty
+                          ? Image.network(
+                              "$domain/${doctor.imagePath!}",
+                              fit: BoxFit.cover,
+                            )
+                          : Container(),
                 ),
-                width: 100,
-              )
+              ),
             ],
           ),
         ),

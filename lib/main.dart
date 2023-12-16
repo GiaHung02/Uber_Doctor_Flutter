@@ -107,7 +107,7 @@ class _MyHomePageState extends State<MyHomePage> {
     ProfilePage(),
     // LoginPage(),
     //  DetailPage(doctors: [], selectedIndex: 0,),
-    BookingListPage(),
+    // BookingListPage(),
     AppointmentPage()
   ];
   int visit = 0;

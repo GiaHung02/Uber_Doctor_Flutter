@@ -1,12 +1,9 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:uber_doctor_flutter/src/api/api_service.dart';
-import 'package:uber_doctor_flutter/src/model/data.dart';
 import 'package:uber_doctor_flutter/src/model/doctor.dart';
 import 'package:uber_doctor_flutter/src/pages/detail_page.dart';
 import 'package:uber_doctor_flutter/src/pages/search_page.dart';
-import 'dart:typed_data';
-
 class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
   List<Doctor> doctors = [];
@@ -54,19 +51,19 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _header() {
-    return Padding(
-      padding: EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text("Heil", style: TextStyle(fontSize: 24)),
-          Text("Hitler",
-              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
-        ],
-      ),
-    );
-  }
+  // Widget _header() {
+  //   return Padding(
+  //     padding: EdgeInsets.all(16),
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: <Widget>[
+  //         Text("Heil", style: TextStyle(fontSize: 24)),
+  //         Text("Hitler",
+  //             style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _searchField() {
     return GestureDetector(
@@ -414,7 +411,7 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _header(),
+          // _header(),
           _searchField(),
           _category(),
           Expanded(

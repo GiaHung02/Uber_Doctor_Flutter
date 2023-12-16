@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:uber_doctor_flutter/src/api/api_service.dart';
 import 'package:uber_doctor_flutter/src/config/config.dart';
 import 'package:uber_doctor_flutter/src/model/booking_date_convert.dart';
 import 'package:uber_doctor_flutter/src/model/doctor.dart';
@@ -18,6 +19,18 @@ class BookingPage extends StatefulWidget {
   @override
   State<BookingPage> createState() => _BookingPageState();
 }
+
+enum TimeOfDay {
+  Morning,
+  Afternoon,
+  Evening,
+}
+
+List<Color> timeOfDayColors = [
+  const Color.fromARGB(255, 135, 193, 241), // Màu sắc cho buổi sáng
+  const Color.fromARGB(255, 148, 230, 151), // Màu sắc cho buổi chiều
+  const Color.fromARGB(255, 228, 172, 86), // Màu sắc cho buổi tối
+];
 
 class _BookingPageState extends State<BookingPage> {
   //declaration
@@ -94,8 +107,23 @@ class _BookingPageState extends State<BookingPage> {
               : SliverGrid(
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
+                      int dayIndex =
+                          index % 7; 
+                      int timeOfDayIndex =
+                          index ~/ 12; // Phân chia các buổi trong một ngày
+                      Color slotColor =
+                          Color.fromARGB(255, 244, 153, 153); // Màu mặc định
+
+                      // Áp dụng màu sắc tương ứng với buổi trong ngày
+                      if (dayIndex >= 0 &&
+                          dayIndex < 7 &&
+                          timeOfDayIndex >= 0 &&
+                          timeOfDayIndex < timeOfDayColors.length) {
+                        slotColor = timeOfDayColors[timeOfDayIndex];
+                      }
+
                       return InkWell(
-                        splashColor: Colors.transparent,
+                        splashColor: Color.fromARGB(0, 236, 154, 154),
                         onTap: () {
                           setState(() {
                             _currentIndex = index;
@@ -108,33 +136,36 @@ class _BookingPageState extends State<BookingPage> {
                             border: Border.all(
                               color: _currentIndex == index
                                   ? Colors.white
-                                  : Colors.black,
+                                  : const Color.fromARGB(255, 247, 246, 246),
                             ),
                             borderRadius: BorderRadius.circular(15),
                             color: _currentIndex == index
                                 ? Config.primaryColor
-                                : null,
+                                : slotColor,
                           ),
                           alignment: Alignment.center,
                           child: Text(
-                            '${index + 9}:00 ${index + 9 > 11 ? "PM" : "AM"}',
+                            '${(index ~/ 2) + 6}:${(index % 2 == 0 ? "00" : "30")} ',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              color:
-                                  _currentIndex == index ? Colors.white : null,
+                              color: _currentIndex == index
+                                  ? Colors.white
+                                  : Colors.black,
                             ),
                           ),
                         ),
                       );
                     },
-                    childCount: 8,
+                    childCount: 36,
                   ),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 4, childAspectRatio: 1.5),
+                    crossAxisCount: 6,
+                    childAspectRatio: 1.4,
+                  ),
                 ),
           SliverToBoxAdapter(
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 50),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
               child: Button(
                 width: double.infinity,
                 title: 'Book Appointment',
@@ -150,16 +181,8 @@ class _BookingPageState extends State<BookingPage> {
                     "getTime": getTime,
                     "doctor": jsonEncode(doctor)
                   });
-                  Navigator.of(context)
-                      .pushNamed('/booking_detail_page', arguments: bookingDetail);
-                  // final booking = await DioProvider().bookAppointment(
-                  //     getDate, getDay, getTime, doctor['doctor_id'], token!);
-
-                  //if booking return status code 200, then redirect to success booking page
-
-                  // if (booking == 200) {
-                  // Navigator.of(context).pushNamed('/booking_detail_page');
-                  // }
+                  Navigator.of(context).pushNamed('/booking_detail_page',
+                      arguments: bookingDetail);
                 },
                 disable: _timeSelected && _dateSelected ? false : true,
               ),
@@ -196,15 +219,6 @@ class _BookingPageState extends State<BookingPage> {
           _currentDay = selectedDay;
           _focusDay = focusedDay;
           _dateSelected = true;
-
-          //check if weekend is selected
-          if (selectedDay.weekday == 6 || selectedDay.weekday == 7) {
-            _isWeekend = true;
-            _timeSelected = false;
-            _currentIndex = null;
-          } else {
-            _isWeekend = false;
-          }
         });
       }),
     );
@@ -229,9 +243,7 @@ class AboutDoctor extends StatelessWidget {
           Config.spaceSmall,
           CircleAvatar(
             radius: 95.0,
-            backgroundImage: NetworkImage(
-              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREpIkClC9oX1l5NYvDU-9sRGZufk18bvSFEA&usqp=CAU",
-            ),
+            backgroundImage: NetworkImage("$domain/${doctor.imagePath}"),
             backgroundColor: Colors.white,
           ),
           Config.spaceSmall,

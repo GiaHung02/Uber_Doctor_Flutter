@@ -85,8 +85,8 @@ class _BookingDoctorListPageState extends State<BookingDoctorListPage> {
           child: Column(
             children: [
               Container(
-                 width: 56.0,
-                    height: 56.0,
+                width: 56.0,
+                height: 56.0,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   boxShadow: [
@@ -100,21 +100,22 @@ class _BookingDoctorListPageState extends State<BookingDoctorListPage> {
                   ],
                 ),
                 child: CircleAvatar(
-                radius: 34.0,
-                backgroundColor: randomColor(),
-                child: ClipOval(
-                  child: SizedBox(
-                    width: 52.0,
-                    height: 52.0,
-                    child: doctor.imagePath != null && doctor.imagePath!.isNotEmpty
-                      ? Image.network(
-                          "$domain/${doctor.imagePath!}",
-                          fit: BoxFit.cover,
-                        )
-                      : Container(),
+                  radius: 34.0,
+                  backgroundColor: randomColor(),
+                  child: ClipOval(
+                    child: SizedBox(
+                      width: 52.0,
+                      height: 52.0,
+                      child: doctor.imagePath != null &&
+                              doctor.imagePath!.isNotEmpty
+                          ? Image.network(
+                              "$domain/${doctor.imagePath!}",
+                              fit: BoxFit.cover,
+                            )
+                          : Container(),
+                    ),
                   ),
                 ),
-              ),
               ),
             ],
           ),
@@ -150,21 +151,23 @@ class _BookingDoctorListPageState extends State<BookingDoctorListPage> {
               ),
             ),
             Container(
-              height: 16,
+              height: 18,
               width: 50,
+              margin: EdgeInsets.only(bottom: 4),
               decoration: BoxDecoration(
                 color: Color.fromARGB(255, 227, 124, 15),
                 borderRadius: BorderRadius.circular(5.0),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
+                
                 children: [
-                  Icon(Icons.star, color: Colors.white, size: 12.0),
-                  SizedBox(width: 2.0),
                   Text(
                     '${doctor.rate}',
                     style: TextStyle(color: Colors.white),
                   ),
+                  SizedBox(width: 2.0),
+                  Icon(Icons.star, color: Colors.white, size: 14.0),
                 ],
               ),
             ),

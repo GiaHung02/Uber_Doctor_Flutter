@@ -51,6 +51,7 @@ class MyApp extends StatelessWidget {
     
     return MaterialApp(
       title: 'UberDoctor',
+      
       theme: AppTheme.lightTheme,
       initialRoute: 'home',
       routes: {

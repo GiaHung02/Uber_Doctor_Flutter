@@ -42,7 +42,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
   Widget build(BuildContext context) {
     List<dynamic> filterSchedules = schedules.where((var schedule) {
       switch (schedule['status']){
-        case 'pending':
+        case 'pending' :
         schedule['status'] = FilterStatus.upcoming;
         break;
         case 'complete':

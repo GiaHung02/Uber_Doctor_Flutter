@@ -244,9 +244,9 @@ class _HomePageState extends State<HomePage> {
                       return ListTile(
                         leading: CircleAvatar(
                           backgroundColor: randomColor(),
-                          child: data?[index].image != null &&
-                                  data[index].image!.isNotEmpty
-                              ? Image.network(data[index].image![0] as String)
+                          child: data?[index].imagePath != null &&
+                                  data[index].imagePath!.isNotEmpty
+                              ? Image.network(data[index].imagePath![0] as String)
                               : Container(),
                         ),
                         title: Text(

@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:uber_doctor_flutter/src/config/config.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:uber_doctor_flutter/src/model/doctor.dart';
+import 'package:uber_doctor_flutter/src/theme/button.dart';
 import 'package:uber_doctor_flutter/src/theme/colors.dart';
 import 'package:uber_doctor_flutter/src/theme/styles.dart';
+import 'package:uber_doctor_flutter/src/widgets/custom_appbar.dart';
 
 class BookingDetailPage extends StatelessWidget {
   const BookingDetailPage({Key? key}) : super(key: key);
@@ -9,12 +14,16 @@ class BookingDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: CustomAppBar(
+        appTitle: 'Appointment',
+        icon: const FaIcon(Icons.arrow_back_ios),
+      ),
       body: CustomScrollView(
         slivers: [
-          SliverAppBar(
-              pinned: true,
-              title: Text('Booking Detail'),
-              backgroundColor: Config.primaryColor),
+          // SliverAppBar(
+          //     pinned: true,
+          //     title: Text('Booking Detail'),
+          //     backgroundColor: Config.primaryColor),
           SliverToBoxAdapter(
             child: DetailBody(),
           )
@@ -31,61 +40,51 @@ class DetailBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //lấy dữ liệu từ trang booking
+    final bookingDetail = ModalRoute.of(context)!.settings.arguments as Map;
+    //decode tu json
+    final doctor = Doctor.fromJson(jsonDecode(bookingDetail["doctor"]));
     return Container(
       padding: EdgeInsets.all(20),
       margin: EdgeInsets.only(bottom: 30),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          DetailDoctorCard(),
-          SizedBox(
-            height: 15,
-          ),
-          DoctorInfo(),
-
-          SizedBox(
-            height: 35,
-          ),
-          // Date booking
-          Text(
-            'Date booking',
-            style: kTitleStyle,
-          ),
-          TextField(
-            enabled: false,
-            decoration: InputDecoration(
-              labelText: '2023-12-03',
-              border: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.blue, width: 2.0),
-              ),
+          Container(
+            padding: EdgeInsets.all(10.0),
+            decoration: BoxDecoration(
+              color: Color.fromARGB(255, 222, 226, 230),
+              borderRadius: BorderRadius.circular(10.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Color.fromARGB(255, 195, 193, 193).withOpacity(0.5),
+                  blurRadius: 5.0,
+                  spreadRadius: 2.0,
+                ),
+              ],
             ),
+            child: Column(children: [
+              DetailDoctorCard(
+                doctor: doctor,
+              ),
+              SizedBox(
+                height: 15,
+              ),
+              DoctorInfo(doctor: doctor),
+            ]),
           ),
           SizedBox(
             height: 12,
           ),
           // Time booking
           Text(
-            'Time booking',
+            'Date booking:',
             style: kTitleStyle,
           ),
-          TextField(
-            enabled: false,
-            decoration: InputDecoration(
-              labelText: '10:00 AM',
-              border: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.blue, width: 2.0),
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 25,
-          ),
-          // Price booking
-          Text('Price booking', style: kTitleStyle),
           Container(
             padding: EdgeInsets.all(10.0),
             decoration: BoxDecoration(
-              color: Color.fromARGB(255, 165, 191, 217),
+              color: Color.fromARGB(255, 191, 212, 232),
               borderRadius: BorderRadius.circular(10.0),
               boxShadow: [
                 BoxShadow(
@@ -96,31 +95,93 @@ class DetailBody extends StatelessWidget {
               ],
             ),
             child: Text(
-              '100,000 VND',
+              ' ${bookingDetail['getDate']}',
               style: TextStyle(
-                color: const Color.fromRGBO(255, 255, 255, 1),
-                fontSize: 20.0,
+                color: Color.fromARGB(255, 114, 114, 114),
+                fontSize: 17.0,
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 15,
+          ),
+
+          // Time booking
+          Text(
+            'Time:',
+            style: kTitleStyle,
+          ),
+          Container(
+            padding: EdgeInsets.all(10.0),
+            decoration: BoxDecoration(
+              color: Color.fromARGB(255, 191, 212, 232),
+              borderRadius: BorderRadius.circular(10.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  blurRadius: 5.0,
+                  spreadRadius: 2.0,
+                ),
+              ],
+            ),
+            child: Text(
+              ' ${bookingDetail['getTime']}',
+              style: TextStyle(
+                color: Color.fromARGB(255, 114, 114, 114),
+                fontSize: 17.0,
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 15,
+          ),
+
+          // Price booking
+          Text(
+            'Price:',
+            style: kTitleStyle,
+          ),
+          Container(
+            padding: EdgeInsets.all(10.0),
+            decoration: BoxDecoration(
+              color: Color.fromARGB(255, 191, 212, 232),
+              borderRadius: BorderRadius.circular(10.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  blurRadius: 5.0,
+                  spreadRadius: 2.0,
+                ),
+              ],
+            ),
+            child: Text(
+              '${doctor.price} VND',
+              style: TextStyle(
+                color: Color.fromARGB(255, 114, 114, 114),
+                fontSize: 17.0,
               ),
             ),
           ),
           SizedBox(
             height: 25,
           ),
-          ElevatedButton(
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(
-                Config.primaryColor,
-              ),
-            ),
-            child: Text('Payment'),
-            onPressed: () => {
-              Navigator.pushNamed(
-                context,
-                "/success_booking",
-                // arguments: doctorModel,
-              )
+          Button(
+            width: double.infinity,
+            title: 'Payment',
+            onPressed: () async {
+              Navigator.of(context)
+                  .pushNamed('/',arguments: bookingDetail);
+              // final booking = await DioProvider().bookAppointment(
+              //     getDate, getDay, getTime, doctor['doctor_id'], token!);
+
+              //if booking return status code 200, then redirect to success booking page
+
+              // if (booking == 200) {
+              // Navigator.of(context).pushNamed('/booking_detail_page');
+              // }
             },
-          )
+            disable: false,
+          ),
         ],
       ),
     );
@@ -128,14 +189,15 @@ class DetailBody extends StatelessWidget {
 }
 
 class DoctorInfo extends StatelessWidget {
+  final Doctor doctor;
   const DoctorInfo({
     Key? key,
+    required this.doctor,
   }) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: const [
+      children: [
         NumberCard(
           label: 'Patients',
           value: '100+',
@@ -143,12 +205,12 @@ class DoctorInfo extends StatelessWidget {
         SizedBox(width: 15),
         NumberCard(
           label: 'Experiences',
-          value: '10 years',
+          value: '${doctor.exp}',
         ),
         SizedBox(width: 15),
         NumberCard(
           label: 'Rating',
-          value: '4.0',
+          value: '${doctor.rate}',
         ),
       ],
     );
@@ -221,8 +283,10 @@ class NumberCard extends StatelessWidget {
 }
 
 class DetailDoctorCard extends StatelessWidget {
+  final Doctor doctor;
   const DetailDoctorCard({
     Key? key,
+    required this.doctor,
   }) : super(key: key);
 
   @override
@@ -241,16 +305,17 @@ class DetailDoctorCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Dr. Josua Simorangkir',
+                      'Dr. ${doctor.fullName}',
                       style: TextStyle(
                           color: Color(MyColors.header01),
-                          fontWeight: FontWeight.w700),
+                          fontSize: 24,
+                          fontWeight: FontWeight.w900),
                     ),
                     SizedBox(
                       height: 10,
                     ),
                     Text(
-                      'Heart Specialist',
+                      'Spectiality: ${doctor.spectiality}',
                       style: TextStyle(
                         color: Color(MyColors.grey02),
                         fontWeight: FontWeight.w500,
@@ -260,7 +325,9 @@ class DetailDoctorCard extends StatelessWidget {
                 ),
               ),
               Image(
-                image: AssetImage('assets/images/doctor01.jpg'),
+                image: NetworkImage(
+                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREpIkClC9oX1l5NYvDU-9sRGZufk18bvSFEA&usqp=CAU",
+                ),
                 width: 100,
               )
             ],

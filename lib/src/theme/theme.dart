@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'light_color.dart';
 
 class AppTheme {
   const AppTheme();
   static ThemeData lightTheme = ThemeData.light().copyWith(
-    backgroundColor: LightColor.background,
-    primaryColor: LightColor.purple,
+    // backgroundColor: LightColor.background,
+    primaryColor: Color.fromARGB(255, 51, 142, 239),
     cardTheme: CardTheme(color: LightColor.background),
     iconTheme: IconThemeData(color: LightColor.iconColor),
-    bottomAppBarColor: LightColor.background,
+    // bottomAppBarColor: LightColor.background,
     dividerColor: LightColor.grey,
+     textTheme: GoogleFonts.notoSansTextTheme(), 
   );
 
   static TextStyle titleStyle =

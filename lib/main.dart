@@ -8,6 +8,7 @@ import 'package:uber_doctor_flutter/src/model/doctor_model.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/appointment_page.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/booking_detail_page.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/booking_doctor_list_page.dart';
+import 'package:uber_doctor_flutter/src/pages/booking/booking_list_page.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/booking_page.dart';
 import 'package:uber_doctor_flutter/src/pages/detail_page.dart';
 import 'package:uber_doctor_flutter/src/pages/doctor_register_page.dart';
@@ -16,6 +17,7 @@ import 'package:uber_doctor_flutter/src/pages/login_page.dart';
 import 'package:uber_doctor_flutter/src/pages/patient_register_page.dart';
 import 'package:uber_doctor_flutter/src/pages/phone_page.dart';
 import 'package:uber_doctor_flutter/src/pages/profile_page.dart';
+import 'package:uber_doctor_flutter/src/pages/search_page.dart';
 import 'package:uber_doctor_flutter/src/pages/splash_page.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/success_booked.dart';
 import 'package:uber_doctor_flutter/src/pages/symptom_page.dart';
@@ -71,12 +73,14 @@ class MyApp extends StatelessWidget {
           'verify_register': (context) => MyVerifyRegister(),
           'doctor/register': (context) => DoctorRegisterPage(),
           'patient/register': (context) => PatientRegisterPage(),
-          'pages/detail_page': (context) => SliverDoctorDetail(),
+           'pages/detail_page': (context) =>
+            DetailPage(doctors: [], selectedIndex: 0,),
           '/success_booking': (context) => AppointmentBooked(),
           '/booking_page': (context) => BookingPage(),
           '/booking_list_page': (context) => BookingDoctorListPage(),
           '/booking_detail_page': (context) => BookingDetailPage(),
           'login': (context) => LoginPage(),
+            '/pages/search_page': (context) => SearchPageWidget(),
         },
         debugShowCheckedModeBanner: false,
       ),
@@ -97,12 +101,13 @@ class _MyHomePageState extends State<MyHomePage> {
   var _page = 0;
   final pages = [
     HomePage(),
-    Phone(),
+    Call(navigatorKey: GlobalKey()),
     SymptomPage(),
     BookingDoctorListPage(),
     ProfilePage(),
-    LoginPage(),
-    // DetailPage(),
+    // LoginPage(),
+    //  DetailPage(doctors: [], selectedIndex: 0,),
+    BookingListPage(),
     AppointmentPage()
   ];
   int visit = 0;

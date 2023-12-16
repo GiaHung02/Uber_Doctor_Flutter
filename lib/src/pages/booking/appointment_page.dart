@@ -7,7 +7,7 @@ class AppointmentPage extends StatefulWidget {
   State<AppointmentPage> createState() => _AppointmentPageState();
 }
 
-enum FilterStatus { upcoming, complete, cancel }
+enum FilterStatus { pending,upcoming, complete, cancel }
 
 class _AppointmentPageState extends State<AppointmentPage> {
   FilterStatus status = FilterStatus.upcoming;
@@ -41,17 +41,17 @@ class _AppointmentPageState extends State<AppointmentPage> {
   @override
   Widget build(BuildContext context) {
     List<dynamic> filterSchedules = schedules.where((var schedule) {
-      // switch (schedule['status']){
-      //   case 'upcoming':
-      //   schedule['status'] = FilterStatus.upcoming;
-      //   break;
-      //   case 'complete':
-      //   schedule['status'] = FilterStatus.complete;
-      //   break;
-      //   case 'cancel':
-      //   schedule['status'] = FilterStatus.cancel;
-      //   break;
-      // }
+      switch (schedule['status']){
+        case 'pending' :
+        schedule['status'] = FilterStatus.upcoming;
+        break;
+        case 'complete':
+        schedule['status'] = FilterStatus.complete;
+        break;
+        case 'cancel':
+        schedule['status'] = FilterStatus.cancel;
+        break;
+      }
       return schedule['status'] == status;
     }).toList();
     return SafeArea(

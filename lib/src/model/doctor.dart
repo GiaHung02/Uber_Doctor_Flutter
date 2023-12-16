@@ -1,33 +1,70 @@
-import 'dart:ffi';
+import 'dart:convert';
+import 'dart:typed_data';
 
 class Doctor {
   int? id;
-  String? name;
+  String? phoneNumber;
+  String? fullName;
   String? email;
-  String? spectiality;
+  String? bankingAccount;
+  String? imagePath;
+  String? address;
+  bool? accepted;
+  bool? status;
+  String? spectiality; // Chỉnh sửa tên trường để phản ánh đúng tên từ API
+  int? rate;
+  double? price;
+  int? exp;
 
   Doctor({
     this.id,
-    this.name,
+    this.phoneNumber,
+    this.fullName,
     this.email,
+    this.bankingAccount,
+    this.imagePath,
+    this.address,
+    this.accepted,
+    this.status,
     this.spectiality,
+    this.rate,
+    this.price,
+    this.exp,
   });
 
   factory Doctor.fromJson(Map<String, dynamic>? json) {
     return Doctor(
       id: json?['id'],
-      name: json?['name'],
+      phoneNumber: json?['phoneNumber'],
+      fullName: json?['fullName'],
       email: json?['email'],
-      spectiality: json?['spectiality'],
+      bankingAccount: json?['bankingAccount'],
+      imagePath: json?['imagePath'],
+      address: json?['address'],
+      accepted: json?['accepted'],
+      status: json?['status'],
+      spectiality: json?['spectiality'], // Chỉnh sửa tên trường để phản ánh đúng tên từ API
+      rate: json?['rate'],
+      price: json?['price'],
+      exp: json?['exp'],
     );
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = {
       'id': id,
-      'name': name,
+      'phoneNumber': phoneNumber,
+      'fullName': fullName,
       'email': email,
-      'spectiality': spectiality,
+      'bankingAccount': bankingAccount,
+      'imagePath': imagePath,
+      'address': address,
+      'accepted': accepted,
+      'status': status,
+      'spectiality': spectiality, // Chỉnh sửa tên trường để phản ánh đúng tên từ API
+      'rate': rate,
+      'price': price,
+      'exp': exp,
     };
     return data;
   }

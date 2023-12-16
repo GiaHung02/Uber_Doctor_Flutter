@@ -69,6 +69,8 @@ class MyApp extends StatelessWidget {
          '/booking_list_page': (context) => BookingDoctorListPage(),
          '/booking_detail_page': (context) => BookingDetailPage(),
           '/pages/search_page': (context) => SearchPageWidget(),
+          '/appointment_page': (context) => AppointmentPage(),
+        
       
       },
       debugShowCheckedModeBanner: false,
@@ -95,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
     ProfilePage(),
     // LoginPage(),
     //  DetailPage(doctors: [], selectedIndex: 0,),
-    BookingListPage(),
+    // BookingListPage(),
     AppointmentPage()
   ];
   int visit = 0;

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:uber_doctor_flutter/src/api/api_service.dart';
 import 'package:uber_doctor_flutter/src/config/config.dart';
 import 'package:uber_doctor_flutter/src/model/booking_date_convert.dart';
 import 'package:uber_doctor_flutter/src/model/doctor.dart';
@@ -152,14 +153,6 @@ class _BookingPageState extends State<BookingPage> {
                   });
                   Navigator.of(context)
                       .pushNamed('/booking_detail_page', arguments: bookingDetail);
-                  // final booking = await DioProvider().bookAppointment(
-                  //     getDate, getDay, getTime, doctor['doctor_id'], token!);
-
-                  //if booking return status code 200, then redirect to success booking page
-
-                  // if (booking == 200) {
-                  // Navigator.of(context).pushNamed('/booking_detail_page');
-                  // }
                 },
                 disable: _timeSelected && _dateSelected ? false : true,
               ),
@@ -171,44 +164,35 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   //table calendar
-  Widget _tableCalendar() {
-    return TableCalendar(
-      focusedDay: _focusDay,
-      firstDay: DateTime.now(),
-      lastDay: DateTime(2024, 03, 31),
-      calendarFormat: _format,
-      currentDay: _currentDay,
-      rowHeight: 48,
-      calendarStyle: const CalendarStyle(
-        todayDecoration:
-            BoxDecoration(color: Config.primaryColor, shape: BoxShape.circle),
-      ),
-      availableCalendarFormats: const {
-        CalendarFormat.month: 'Month',
-      },
-      onFormatChanged: (format) {
-        setState(() {
-          _format = format;
-        });
-      },
-      onDaySelected: ((selectedDay, focusedDay) {
-        setState(() {
-          _currentDay = selectedDay;
-          _focusDay = focusedDay;
-          _dateSelected = true;
+Widget _tableCalendar() {
+  return TableCalendar(
+    focusedDay: _focusDay,
+    firstDay: DateTime.now(),
+    lastDay: DateTime(2024, 03, 31),
+    calendarFormat: _format,
+    currentDay: _currentDay,
+    rowHeight: 48,
+    calendarStyle: const CalendarStyle(
+      todayDecoration: BoxDecoration(color: Config.primaryColor, shape: BoxShape.circle),
+    ),
+    availableCalendarFormats: const {
+      CalendarFormat.month: 'Month',
+    },
+    onFormatChanged: (format) {
+      setState(() {
+        _format = format;
+      });
+    },
+    onDaySelected: ((selectedDay, focusedDay) {
+      setState(() {
+        _currentDay = selectedDay;
+        _focusDay = focusedDay;
+        _dateSelected = true;
+      });
+    }),
+  );
+}
 
-          //check if weekend is selected
-          if (selectedDay.weekday == 6 || selectedDay.weekday == 7) {
-            _isWeekend = true;
-            _timeSelected = false;
-            _currentIndex = null;
-          } else {
-            _isWeekend = false;
-          }
-        });
-      }),
-    );
-  }
 }
 
 // About Doctor widget
@@ -230,8 +214,9 @@ class AboutDoctor extends StatelessWidget {
           CircleAvatar(
             radius: 95.0,
             backgroundImage: NetworkImage(
-              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREpIkClC9oX1l5NYvDU-9sRGZufk18bvSFEA&usqp=CAU",
+              "$domain/${doctor.imagePath}"
             ),
+           
             backgroundColor: Colors.white,
           ),
           Config.spaceSmall,

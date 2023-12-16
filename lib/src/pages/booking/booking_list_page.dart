@@ -34,7 +34,7 @@ class _BookingListPageState extends State<BookingListPage> {
               .map((booking) => Booking.fromJson(booking)));
               
         });
-             print(bookings.length);
+           
       } else {
         // Xử lý khi có lỗi từ API
         print('Error: ${response.statusCode}');
@@ -69,9 +69,10 @@ class BookingCard extends StatelessWidget {
     return Card(
       // Thiết kế giao diện của mỗi booking card ở đây
       child: ListTile(
-        title: Text('Đặt hẹn #${booking.id}'),
+        title: Text('Đặt hẹn id: ${booking.id}'),
         subtitle: Text(
             'Ngày hẹn: ${booking.appointmentDate} - ${booking.appointmentTime}'),
+            trailing: Text('Stutus: ${booking.statusBooking}'),
         // Thêm các trường thông tin khác tùy ý
       ),
     );

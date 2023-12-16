@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:uber_doctor_flutter/src/model/AuthProvider.dart';
 // import 'package:doctor_appointment_app/models/auth_model.dart';
 import 'package:uber_doctor_flutter/src/model/data.dart';
 import 'package:uber_doctor_flutter/src/model/doctor_model.dart';
@@ -100,10 +102,12 @@ class _BookingDoctorListPageState extends State<BookingDoctorListPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text(
-                  "Please choose a Doctor",
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
+                // if (Provider.of<MyAuthProvider>(context).role == "Patient" &&
+                //     Provider.of<MyAuthProvider>(context).token != null)
+                  Text(
+                    "Please choose a Doctor",
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
               ],
             ),
           ),
@@ -116,6 +120,11 @@ class _BookingDoctorListPageState extends State<BookingDoctorListPage> {
               final doctorModel = doctorDataList[index];
               return GestureDetector(
                 onTap: () {
+                  // // Logout
+                  // Provider.of<MyAuthProvider>(context, listen: false).logout();
+                  // Navigator.pushNamed(context, '/home_page');
+
+
                   _navigateToDoctorDetail(doctorModel);
                 },
                 child: Container(
@@ -218,7 +227,6 @@ class _BookingDoctorListPageState extends State<BookingDoctorListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-       
         elevation: 0,
         backgroundColor: Theme.of(context).backgroundColor,
         // leading: Icon(
@@ -232,7 +240,9 @@ class _BookingDoctorListPageState extends State<BookingDoctorListPage> {
             size: 30,
             color: Colors.grey,
           ),
-        SizedBox(width: 10,),
+          SizedBox(
+            width: 10,
+          ),
         ],
       ),
       body: CustomScrollView(

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:uber_doctor_flutter/src/api/api_service.dart';
+import 'package:uber_doctor_flutter/src/model/AuthProvider.dart';
 import 'package:uber_doctor_flutter/src/model/doctor.dart';
 
 import 'package:uber_doctor_flutter/src/model/pathologycal.dart';
 
-
 class SearchUser extends SearchDelegate {
   FetchSymptomList _symptomList = FetchSymptomList();
   FetchRecommendList _recommendList = FetchRecommendList();
-  
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -89,7 +89,8 @@ class SearchUser extends SearchDelegate {
                           children: [
                             Text(
                               '${currentItem.symptoms ?? ""}',
-                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.w600),
                             ),
                             SizedBox(height: 10),
                             Text(
@@ -109,10 +110,10 @@ class SearchUser extends SearchDelegate {
               ),
             ),
             SizedBox(height: 16),
-            Text(
-              'Recommended Doctors',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
+              Text(
+                'Recommended Doctors',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
             buildRecommendedDoctorSlider(query),
           ],
         );
@@ -128,7 +129,6 @@ class SearchUser extends SearchDelegate {
   }
 
   Widget buildRecommendedDoctorSlider(String query) {
-    
     return FutureBuilder<List<Doctor>>(
       future: _recommendList.getRecommendList(query: query),
       builder: (context, snapshot) {
@@ -151,29 +151,28 @@ class SearchUser extends SearchDelegate {
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: data.length,
-            itemBuilder: (context, index){
+            itemBuilder: (context, index) {
               var currentItem = data[index];
-           
-            
-             {
-              return Card(
-                margin: EdgeInsets.all(8),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        '${currentItem.spectiality ?? ""}',
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 8),
-                     
-                    ],
+
+              {
+                return Card(
+                  margin: EdgeInsets.all(8),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          '${currentItem.spectiality ?? ""}',
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 8),
+                      ],
+                    ),
                   ),
-                ),
-              );
-             }
+                );
+              }
             },
           ),
         );

@@ -2,6 +2,7 @@ import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
 import 'package:awesome_bottom_bar/widgets/inspired/inspired.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:uber_doctor_flutter/firebase_options.dart';
 import 'package:uber_doctor_flutter/src/model/doctor_model.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/appointment_page.dart';
@@ -23,6 +24,8 @@ import 'package:uber_doctor_flutter/src/pages/verify_register.dart';
 import 'package:uber_doctor_flutter/src/theme/theme.dart';
 import 'package:uber_doctor_flutter/src/widgets/BottomNavHexagon.dart';
 
+import 'src/model/AuthProvider.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -40,35 +43,43 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
-   //this is for push navigator
+  //this is for push navigator
   static final navigatorKey = GlobalKey<NavigatorState>();
 
   @override
   Widget build(BuildContext context) {
-    DoctorModel model ;
-    
-    return MaterialApp(
-      title: 'UberDoctor',
-      theme: AppTheme.lightTheme,
-      initialRoute: 'home',
-      routes: {
-        'home': (context) =>SplashPage(),
-        '/home_page': (context) =>MyHomePage(title: 'home',"home"),
-        'phone': (context) => LoginPage(),
-        'verify': (context) => MyVerify(),
-        'verify_register': (context) => MyVerifyRegister(),
-        'doctor/register': (context) => DoctorRegisterPage(),
-        'patient/register': (context) => PatientRegisterPage(),
-        'pages/detail_page': (context) =>
-            SliverDoctorDetail(),
-         '/success_booking': (context) => AppointmentBooked(), 
-         '/booking_page': (context) => BookingPage(), 
-         '/booking_list_page': (context) => BookingDoctorListPage(),
-         '/booking_detail_page': (context) => BookingDetailPage(),
+    DoctorModel model;
 
-      
-      },
-      debugShowCheckedModeBanner: false,
+    final authProvider = MyAuthProvider();
+    authProvider.loadTokenAndRole();
+
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: authProvider),
+        // Add other providers if needed
+      ],
+      child: MaterialApp(
+        title: 'UberDoctor',
+        theme: AppTheme.lightTheme,
+        initialRoute: 'home',
+        navigatorKey: navigatorKey,
+        routes: {
+          'home': (context) => SplashPage(),
+          '/home_page': (context) => MyHomePage(title: 'home', "home"),
+          'phone': (context) => LoginPage(),
+          'verify': (context) => MyVerify(),
+          'verify_register': (context) => MyVerifyRegister(),
+          'doctor/register': (context) => DoctorRegisterPage(),
+          'patient/register': (context) => PatientRegisterPage(),
+          'pages/detail_page': (context) => SliverDoctorDetail(),
+          '/success_booking': (context) => AppointmentBooked(),
+          '/booking_page': (context) => BookingPage(),
+          '/booking_list_page': (context) => BookingDoctorListPage(),
+          '/booking_detail_page': (context) => BookingDetailPage(),
+          'login': (context) => LoginPage(),
+        },
+        debugShowCheckedModeBanner: false,
+      ),
     );
   }
 }

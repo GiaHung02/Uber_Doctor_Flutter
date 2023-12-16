@@ -1,6 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pinput/pinput.dart';
+import 'package:provider/provider.dart';
+import 'package:quickalert/quickalert.dart';
+import 'package:uber_doctor_flutter/src/model/AuthProvider.dart';
 import 'package:uber_doctor_flutter/src/pages/login_page.dart';
 
 class MyVerify extends StatefulWidget {
@@ -14,6 +18,7 @@ class _MyVerifyState extends State<MyVerify> {
   final FirebaseAuth auth = FirebaseAuth.instance;
   @override
   Widget build(BuildContext context) {
+    bool stt = false;
     final defaultPinTheme = PinTheme(
       width: 56,
       height: 56,
@@ -124,14 +129,31 @@ class _MyVerifyState extends State<MyVerify> {
                           // In token ra console (để kiểm tra, có thể loại bỏ trong production)
                           print('Firebase Auth Token: $token');
 
+                          Provider.of<MyAuthProvider>(context, listen: false)
+                              .setTokenAndRole(token, LoginPage.approle);
+
                           // Chuyển đến trang home
                           Navigator.pushNamedAndRemoveUntil(
                               context, "home", (route) => false);
-                        } else {
-                          print('Failed to get Firebase Auth Token.');
-                        }
+                        } else {}
                       } catch (e) {
-                        print("wrong otp");
+                        var mycontext = context;
+                        // Navigator.pop(mycontext);
+
+                        // if (stt) {
+                        //   Navigator.pop(mycontext);
+                        // }
+
+                        QuickAlert.show(
+                          context: context,
+                          type: QuickAlertType.error,
+                          text: "Incorrect verification code!",
+                          onConfirmBtnTap: () async {
+                            Navigator.of(context, rootNavigator: true).pop();
+                          },
+                          confirmBtnText: 'Back to login',
+                        ).then((value) =>
+                            Navigator.of(context, rootNavigator: true).pop());
                       }
                     },
                     child: Text("Verify Phone Number")),

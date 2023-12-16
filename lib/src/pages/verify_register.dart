@@ -26,6 +26,8 @@ class _MyVerifyRegisterState extends State<MyVerifyRegister> {
     // Nhận tham số dataRegister
     final Map<String, dynamic> dataRegister =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+
+    print(dataRegister);
     final defaultPinTheme = PinTheme(
       width: 56,
       height: 56,
@@ -56,6 +58,8 @@ class _MyVerifyRegisterState extends State<MyVerifyRegister> {
 
     RegisterDoctorModel doctorModel =
         RegisterDoctorModel.fromJson(dataRegister);
+
+    print(doctorModel);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -106,9 +110,6 @@ class _MyVerifyRegisterState extends State<MyVerifyRegister> {
               ),
               Pinput(
                 length: 6,
-                // defaultPinTheme: defaultPinTheme,
-                // focusedPinTheme: focusedPinTheme,
-                // submittedPinTheme: submittedPinTheme,
                 onChanged: (value) => {code = value},
                 showCursor: true,
                 onCompleted: (pin) => print(pin),
@@ -126,8 +127,10 @@ class _MyVerifyRegisterState extends State<MyVerifyRegister> {
                             borderRadius: BorderRadius.circular(10))),
                     onPressed: () async {
                       try {
-                        String myVerificationId = PatientRegisterPage.verify ??
-                            DoctorRegisterPage.verify;
+                        String myVerificationId =
+                            PatientRegisterPage.verify.isEmpty
+                                ? DoctorRegisterPage.verify
+                                : PatientRegisterPage.verify;
 
                         PhoneAuthCredential credential =
                             PhoneAuthProvider.credential(
@@ -145,9 +148,9 @@ class _MyVerifyRegisterState extends State<MyVerifyRegister> {
 
                         // Kiểm tra xem token có giá trị hay không
                         if (token != null) {
-                          if (PatientRegisterPage.verify != null) {
-                            var status =
-                                signUpController.createPatient(patientModel);
+                          if (!PatientRegisterPage.verify.isEmpty) {
+                            var status = signUpController.createPatient(
+                                patientModel, context);
 
                             if (await status == 201) {
                               QuickAlert.show(
@@ -175,10 +178,10 @@ class _MyVerifyRegisterState extends State<MyVerifyRegister> {
                               );
                             }
                           } else {
-                            var status =
-                                signUpController.createDoctor(doctorModel);
-
-                            if (await status == 201) {
+                            var status = signUpController.createDoctor(
+                                doctorModel, context);
+                            print(await status);
+                            if (await status == 200) {
                               QuickAlert.show(
                                 context: context,
                                 type: QuickAlertType.success,
@@ -209,6 +212,16 @@ class _MyVerifyRegisterState extends State<MyVerifyRegister> {
                         }
                       } catch (e) {
                         print("Have error");
+                        QuickAlert.show(
+                          context: context,
+                          type: QuickAlertType.error,
+                          text: "Incorrect verification code!",
+                          onConfirmBtnTap: () async {
+                            Navigator.of(context, rootNavigator: true).pop();
+                          },
+                          confirmBtnText: 'Back to register',
+                        ).then((value) =>
+                            Navigator.of(context, rootNavigator: true).pop());
                       }
                     },
                     child: Text("Verify Phone Number")),

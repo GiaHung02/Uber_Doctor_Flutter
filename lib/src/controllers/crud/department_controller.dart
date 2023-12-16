@@ -7,9 +7,10 @@ import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:uber_doctor_flutter/src/constants/url_api.dart';
 import 'package:uber_doctor_flutter/src/model/api_response.dart';
+import 'package:uber_doctor_flutter/src/model/department.dart';
 import 'package:uber_doctor_flutter/src/pages/home_page.dart';
 
-class LoginController extends GetxController {
+class DepartmentController extends GetxController {
   RxBool isLoading = false.obs;
   RxBool showPassword = false.obs;
   final TextEditingController phoneController = TextEditingController();
@@ -17,10 +18,10 @@ class LoginController extends GetxController {
 
   onToggleShowPassword() => showPassword.value = !showPassword.value;
 
-  Future<bool> loginPatient(String phone,context) async {
+  Future<List<DepartmentModel>> getDepartment() async {
     isLoading.value = true;
     try {
-      var myUrl = loginPatientAPI + phone;
+      var myUrl = GetDepartmentAPI;
       var response = await http.get(
         Uri.parse(myUrl),
         headers: {"Content-Type": "application/json;charset=UTF-8"},
@@ -31,46 +32,25 @@ class LoginController extends GetxController {
       Map<String, dynamic> responseMap = json.decode(response.body);
       ApiResponse apiResponse = ApiResponse.fromJson(responseMap);
       print(apiResponse.status);
+      print(apiResponse.data[0]['departmentName']);
+      List<DepartmentModel> departments = [];
       if (apiResponse.status == 200) {
-        return true;
+        apiResponse.data.forEach((element) {
+          DepartmentModel department = DepartmentModel(
+            id: element['id'],
+            name: element['departmentName'],
+          );
+          departments.add(department);
+        });
+
+        return Future.value(departments);
       } else {
-        return false;
+        return Future.value([]);
       }
     } catch (e) {
-      QuickAlert.show(
-        context: context,
-        type: QuickAlertType.error,
-        text: 'Switch to a different IP or a different WiFi',
-      );
-      return false;
-    }
-  }
+      print("hass fault");
 
-  Future<bool> loginDoctor(String phone,context) async {
-    isLoading.value = true;
-    try {
-      var myUrl = loginDoctorAPI + phone;
-
-      var response = await http.get(
-        Uri.parse(myUrl),
-        headers: {"Content-Type": "application/json;charset=UTF-8"},
-      );
-
-      Map<String, dynamic> responseMap = json.decode(response.body);
-      ApiResponse apiResponse = ApiResponse.fromJson(responseMap);
-
-      if (apiResponse.status == 200) {
-        return true;
-      } else {
-        return false;
-      }
-    } catch (e) {
-      QuickAlert.show(
-        context: context,
-        type: QuickAlertType.error,
-        text: 'Switch to a different IP or a different WiFi',
-      );
-      return false;
+      return Future.value([]);
     }
   }
 }

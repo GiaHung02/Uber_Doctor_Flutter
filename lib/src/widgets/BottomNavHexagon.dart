@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:uber_doctor_flutter/src/model/AuthProvider.dart';
 // import 'package:uber_doctor_flutter/src/pages/booking_page.dart';
 // import 'package:uber_doctor_flutter/src/pages/detail_page.dart';
 // import 'package:uber_doctor_flutter/src/pages/home_page.dart';
@@ -10,6 +11,10 @@ import 'package:provider/provider.dart';
 // import 'package:uber_doctor_flutter/src/pages/splash_page.dart';
 import 'package:uber_doctor_flutter/src/widgets/Visit_Provider.dart';
 
+
+
+
+
 const List<TabItem> items = [
   TabItem(
     icon: Icons.home,
@@ -18,6 +23,7 @@ const List<TabItem> items = [
   TabItem(
     icon: Icons.phone,
     title: 'phone',
+    
   ),
   TabItem(
     icon: Icons.coronavirus,

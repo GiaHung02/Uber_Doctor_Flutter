@@ -2,6 +2,9 @@
 
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:uber_doctor_flutter/main.dart';
+import 'package:uber_doctor_flutter/src/widgets/custom_appbar.dart';
 
 // Project imports:
 import '../../constants.dart';
@@ -34,6 +37,7 @@ class LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(title: Text("h")),
       body: WillPopScope(
         onWillPop: () async {
           return false;
@@ -44,6 +48,20 @@ class LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              IconButton(
+                icon: const Icon(Icons.exit_to_app_sharp),
+                iconSize: 20,
+                color: Colors.white,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MyHomePage("s", title: "title"),
+                    ),
+                  );
+                },
+              ),
+
               logo(),
               const SizedBox(height: 50),
               userIDEditor(),

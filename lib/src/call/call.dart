@@ -7,6 +7,7 @@ import 'package:faker/faker.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:uber_doctor_flutter/constants.dart';
 import 'package:uber_doctor_flutter/login_service.dart';
+import 'package:uber_doctor_flutter/main.dart';
 import 'package:zego_uikit/zego_uikit.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 
@@ -87,7 +88,7 @@ class CallPageState extends State<CallPage> {
     final RandomGenerator random = RandomGenerator();
     final Faker faker = Faker();
     final TextEditingController singleInviteeUserIDTextCtrl =
-      TextEditingController(text: '123456');
+        TextEditingController(text: '123456');
 
     return Center(
       child: ListView.builder(
@@ -129,9 +130,7 @@ class CallPageState extends State<CallPage> {
             inviteeUsersIDTextCtrl = TextEditingController(text: '123456');
             userInfo = [
               Text(
-                '${faker.person.firstName()}(${(
-                      '123456'
-                    )})',
+                '${faker.person.firstName()}(${('123456')})',
                 style: textStyle,
               )
             ];

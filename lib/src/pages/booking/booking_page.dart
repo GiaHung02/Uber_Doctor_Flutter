@@ -20,6 +20,18 @@ class BookingPage extends StatefulWidget {
   State<BookingPage> createState() => _BookingPageState();
 }
 
+enum TimeOfDay {
+  Morning,
+  Afternoon,
+  Evening,
+}
+
+List<Color> timeOfDayColors = [
+  const Color.fromARGB(255, 135, 193, 241), // Màu sắc cho buổi sáng
+  const Color.fromARGB(255, 148, 230, 151), // Màu sắc cho buổi chiều
+  const Color.fromARGB(255, 228, 172, 86), // Màu sắc cho buổi tối
+];
+
 class _BookingPageState extends State<BookingPage> {
   //declaration
   CalendarFormat _format = CalendarFormat.month;
@@ -95,8 +107,23 @@ class _BookingPageState extends State<BookingPage> {
               : SliverGrid(
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
+                      int dayIndex =
+                          index % 7; 
+                      int timeOfDayIndex =
+                          index ~/ 12; // Phân chia các buổi trong một ngày
+                      Color slotColor =
+                          Color.fromARGB(255, 244, 153, 153); // Màu mặc định
+
+                      // Áp dụng màu sắc tương ứng với buổi trong ngày
+                      if (dayIndex >= 0 &&
+                          dayIndex < 7 &&
+                          timeOfDayIndex >= 0 &&
+                          timeOfDayIndex < timeOfDayColors.length) {
+                        slotColor = timeOfDayColors[timeOfDayIndex];
+                      }
+
                       return InkWell(
-                        splashColor: Colors.transparent,
+                        splashColor: Color.fromARGB(0, 236, 154, 154),
                         onTap: () {
                           setState(() {
                             _currentIndex = index;
@@ -109,33 +136,36 @@ class _BookingPageState extends State<BookingPage> {
                             border: Border.all(
                               color: _currentIndex == index
                                   ? Colors.white
-                                  : Colors.black,
+                                  : const Color.fromARGB(255, 247, 246, 246),
                             ),
                             borderRadius: BorderRadius.circular(15),
                             color: _currentIndex == index
                                 ? Config.primaryColor
-                                : null,
+                                : slotColor,
                           ),
                           alignment: Alignment.center,
                           child: Text(
-                            '${index + 9}:00 ${index + 9 > 11 ? "PM" : "AM"}',
+                            '${(index ~/ 2) + 6}:${(index % 2 == 0 ? "00" : "30")} ',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              color:
-                                  _currentIndex == index ? Colors.white : null,
+                              color: _currentIndex == index
+                                  ? Colors.white
+                                  : Colors.black,
                             ),
                           ),
                         ),
                       );
                     },
-                    childCount: 8,
+                    childCount: 36,
                   ),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 4, childAspectRatio: 1.5),
+                    crossAxisCount: 6,
+                    childAspectRatio: 1.4,
+                  ),
                 ),
           SliverToBoxAdapter(
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 50),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
               child: Button(
                 width: double.infinity,
                 title: 'Book Appointment',
@@ -151,8 +181,8 @@ class _BookingPageState extends State<BookingPage> {
                     "getTime": getTime,
                     "doctor": jsonEncode(doctor)
                   });
-                  Navigator.of(context)
-                      .pushNamed('/booking_detail_page', arguments: bookingDetail);
+                  Navigator.of(context).pushNamed('/booking_detail_page',
+                      arguments: bookingDetail);
                 },
                 disable: _timeSelected && _dateSelected ? false : true,
               ),
@@ -164,35 +194,35 @@ class _BookingPageState extends State<BookingPage> {
   }
 
   //table calendar
-Widget _tableCalendar() {
-  return TableCalendar(
-    focusedDay: _focusDay,
-    firstDay: DateTime.now(),
-    lastDay: DateTime(2024, 03, 31),
-    calendarFormat: _format,
-    currentDay: _currentDay,
-    rowHeight: 48,
-    calendarStyle: const CalendarStyle(
-      todayDecoration: BoxDecoration(color: Config.primaryColor, shape: BoxShape.circle),
-    ),
-    availableCalendarFormats: const {
-      CalendarFormat.month: 'Month',
-    },
-    onFormatChanged: (format) {
-      setState(() {
-        _format = format;
-      });
-    },
-    onDaySelected: ((selectedDay, focusedDay) {
-      setState(() {
-        _currentDay = selectedDay;
-        _focusDay = focusedDay;
-        _dateSelected = true;
-      });
-    }),
-  );
-}
-
+  Widget _tableCalendar() {
+    return TableCalendar(
+      focusedDay: _focusDay,
+      firstDay: DateTime.now(),
+      lastDay: DateTime(2024, 03, 31),
+      calendarFormat: _format,
+      currentDay: _currentDay,
+      rowHeight: 48,
+      calendarStyle: const CalendarStyle(
+        todayDecoration:
+            BoxDecoration(color: Config.primaryColor, shape: BoxShape.circle),
+      ),
+      availableCalendarFormats: const {
+        CalendarFormat.month: 'Month',
+      },
+      onFormatChanged: (format) {
+        setState(() {
+          _format = format;
+        });
+      },
+      onDaySelected: ((selectedDay, focusedDay) {
+        setState(() {
+          _currentDay = selectedDay;
+          _focusDay = focusedDay;
+          _dateSelected = true;
+        });
+      }),
+    );
+  }
 }
 
 // About Doctor widget
@@ -213,10 +243,7 @@ class AboutDoctor extends StatelessWidget {
           Config.spaceSmall,
           CircleAvatar(
             radius: 95.0,
-            backgroundImage: NetworkImage(
-              "$domain/${doctor.imagePath}"
-            ),
-           
+            backgroundImage: NetworkImage("$domain/${doctor.imagePath}"),
             backgroundColor: Colors.white,
           ),
           Config.spaceSmall,

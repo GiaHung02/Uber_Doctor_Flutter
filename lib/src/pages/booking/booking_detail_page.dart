@@ -77,7 +77,35 @@ class DetailBody extends StatelessWidget {
           SizedBox(
             height: 12,
           ),
-          // Time booking
+           // Time booking
+          Text(
+            'Time:',
+            style: kTitleStyle,
+          ),
+          Container(
+            padding: EdgeInsets.all(10.0),
+            decoration: BoxDecoration(
+              color: Color.fromARGB(255, 191, 212, 232),
+              borderRadius: BorderRadius.circular(10.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  blurRadius: 5.0,
+                  spreadRadius: 2.0,
+                ),
+              ],
+            ),
+            child: Text(
+              ' ${bookingDetail['getTime']}',
+              style: TextStyle(
+                color: Color.fromARGB(255, 114, 114, 114),
+                fontSize: 17.0,
+              ),
+            ),
+          ),
+            SizedBox(
+            height: 15,
+          ),
           Text(
             'Date booking:',
             style: kTitleStyle,
@@ -107,36 +135,7 @@ class DetailBody extends StatelessWidget {
             height: 15,
           ),
 
-          // Time booking
-          Text(
-            'Time:',
-            style: kTitleStyle,
-          ),
-          Container(
-            padding: EdgeInsets.all(10.0),
-            decoration: BoxDecoration(
-              color: Color.fromARGB(255, 191, 212, 232),
-              borderRadius: BorderRadius.circular(10.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  blurRadius: 5.0,
-                  spreadRadius: 2.0,
-                ),
-              ],
-            ),
-            child: Text(
-              ' ${bookingDetail['getTime']}',
-              style: TextStyle(
-                color: Color.fromARGB(255, 114, 114, 114),
-                fontSize: 17.0,
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 15,
-          ),
-
+        
           // Price booking
           Text(
             'Price:',

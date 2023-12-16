@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:uber_doctor_flutter/src/api/api_service.dart';
+import 'package:uber_doctor_flutter/src/model/AuthProvider.dart';
 import 'package:uber_doctor_flutter/src/model/doctor.dart';
 import 'package:uber_doctor_flutter/src/model/pathologycal.dart';
 
@@ -11,10 +13,9 @@ class SearchPageWidget extends StatefulWidget {
 class _SearchPageWidgetState extends State<SearchPageWidget> {
   FetchSymptomList _symptomList = FetchSymptomList();
   // FetchRecommendList _recommendList = FetchRecommendList();
-  TextEditingController _searchController = TextEditingController();
+TextEditingController _searchController = TextEditingController();
   List<Symptomslist> _symptomsList = [];
   List<Doctor> _recommendedDoctorsList = [];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

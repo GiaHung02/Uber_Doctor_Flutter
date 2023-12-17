@@ -7,7 +7,7 @@ import 'package:uber_doctor_flutter/src/theme/light_color.dart';
 extension TextStyleHelpers on TextStyle {
   TextStyle get bold => copyWith(fontWeight: FontWeight.bold);
   TextStyle get white => copyWith(color: Colors.white);
-  TextStyle get subTitleColor => copyWith(color: LightColor.subTitleTextColor);
+  TextStyle get subTitleColor => copyWith(color: const Color.fromARGB(255, 14, 16, 20));
 
 }
 

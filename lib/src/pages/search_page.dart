@@ -43,49 +43,58 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
   }
 
   Widget _buildBody() {
-  return Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      Expanded(
-        child: ListView.builder(
-          itemCount: _doctorSearchList.length,
-          itemBuilder: (context, index) {
-            var currentDoctor = _doctorSearchList[index];
-
-            return GestureDetector(
-              onTap: () {
-                _navigateToDoctorDetail(currentDoctor);
-              },
-              child: ListTile(
-                title: Row(
-                  children: [
-                    // Display doctor information as needed
-                    Text(
-                      '${currentDoctor.fullName ?? ""}',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                    ),
-                    SizedBox(width: 20),
-                    // Add additional information as needed
-                  ],
-                ),
-              ),
-            );
-          },
+  return Center(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          'What Doctor Are You Looking For?',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: const Color.fromARGB(255, 10, 10, 10)),
+          textAlign: TextAlign.center,
         ),
-      ),
-    ],
-  );
-}
+        SizedBox(height: 20),
+        Expanded(
+          child: ListView.builder(
+            itemCount: _doctorSearchList.length,
+            itemBuilder: (context, index) {
+              var currentDoctor = _doctorSearchList[index];
 
-void _navigateToDoctorDetail(Doctor doctorModel) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => DetailPage(doctors: [doctorModel], selectedIndex: 0),
+              return GestureDetector(
+                onTap: () {
+                  _navigateToDoctorDetail(currentDoctor);
+                },
+                child: ListTile(
+                  title: Row(
+                    children: [
+                      // Display doctor information as needed
+                      Text(
+                        '${currentDoctor.fullName ?? ""}',
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                      ),
+                      SizedBox(width: 20),
+                      // Add additional information as needed
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
     ),
   );
 }
 
+
+  void _navigateToDoctorDetail(Doctor doctorModel) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DetailPage(doctors: [doctorModel], selectedIndex: 0),
+      ),
+    );
+  }
 
   void _getDoctorList(String query) {
     _doctorList.getDoctorList(query: query).then((doctorList) {
@@ -101,4 +110,3 @@ void _navigateToDoctorDetail(Doctor doctorModel) {
     });
   }
 }
-

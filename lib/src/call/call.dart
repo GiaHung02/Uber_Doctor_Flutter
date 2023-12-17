@@ -24,7 +24,7 @@ class CallPage extends StatefulWidget {
 
 class CallPageState extends State<CallPage> {
   final TextEditingController singleInviteeUserIDTextCtrl =
-      TextEditingController(text: '123456');
+      TextEditingController();
   final TextEditingController groupInviteeUserIDsTextCtrl =
       TextEditingController();
 
@@ -87,8 +87,8 @@ class CallPageState extends State<CallPage> {
   Widget userListView() {
     final RandomGenerator random = RandomGenerator();
     final Faker faker = Faker();
-    final TextEditingController singleInviteeUserIDTextCtrl =
-        TextEditingController(text: '123456');
+    // final TextEditingController singleInviteeUserIDTextCtrl =
+    //     TextEditingController(text: '123456');
 
     return Center(
       child: ListView.builder(
@@ -127,10 +127,12 @@ class CallPageState extends State<CallPage> {
               const Text(')'),
             ];
           } else {
-            inviteeUsersIDTextCtrl = TextEditingController(text: '123456');
+            inviteeUsersIDTextCtrl = TextEditingController();
             userInfo = [
               Text(
-                '${faker.person.firstName()}(${('123456')})',
+                '${faker.person.firstName()}(${random.fromPattern([
+                      '######'
+                    ])})',
                 style: textStyle,
               )
             ];

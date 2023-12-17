@@ -18,11 +18,7 @@ void mainInit() async {
 
   final prefs = await SharedPreferences.getInstance();
   final cacheUserID = prefs.get(cacheUserIDKey) as String? ?? '';
-  print(
-      "=====================================================================");
-  print("=============================" + cacheUserID);
-  print(
-      "=====================================================================");
+  
   if (cacheUserID.isNotEmpty) {
     currentUser.id = cacheUserID;
 

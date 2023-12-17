@@ -1,53 +1,70 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-
 class Doctor {
   int? id;
+  String? phoneNumber;
   String? fullName;
   String? email;
-  String? spectiality;
-  int? exp;
+  String? bankingAccount;
+  String? imagePath;
+  String? address;
+  bool? accepted;
+  bool? status;
+  String? spectiality; // Chỉnh sửa tên trường để phản ánh đúng tên từ API
   int? rate;
   double? price;
-  List<int>? image; // Change the type to List<int> for image data
+  int? exp;
 
   Doctor({
     this.id,
+    this.phoneNumber,
     this.fullName,
     this.email,
+    this.bankingAccount,
+    this.imagePath,
+    this.address,
+    this.accepted,
+    this.status,
     this.spectiality,
-    this.exp,
     this.rate,
     this.price,
-    this.image,
+    this.exp,
   });
 
   factory Doctor.fromJson(Map<String, dynamic>? json) {
     return Doctor(
       id: json?['id'],
+      phoneNumber: json?['phoneNumber'],
       fullName: json?['fullName'],
       email: json?['email'],
-      spectiality: json?['spectiality'],
-      exp: json?['exp'],
+      bankingAccount: json?['bankingAccount'],
+      imagePath: json?['imagePath'],
+      address: json?['address'],
+      accepted: json?['accepted'],
+      status: json?['status'],
+      spectiality: json?['spectiality'], // Chỉnh sửa tên trường để phản ánh đúng tên từ API
       rate: json?['rate'],
       price: json?['price'],
-      image: json?['image'] != null
-          ? base64Decode(json?['image'])
-          : null, // Decode base64 string to List<int>
+      exp: json?['exp'],
     );
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = {
       'id': id,
+      'phoneNumber': phoneNumber,
       'fullName': fullName,
       'email': email,
-      'spectiality': spectiality,
-      'exp': exp,
+      'bankingAccount': bankingAccount,
+      'imagePath': imagePath,
+      'address': address,
+      'accepted': accepted,
+      'status': status,
+      'spectiality': spectiality, // Chỉnh sửa tên trường để phản ánh đúng tên từ API
       'rate': rate,
-      'price':price,
-      'image': image != null ? base64Encode(Uint8List.fromList(image!)) : null, // Encode List<int> to base64 string
+      'price': price,
+      'exp': exp,
     };
     return data;
   }

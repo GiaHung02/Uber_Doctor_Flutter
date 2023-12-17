@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:uber_doctor_flutter/main.dart';
 
 // Project imports:
 import 'src/call/call.dart';
@@ -7,7 +8,8 @@ import 'src/call/login_page.dart';
 
 class PageRouteNames {
   static const String login = '/login';
-  static const String home = '/home_page';
+  static const String home = '/home_page1';
+  static const String home2 = '/home_page';
 }
 
 const TextStyle textStyle = TextStyle(
@@ -19,6 +21,7 @@ const TextStyle textStyle = TextStyle(
 Map<String, WidgetBuilder> routes = {
   PageRouteNames.login: (context) => const LoginPage(),
   PageRouteNames.home: (context) => const CallPage(),
+  PageRouteNames.home2: (context) => const MyHomePage(title: 'home', "home"),
 };
 
 class UserInfo {

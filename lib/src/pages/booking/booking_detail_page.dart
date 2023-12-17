@@ -1,28 +1,109 @@
 import 'dart:convert';
+import 'dart:developer';
+import 'dart:ffi';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_paypal/flutter_paypal.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_navigation/get_navigation.dart';
+import 'package:one_context/one_context.dart';
+import 'package:uber_doctor_flutter/src/api/api_service.dart';
 import 'package:uber_doctor_flutter/src/constants/url_api.dart';
 import 'package:uber_doctor_flutter/src/helpers/ui_helper.dart';
 import 'package:uber_doctor_flutter/src/model/doctor.dart';
-import 'package:uber_doctor_flutter/src/theme/button.dart';
+
 import 'package:uber_doctor_flutter/src/theme/colors.dart';
 import 'package:uber_doctor_flutter/src/theme/styles.dart';
 import 'package:uber_doctor_flutter/src/widgets/custom_appbar.dart';
+import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 
-void sendSuccessDataToBackend(Map params) async {
+void sendSuccessDataToBackend(
+  double? price,
+  int? id,
+) async {
   try {
     Dio dio = Dio();
-    Response response =
-        await dio.post('$domain/api/v1/payment/create', data: params);
+    Response response = await dio.post('$domain2/api/v1/payment/create', data: {
+      "paymentPhone": "0972984029",
+      "price": price,
+      "patientName": "Hoang",
+      "message": "payment success with PayPal"
+    });
+    Response response1 =
+        await dio.post('$domain2/api/v1/booking/create', data: {
+      "statusBooking": "complete",
+      "isAvailable": true,
+      "bookingDate": null,
+      "appointmentDate": "2023-11-13",
+      "appointmentTime": "15:00:00",
+      "symptoms": "Ung Thu",
+      "notes": "Ung Thu",
+      "price": price,
+      "bookingAttachedFile": null,
+      "patients": {"id": 2},
+      "doctors": {"id": id}
+    });
+
+    // if (response.statusCode == 201) {
+    //   // UIHelper.showAlertDialog("payment success ");
+
+    //   showDialog(
+    //     context: Get.context!,
+    //     builder: (context) {
+    //       return AlertDialog(
+    //         title: const Row(
+    //           children: [
+    //             Icon(Icons.no_accounts,
+    //                 color: Colors.redAccent), // Updated icon
+    //             SizedBox(width: 17),
+    //             Expanded(
+    //               // Wrap Text in Expanded to avoid overflow
+    //               child: Text(
+    //                 'Access Denied',
+    //                 style: TextStyle(
+    //                   color: Colors.black,
+    //                   fontWeight: FontWeight.bold,
+    //                   fontSize: 16, // Adjust font size as needed
+    //                 ),
+    //                 overflow: TextOverflow.ellipsis, // Prevents text wrapping
+    //               ),
+    //             ),
+    //           ],
+    //         ),
+    //         content: Text(
+    //           'Admin cant not login product app',
+    //           style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+    //         ),
+    //         actions: <Widget>[
+    //           TextButton(
+    //             child: Text('OK', style: TextStyle(color: Colors.blueAccent)),
+    //             onPressed: () => Navigator.of(context).pop(),
+    //           ),
+    //         ],
+    //         shape:
+    //             RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    //         backgroundColor: Colors.white,
+    //       );
+    //     },
+    //   );
+    // }
 
     // Xử lý kết quả từ backend (response.data)
     print('Backend Response: ${response.data}');
-  } catch (error) {
-    // Xử lý lỗi
-    print('Error sending data to backend: $error');
+    print('Backend Response: ${response.statusCode}');
+  } catch (e) {
+    if (e is DioError) {
+      // Xử lý DioError, kiểm tra mã lỗi 403 và thực hiện hành động tương ứng
+      if (e.response?.statusCode == 403) {
+        // Xử lý lỗi 403 ở đây
+      } else {
+        // Xử lý các trường hợp khác
+      }
+    } else {
+      // Xử lý các loại lỗi khác
+    }
   }
 }
 
@@ -96,36 +177,6 @@ class DetailBody extends StatelessWidget {
           ),
           // Time booking
           Text(
-            'Date booking:',
-            style: kTitleStyle,
-          ),
-          Container(
-            padding: EdgeInsets.all(10.0),
-            decoration: BoxDecoration(
-              color: Color.fromARGB(255, 191, 212, 232),
-              borderRadius: BorderRadius.circular(10.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  blurRadius: 5.0,
-                  spreadRadius: 2.0,
-                ),
-              ],
-            ),
-            child: Text(
-              ' ${bookingDetail['getDate']}',
-              style: TextStyle(
-                color: Color.fromARGB(255, 114, 114, 114),
-                fontSize: 17.0,
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 15,
-          ),
-
-          // Time booking
-          Text(
             'Time:',
             style: kTitleStyle,
           ),
@@ -144,6 +195,34 @@ class DetailBody extends StatelessWidget {
             ),
             child: Text(
               ' ${bookingDetail['getTime']}',
+              style: TextStyle(
+                color: Color.fromARGB(255, 114, 114, 114),
+                fontSize: 17.0,
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 15,
+          ),
+          Text(
+            'Date booking:',
+            style: kTitleStyle,
+          ),
+          Container(
+            padding: EdgeInsets.all(10.0),
+            decoration: BoxDecoration(
+              color: Color.fromARGB(255, 191, 212, 232),
+              borderRadius: BorderRadius.circular(10.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  blurRadius: 5.0,
+                  spreadRadius: 2.0,
+                ),
+              ],
+            ),
+            child: Text(
+              ' ${bookingDetail['getDate']}',
               style: TextStyle(
                 color: Color.fromARGB(255, 114, 114, 114),
                 fontSize: 17.0,
@@ -241,8 +320,12 @@ class DetailBody extends StatelessWidget {
                           UIHelper.showAlertDialog('Payment Successfully',
                               title: 'Success');
                           // Navigator.of(context as BuildContext).pushNamed("/success_booking");
+                          print(params);
 
-                          sendSuccessDataToBackend(params);
+                          sendSuccessDataToBackend(
+                            doctor.price,
+                            doctor.id,
+                          );
                         },
                         onError: (error) {
                           print("onError: $error");
@@ -401,16 +484,97 @@ class DetailDoctorCard extends StatelessWidget {
                   ],
                 ),
               ),
-              Image(
-                image: NetworkImage(
-                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREpIkClC9oX1l5NYvDU-9sRGZufk18bvSFEA&usqp=CAU",
+              ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(13)),
+                child: Container(
+                  height: 100,
+                  width: 100,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: Colors.blue, // Update with your color logic
+                  ),
+                  child:
+                      doctor.imagePath != null && doctor.imagePath!.isNotEmpty
+                          ? Image.network(
+                              "$domain2/${doctor.imagePath!}",
+                              fit: BoxFit.cover,
+                            )
+                          : Container(),
                 ),
-                width: 100,
-              )
+              ),
             ],
           ),
         ),
       ),
     );
+  }
+}
+
+bool debugShowCheckedModeBanner = false;
+const localeEnglish = [Locale('en', '')];
+
+// void mainInit() {
+//   runApp(const Payment());
+// }
+
+void mainInit() => OnePlatform.app = () => Payment();
+
+class Payment extends StatelessWidget {
+  // const Payment({super.key});
+
+  Payment({super.key}) {
+    print('>> MyApp2 loaded!');
+    OneContext().key = GlobalKey<NavigatorState>();
+  }
+
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    log('>> MyApp - build()');
+    // Place that widget on most top
+
+    // return MaterialApp(
+    //   title: 'Flutter Demo',
+    //   theme: ThemeData(
+    //     primarySwatch: Colors.blue,
+    //   ),
+    //   home: const PaymentPage(title: '',),
+    // );
+
+    return OneNotification(
+      builder: (_, __) => MaterialApp(
+        title: 'Flutter Demo',
+        home: const PaymentPage(title: 'Flutter Demo Home Page'),
+        builder: OneContext().builder,
+        navigatorKey: OneContext().key,
+      ),
+    );
+  }
+}
+
+class PaymentPage extends StatefulWidget {
+  const PaymentPage({super.key, required this.title});
+
+  final String title;
+
+  @override
+  State<PaymentPage> createState() => _PaymentPageState();
+}
+
+class _PaymentPageState extends State<PaymentPage> {
+  int _counter = 0;
+
+  void _incrementCounter() {
+    setState(() {
+      _counter++;
+    });
+
+    mainInit();
+  }
+  
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    throw UnimplementedError();
   }
 }

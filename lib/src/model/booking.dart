@@ -3,8 +3,8 @@ class Booking {
   String statusBooking;
   bool? isAvailable;
   DateTime? bookingDate;
-  String? appointmentDate;
-  String? appointmentTime;
+  String appointmentDate;
+  String appointmentTime;
   String? symptoms;
   String? notes;
   double? price;
@@ -95,16 +95,16 @@ class Patient {
 class Doctor {
   int id;
   String phoneNumber;
-  String password;
+  String? password;
   String fullName;
   String email;
   double? wallet;
   String? bankingAccount;
-  String? imagePath;
+  String imagePath;
   String? address;
   bool? accepted;
   bool? status;
-  String? spectiality;
+  String spectiality;
   int? rate;
   double? price;
   int? exp;

@@ -19,7 +19,7 @@ Future<void> login({
   final prefs = await SharedPreferences.getInstance();
   prefs.setString(cacheUserIDKey, userID);
 
-  currentUser.id = '123456';
+  currentUser.id = userID;
   currentUser.name = 'user_$userID';
 }
 
@@ -33,16 +33,16 @@ Future<void> logout() async {
 void onUserLogin() {
   callController ??= ZegoUIKitPrebuiltCallController();
 
-  if (cacheUserIDKey == null) {
-    Set cacheUserIDKey = "123456" as Set;
-  }
+  // if (cacheUserIDKey == null) {
+  //   Set cacheUserIDKey = "123456" as Set;
+  // }
 
   /// 4/5. initialized ZegoUIKitPrebuiltCallInvitationService when account is logged in or re-logged in
   ZegoUIKitPrebuiltCallInvitationService().init(
     appID: 586447036 /*input your AppID*/,
     appSign:
         "1c75d562e2b3bc38338660cc44e0373f4f0a1bab1a986f1bfacc54bf3ee24da9" /*input your AppSign*/,
-    userID: cacheUserIDKey,
+    userID: currentUser.id,
     userName: currentUser.name,
     androidNotificationConfig: ZegoAndroidNotificationConfig(
       channelID: "ZegoUIKit",

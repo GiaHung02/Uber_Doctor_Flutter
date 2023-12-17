@@ -19,7 +19,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class LoginPageState extends State<LoginPage> {
-  final _userIDTextCtrl = TextEditingController(text: '123456');
+  final _userIDTextCtrl = TextEditingController(text: 'user_id');
   final _passwordVisible = ValueNotifier<bool>(false);
 
   @override
@@ -37,7 +37,7 @@ class LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(title: Text("h")),
+      appBar: AppBar(),
       body: WillPopScope(
         onWillPop: () async {
           return false;
@@ -48,29 +48,43 @@ class LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              IconButton(
-                icon: const Icon(Icons.exit_to_app_sharp),
-                iconSize: 20,
-                color: Colors.white,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MyHomePage("s", title: "title"),
-                    ),
-                  );
-                },
+             Positioned(
+                top: 20,
+                right: 10,
+                child: BackToButton(),
               ),
-
               logo(),
               const SizedBox(height: 50),
               userIDEditor(),
               // passwordEditor(),
               const SizedBox(height: 30),
               signInButton(),
+              
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget BackToButton() {
+    return Ink(
+      width: 35,
+      height: 35,
+      decoration: const BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.redAccent,
+      ),
+      child: IconButton(
+        icon: const Icon(Icons.backspace),
+        iconSize: 20,
+        color: Colors.white,
+        onPressed: () {
+          Navigator.pushNamed(
+            context,
+            PageRouteNames.home2,
+          );
+        },
       ),
     );
   }
@@ -141,7 +155,7 @@ class LoginPageState extends State<LoginPage> {
                 );
               });
             },
-      child: const Text('Sign In', style: textStyle),
+      child: const Text('Submit', style: textStyle),
     );
   }
 }

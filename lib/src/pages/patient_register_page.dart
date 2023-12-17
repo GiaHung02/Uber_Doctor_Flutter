@@ -4,8 +4,7 @@ import 'package:uber_doctor_flutter/src/pages/login_page.dart';
 
 class PatientRegisterPage extends StatefulWidget {
   const PatientRegisterPage({super.key});
-    static String verify = "";
-
+  static String verify = "";
 
   @override
   State<PatientRegisterPage> createState() => _PatientRegisterPageState();
@@ -16,6 +15,7 @@ class _PatientRegisterPageState extends State<PatientRegisterPage> {
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController countryController = TextEditingController();
   var phone = LoginPage.phoneNum;
+  bool showTermsError = false;
   var dataRegister = {
     'fullName': '',
     'phoneNumber': LoginPage.phoneNum,
@@ -71,9 +71,10 @@ class _PatientRegisterPageState extends State<PatientRegisterPage> {
           width: MediaQuery.of(context).size.width,
           padding: EdgeInsets.only(top: 50),
           decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage('images/background.jpg'),
-                  fit: BoxFit.cover)),
+              // image: DecorationImage(
+              //     image: AssetImage('images/background.jpg'),
+              //     fit: BoxFit.cover)),
+              ),
           child: Form(
             key: _formKey,
             // autovalidateMode: AutovalidateMode.always,
@@ -148,13 +149,19 @@ class _PatientRegisterPageState extends State<PatientRegisterPage> {
                             if (value != null && value.isEmpty) {
                               return 'Please enter your Phone Number';
                             }
+
+                            final String phoneNumber = value ?? "";
+                            if (int.tryParse(phoneNumber) == null) {
+                              return 'Please enter a valid Phone Number';
+                            }
                             return null;
                           },
                           onChanged: (value) {
+                            var newValue = int.parse(value).toString();
                             setState(() {
-                              dataRegister['phoneNumber'] =
-                                  int.parse(value).toString();
-                              phone = int.parse(value).toString();
+                              dataRegister['phoneNumber'] = newValue;
+
+                              phone = newValue;
                             });
                           },
                         ),
@@ -229,6 +236,20 @@ class _PatientRegisterPageState extends State<PatientRegisterPage> {
                           ],
                         ),
                       ),
+                      Container(
+                        width: 300,
+                        padding: EdgeInsets.only(left: 10),
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          showTermsError
+                              ? 'Please agree to the terms and conditions.'
+                              : '', // Nếu _isChecked là true, hiển thị chuỗi trống
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 214, 47, 35),
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
                       Center(
                         child: Stack(
                           alignment: Alignment.bottomCenter,
@@ -241,37 +262,50 @@ class _PatientRegisterPageState extends State<PatientRegisterPage> {
                                 child: ElevatedButton(
                                   // Trong hàm onPressed của nút đăng ký
                                   onPressed: () async {
-                                    if (_formKey.currentState!.validate()) {
-                                      print('form submitted');
-                                      print(dataRegister);
+                                    print(
+                                        "countryController.text type: ${countryController.text.runtimeType}");
+                                    print("phone type: ${phone.runtimeType}");
+                                    print("Data register: $dataRegister");
+                                    if (!_isChecked) {
+                                      setState(() {
+                                        showTermsError = true;
+                                      });
+                                      _formKey.currentState!.validate();
+                                    } else {
+                                      setState(() {
+                                        showTermsError = false;
+                                      });
+                                      if (_formKey.currentState!.validate()) {
+                                        await FirebaseAuth.instance
+                                            .verifyPhoneNumber(
+                                          phoneNumber:
+                                              '${countryController.text + phone}',
+                                          verificationCompleted:
+                                              (PhoneAuthCredential
+                                                  credential) {},
+                                          verificationFailed:
+                                              (FirebaseAuthException e) {},
+                                          codeSent: (String verificationId,
+                                              int? resendToken) {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(SnackBar(
+                                              content: Text(
+                                                  'Verification code sent!'),
+                                            ));
+                                            PatientRegisterPage.verify =
+                                                verificationId;
 
-                                      await FirebaseAuth.instance
-                                          .verifyPhoneNumber(
-                                        phoneNumber:
-                                            '${countryController.text + phone}',
-                                        verificationCompleted:
-                                            (PhoneAuthCredential credential) {},
-                                        verificationFailed:
-                                            (FirebaseAuthException e) {},
-                                        codeSent: (String verificationId,
-                                            int? resendToken) {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(SnackBar(
-                                            content:
-                                                Text('Verification code sent!'),
-                                          ));
-                                           PatientRegisterPage.verify = verificationId;
-
-                                          // Chuyển dataRegister sang trang verify_register
-                                          Navigator.pushNamed(
-                                            context,
-                                            'verify_register',
-                                            arguments: dataRegister,
-                                          );
-                                        },
-                                        codeAutoRetrievalTimeout:
-                                            (String verificationId) {},
-                                      );
+                                            // Chuyển dataRegister sang trang verify_register
+                                            Navigator.pushNamed(
+                                              context,
+                                              'verify_register',
+                                              arguments: dataRegister,
+                                            );
+                                          },
+                                          codeAutoRetrievalTimeout:
+                                              (String verificationId) {},
+                                        );
+                                      }
                                     }
                                   },
                                   style: ButtonStyle(
@@ -302,9 +336,5 @@ class _PatientRegisterPageState extends State<PatientRegisterPage> {
         ),
       ),
     );
-  }
-
-  void onRegister() {
-    // Do something
   }
 }

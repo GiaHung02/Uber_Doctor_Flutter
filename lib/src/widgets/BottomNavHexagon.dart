@@ -13,6 +13,10 @@ import 'package:uber_doctor_flutter/src/pages/profile_page.dart';
 import 'package:uber_doctor_flutter/src/pages/splash_page.dart';
 import 'package:uber_doctor_flutter/src/widgets/Visit_Provider.dart';
 
+
+
+
+
 const List<TabItem> items = [
   TabItem(
     icon: Icons.home,
@@ -21,6 +25,7 @@ const List<TabItem> items = [
   TabItem(
     icon: Icons.phone,
     title: 'phone',
+    
   ),
   TabItem(
     icon: Icons.coronavirus,
@@ -38,10 +43,10 @@ const List<TabItem> items = [
     icon: Icons.login_rounded,
     title: 'bookinglist',
   ),
-  TabItem(
-    icon: Icons.details_rounded,
-    title: 'detail',
-  ),
+  // TabItem(
+  //   icon: Icons.details_rounded,
+  //   title: 'detail',
+  // ),
 ];
 
 class CurrentPage extends StatelessWidget {
@@ -81,15 +86,15 @@ class CurrentPage extends StatelessWidget {
       case 1:
         // return Phone();
       case 2:
-        return SplashPage();
-      case 3:
         return BookingPage();
+      case 3:
+        return BookingListPage();
       case 4:
         return ProfilePage();
       case 5:
         return BookingListPage();
-      case 6:
-        return DetailPage(doctors: [], selectedIndex: 0,);
+      // case 6:
+      //   return DetailPage(doctors: [], selectedIndex: 0,);
 ;
       default:
         // Trang mặc định hoặc xử lý ngoại lệ

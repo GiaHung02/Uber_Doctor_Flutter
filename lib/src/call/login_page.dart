@@ -2,10 +2,13 @@
 
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:uber_doctor_flutter/main.dart';
+import 'package:uber_doctor_flutter/src/widgets/custom_appbar.dart';
 
 // Project imports:
-import 'constants.dart';
-import 'login_service.dart';
+import '../../constants.dart';
+import '../../login_service.dart';
 import 'util.dart';
 
 class LoginPage extends StatefulWidget {
@@ -34,6 +37,7 @@ class LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(),
       body: WillPopScope(
         onWillPop: () async {
           return false;
@@ -44,15 +48,43 @@ class LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+             Positioned(
+                top: 20,
+                right: 10,
+                child: BackToButton(),
+              ),
               logo(),
               const SizedBox(height: 50),
               userIDEditor(),
-              passwordEditor(),
+              // passwordEditor(),
               const SizedBox(height: 30),
               signInButton(),
+              
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget BackToButton() {
+    return Ink(
+      width: 35,
+      height: 35,
+      decoration: const BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.redAccent,
+      ),
+      child: IconButton(
+        icon: const Icon(Icons.backspace),
+        iconSize: 20,
+        color: Colors.white,
+        onPressed: () {
+          Navigator.pushNamed(
+            context,
+            PageRouteNames.home2,
+          );
+        },
       ),
     );
   }
@@ -61,14 +93,14 @@ class LoginPageState extends State<LoginPage> {
     return Center(
       child: RichText(
         text: const TextSpan(
-          text: 'ZE',
+          text: 'UBER',
           style: TextStyle(color: Colors.black, fontSize: 20),
           children: <TextSpan>[
             TextSpan(
-              text: 'GO',
+              text: 'DOC',
               style: TextStyle(color: Colors.blue),
             ),
-            TextSpan(text: 'CLOUD'),
+            TextSpan(text: 'TOR'),
           ],
         ),
       ),
@@ -84,27 +116,27 @@ class LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget passwordEditor() {
-    return ValueListenableBuilder<bool>(
-      valueListenable: _passwordVisible,
-      builder: (context, isPasswordVisible, _) {
-        return TextFormField(
-          obscureText: !isPasswordVisible,
-          decoration: InputDecoration(
-            labelText: 'Password.(Any character for test)',
-            suffixIcon: IconButton(
-              icon: Icon(
-                isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-              ),
-              onPressed: () {
-                _passwordVisible.value = !_passwordVisible.value;
-              },
-            ),
-          ),
-        );
-      },
-    );
-  }
+  // Widget passwordEditor() {
+  //   return ValueListenableBuilder<bool>(
+  //     valueListenable: _passwordVisible,
+  //     builder: (context, isPasswordVisible, _) {
+  //       return TextFormField(
+  //         obscureText: !isPasswordVisible,
+  //         decoration: InputDecoration(
+  //           labelText: 'Password.(Any character for test)',
+  //           suffixIcon: IconButton(
+  //             icon: Icon(
+  //               isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+  //             ),
+  //             onPressed: () {
+  //               _passwordVisible.value = !_passwordVisible.value;
+  //             },
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   Widget signInButton() {
     return ElevatedButton(
@@ -123,7 +155,7 @@ class LoginPageState extends State<LoginPage> {
                 );
               });
             },
-      child: const Text('Sign In', style: textStyle),
+      child: const Text('Submit', style: textStyle),
     );
   }
 }

@@ -8,13 +8,13 @@ import 'package:uber_doctor_flutter/src/model/pathologycal.dart';
 ///////// FIX PORT /////////
 
 /// API SEARCH SYMPTOMS AND RECOMMEND DOCTORS ///
-// const String domain = "http://192.168.1.105:8080";
-const String domain = "http://192.168.1.11:8080";
+const String domain = "http://192.168.1.13:8080";
+
 class FetchSymptomList {
   var data = <String, dynamic>{};
   List<Symptomslist> results = [];
-  String urlList =
-      '$domain/api/v1/pathologycal/list';
+  String urlList = '$domain/api/v1/pathologycal/list';
+  
 
   Future<List<Symptomslist>> getsymptomList({String? query}) async {
     var url = Uri.parse(urlList);
@@ -66,7 +66,8 @@ class FetchDoctorList {
       if (response.statusCode == 200) {
         data = json.decode(response.body);
         if (data.containsKey('data') && data['data'] is List) {
-          results = (data['data'] as List).map((e) => Doctor.fromJson(e)).toList();
+          results =
+              (data['data'] as List).map((e) => Doctor.fromJson(e)).toList();
           if (query != null && query.isNotEmpty) {
             results = results
                 .where((element) =>
@@ -127,7 +128,7 @@ class FetchDataException implements Exception {
 }
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 
 

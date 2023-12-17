@@ -45,12 +45,12 @@ dependencies:
   firebase_auth: ^4.14.0
   cloud_firestore: ^4.13.1
   get: ^4.6.6
-  http: ^1.1.0
+  http: ^0.13.6
   quickalert: ^1.0.2
 
   table_calendar: ^3.0.9
   lottie: ^2.7.0
-  flutter_map: ^6.0.1
+  #flutter_map: ^6.0.1
   zego_uikit_prebuilt_call: ^3.17.9
   zego_uikit_signaling_plugin: ^2.6.7
   flutter_styled_toast: ^2.2.1
@@ -62,7 +62,14 @@ dependencies:
   intl: ^0.18.1
   import_sorter: ^4.6.0
   firebase_messaging: ^14.7.6
-  google_fonts: ^6.1.0
+  google_fonts: ^4.0.4
+  flutter_paypal: ^0.2.0
+  one_context: ^2.1.0
+  flutter_lints: ^2.0.0
+  json_serializable: ^6.7.1
+  build_runner: ^2.4.6
+  dio: ^5.4.0
+  
   
 
 dev_dependencies:

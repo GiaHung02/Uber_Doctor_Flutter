@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uber_doctor_flutter/firebase_options.dart';
+import 'package:uber_doctor_flutter/src/call/call.dart';
 import 'package:uber_doctor_flutter/src/model/doctor_model.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/appointment_page.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/booking_detail_page.dart';
@@ -15,6 +16,7 @@ import 'package:uber_doctor_flutter/src/pages/doctor_register_page.dart';
 import 'package:uber_doctor_flutter/src/pages/home_page.dart';
 import 'package:uber_doctor_flutter/src/pages/login_page.dart';
 import 'package:uber_doctor_flutter/src/pages/patient_register_page.dart';
+import 'package:uber_doctor_flutter/src/pages/payment_page.dart';
 import 'package:uber_doctor_flutter/src/pages/phone_page.dart';
 import 'package:uber_doctor_flutter/src/pages/profile_page.dart';
 import 'package:uber_doctor_flutter/src/pages/search_page.dart';
@@ -102,10 +104,10 @@ class _MyHomePageState extends State<MyHomePage> {
   final pages = [
     HomePage(),
     Call(navigatorKey: GlobalKey()),
-    SymptomPage(),
+    // SymptomPage(),
     BookingDoctorListPage(),
     ProfilePage(),
-    // LoginPage(),
+    LoginPage(),
     //  DetailPage(doctors: [], selectedIndex: 0,),
     // BookingListPage(),
     AppointmentPage()

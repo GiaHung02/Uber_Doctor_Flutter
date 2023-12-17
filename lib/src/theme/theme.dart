@@ -12,7 +12,7 @@ class AppTheme {
     iconTheme: IconThemeData(color: LightColor.iconColor),
     // bottomAppBarColor: LightColor.background,
     dividerColor: LightColor.grey,
-     textTheme: GoogleFonts.notoSansTextTheme(), 
+    textTheme: GoogleFonts.notoSansTextTheme(),
   );
 
   static TextStyle titleStyle =

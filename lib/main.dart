@@ -4,26 +4,23 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uber_doctor_flutter/firebase_options.dart';
-import 'package:uber_doctor_flutter/src/call/call.dart';
 import 'package:uber_doctor_flutter/src/model/doctor_model.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/appointment_page.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/booking_detail_page.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/booking_doctor_list_page.dart';
-import 'package:uber_doctor_flutter/src/pages/booking/booking_list_page.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/booking_page.dart';
 import 'package:uber_doctor_flutter/src/pages/detail_page.dart';
-import 'package:uber_doctor_flutter/src/pages/doctor/doctor_home_page.dart';
+import 'package:uber_doctor_flutter/src/pages/doctorApp/doctor_appointment_page.dart';
+import 'package:uber_doctor_flutter/src/pages/doctorApp/doctor_home_page.dart';
+import 'package:uber_doctor_flutter/src/pages/doctorApp/doctor_profile_page.dart';
 import 'package:uber_doctor_flutter/src/pages/doctor_register_page.dart';
 import 'package:uber_doctor_flutter/src/pages/home_page.dart';
 import 'package:uber_doctor_flutter/src/pages/login_page.dart';
 import 'package:uber_doctor_flutter/src/pages/patient_register_page.dart';
-import 'package:uber_doctor_flutter/src/pages/payment_page.dart';
 import 'package:uber_doctor_flutter/src/pages/phone_page.dart';
-import 'package:uber_doctor_flutter/src/pages/profile_page.dart';
 import 'package:uber_doctor_flutter/src/pages/search_page.dart';
 import 'package:uber_doctor_flutter/src/pages/splash_page.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/success_booked.dart';
-import 'package:uber_doctor_flutter/src/pages/symptom_page.dart';
 import 'package:uber_doctor_flutter/src/pages/verify.dart';
 import 'package:uber_doctor_flutter/src/pages/verify_register.dart';
 import 'package:uber_doctor_flutter/src/theme/theme.dart';
@@ -181,8 +178,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
+////////////////////////////////////////////////////////////////////////
 /// Bac si Route
-
 class MyBsPage extends StatefulWidget {
   const MyBsPage(String s, {Key? key, required this.title}) : super(key: key);
   final String title;
@@ -196,9 +193,9 @@ class _MyBsPageState extends State<MyBsPage> {
   var _page = 0;
   final pages = [
     DoctorHomePage(),
-  LoginPage(),
-    AppointmentPage(),
-    ProfilePage(),
+ Call(navigatorKey: GlobalKey()),
+    DoctorAppointmentPage(),
+    DoctorProfilePage(),
   ];
   int visit = 0;
   double height = 30;

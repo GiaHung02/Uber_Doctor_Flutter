@@ -13,7 +13,7 @@ class AppointmentPage extends StatefulWidget {
   State<AppointmentPage> createState() => _AppointmentPageState();
 }
 
-enum FilterStatus { pending, complete, cancel }
+enum FilterStatus { upcoming, complete, cancel }
 
 class _AppointmentPageState extends State<AppointmentPage> {
   List<Booking> schedules = [];
@@ -25,7 +25,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
     fetchBookings();
   }
 
-  FilterStatus statusBooking = FilterStatus.pending;
+  FilterStatus statusBooking = FilterStatus.upcoming;
   Alignment _alignment = Alignment.centerLeft;
 
   void fetchBookings() async {
@@ -64,8 +64,8 @@ class _AppointmentPageState extends State<AppointmentPage> {
     List<dynamic> filterSchedules = schedules.where((var schedule) {
       FilterStatus scheduleStatus;
       switch (schedule.statusBooking) {
-        case 'pending':
-          scheduleStatus = FilterStatus.pending;
+        case 'upcoming':
+          scheduleStatus = FilterStatus.upcoming;
           break;
         case 'complete':
           scheduleStatus = FilterStatus.complete;
@@ -75,7 +75,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
           break;
         default:
           scheduleStatus = FilterStatus
-              .pending; // Xác định trạng thái mặc định nếu không khớp
+              .upcoming; // Xác định trạng thái mặc định nếu không khớp
       }
       return scheduleStatus == statusBooking;
     }).toList();
@@ -113,8 +113,8 @@ class _AppointmentPageState extends State<AppointmentPage> {
                               child: GestureDetector(
                             onTap: () {
                               setState(() {
-                                if (filterStatus == FilterStatus.pending) {
-                                  statusBooking = FilterStatus.pending;
+                                if (filterStatus == FilterStatus.upcoming) {
+                                  statusBooking = FilterStatus.upcoming;
                                   _alignment = Alignment.centerLeft;
                                 } else if (filterStatus ==
                                     FilterStatus.complete) {
@@ -286,8 +286,8 @@ class _AppointmentPageState extends State<AppointmentPage> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    if (_schedule.statusBooking == 'pending' ||
-                                        _schedule.statusBooking == 'upcoming')
+                                    if (_schedule.statusBooking == 'upcoming' ||
+                                        _schedule.statusBooking == 'pending')
                                       Expanded(
                                         child: OutlinedButton(
                                           onPressed: () {
@@ -328,8 +328,8 @@ class _AppointmentPageState extends State<AppointmentPage> {
                                     SizedBox(
                                       width: 20,
                                     ),
-                                    if (_schedule.statusBooking == 'pending' ||
-                                        _schedule.statusBooking == 'upcoming')
+                                    if (_schedule.statusBooking == 'upcoming' ||
+                                        _schedule.statusBooking == 'pending')
                                       Expanded(
                                         child: OutlinedButton(
                                           style: OutlinedButton.styleFrom(

@@ -35,16 +35,15 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-void _navigateToDoctorDetail(Doctor doctorModel, int index) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => DetailPage(doctors: [doctorModel], selectedIndex: 0),
-    ),
-  );
-}
-
-
+  void _navigateToDoctorDetail(Doctor doctorModel, int index) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            DetailPage(doctors: [doctorModel], selectedIndex: 0),
+      ),
+    );
+  }
 
   void _navigateToSearchPage() {
     Navigator.push(
@@ -223,56 +222,56 @@ void _navigateToDoctorDetail(Doctor doctorModel, int index) {
     );
   }
 
- Widget _doctorsList() {
-  return FutureBuilder<List<Doctor>>(
-    future: _doctorApiService.getDoctorList(),
-    builder: (context, snapshot) {
-      if (snapshot.connectionState == ConnectionState.waiting) {
-        return Center(child: CircularProgressIndicator());
-      } else if (snapshot.hasError) {
-        return Center(child: Text('Error: ${snapshot.error}'));
-      } else {
-        var data = snapshot.data;
-        if (data == null || data.isEmpty) {
-          return Center(child: Text('No doctors found'));
+  Widget _doctorsList() {
+    return FutureBuilder<List<Doctor>>(
+      future: _doctorApiService.getDoctorList(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
         } else {
-          return Column(
-            children: [
-              Expanded(
-                child: ListView.builder(
-                  itemCount: data?.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: randomColor(),
-                        child: data?[index].image != null &&
-                                data[index].image!.isNotEmpty
-                            ? Image.network(data[index].image![0] as String)
-                            : Container(),
-                      ),
-                      title: Text(
-                        '${data?[index].fullName}',
-                        style: TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                      subtitle: Text(
-                        '${data?[index].spectiality}',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      onTap: () {
-                        _navigateToDoctorDetail(data![index], index);
-                      },
-                    );
-                  },
+          var data = snapshot.data;
+          if (data == null || data.isEmpty) {
+            return Center(child: Text('No doctors found'));
+          } else {
+            return Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: data?.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: randomColor(),
+                          child: data?[index].imagePath != null &&
+                                  data[index].imagePath!.isNotEmpty
+                              ? Image.network(
+                                  data[index].imagePath![0] as String)
+                              : Container(),
+                        ),
+                        title: Text(
+                          '${data?[index].fullName}',
+                          style: TextStyle(fontWeight: FontWeight.w600),
+                        ),
+                        subtitle: Text(
+                          '${data?[index].spectiality}',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        onTap: () {
+                          _navigateToDoctorDetail(data![index], index);
+                        },
+                      );
+                    },
+                  ),
                 ),
-              ),
-            ],
-          );
+              ],
+            );
+          }
         }
-      }
-    },
-  );
-}
-
+      },
+    );
+  }
 
   Color randomColor() {
     var random = Random();

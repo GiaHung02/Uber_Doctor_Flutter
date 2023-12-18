@@ -7,6 +7,7 @@ import 'package:uber_doctor_flutter/src/model/doctor_model.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/appointment_page.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/booking_detail_page.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/booking_doctor_list_page.dart';
+import 'package:uber_doctor_flutter/src/pages/booking/booking_list_page.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/booking_page.dart';
 import 'package:uber_doctor_flutter/src/pages/detail_page.dart';
 import 'package:uber_doctor_flutter/src/pages/doctor_register_page.dart';
@@ -14,6 +15,8 @@ import 'package:uber_doctor_flutter/src/pages/home_page.dart';
 import 'package:uber_doctor_flutter/src/pages/login_page.dart';
 import 'package:uber_doctor_flutter/src/pages/patient_register_page.dart';
 import 'package:uber_doctor_flutter/src/pages/phone_page.dart';
+import 'package:uber_doctor_flutter/src/pages/profile/doctor_detail_page.dart';
+import 'package:uber_doctor_flutter/src/pages/profile/doctor_list.dart';
 import 'package:uber_doctor_flutter/src/pages/profile/doctor_profile.dart';
 import 'package:uber_doctor_flutter/src/pages/profile_page.dart';
 import 'package:uber_doctor_flutter/src/pages/search_page.dart';
@@ -68,9 +71,11 @@ class MyApp extends StatelessWidget {
         '/success_booking': (context) => AppointmentBooked(),
         '/booking_page': (context) => BookingPage(),
         '/booking_list_page': (context) => BookingDoctorListPage(),
-        '/booking_detail_page': (context) => BookingDetailPage(),
+        // '/booking_detail_page': (context) => BookingDetailPage(),
         '/pages/search_page': (context) => SearchPageWidget(),
-        '/doctor/doctor_profile': (context) => DoctorProfile(),
+        '/doctor/doctor_list_page': (context) => DoctorListPage(),
+        '/doctor/detail': (context) =>
+            DoctorDetailPage(doctors: [], selectedIndex: 0)
       },
       debugShowCheckedModeBanner: false,
     );
@@ -94,13 +99,14 @@ class _MyHomePageState extends State<MyHomePage> {
     SymptomPage(),
     BookingDoctorListPage(),
     ProfilePage(),
-    LoginPage(),
-    DoctorProfile(),
+    // LoginPage(),
+    DoctorListPage(),
     // DetailPage(
     //   doctors: [],
     //   selectedIndex: 0,
     // ),
-    AppointmentPage()
+    // BookingListPage(),
+    // AppointmentPage()
   ];
   int visit = 0;
   double height = 30;

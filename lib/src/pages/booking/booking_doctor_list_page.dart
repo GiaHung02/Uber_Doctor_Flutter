@@ -1,19 +1,20 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 // import 'package:doctor_appointment_app/models/auth_model.dart';
-import 'package:uber_doctor_flutter/src/model/data.dart';
-import 'package:uber_doctor_flutter/src/model/doctor_model.dart';
+import 'package:uber_doctor_flutter/src/api/api_service.dart';
+import 'package:uber_doctor_flutter/src/model/doctor.dart';
+import 'package:uber_doctor_flutter/src/pages/detail_page.dart';
 
 class BookingDoctorListPage extends StatefulWidget {
-  const BookingDoctorListPage({super.key});
+  BookingDoctorListPage({Key? key}) : super(key: key);
+  List<Doctor> doctors = [];
 
   @override
   State<BookingDoctorListPage> createState() => _BookingDoctorListPageState();
 }
 
 class _BookingDoctorListPageState extends State<BookingDoctorListPage> {
-  List<DoctorModel> doctorDataList = [];
+  FetchDoctorList _doctorApiService = FetchDoctorList();
   int visit = 0;
   double height = 30;
   Color colorSelect = const Color(0XFF0686F8);
@@ -23,15 +24,35 @@ class _BookingDoctorListPageState extends State<BookingDoctorListPage> {
 
   @override
   void initState() {
-    doctorDataList = doctorMapList.map((x) => DoctorModel.fromJson(x)).toList();
     super.initState();
   }
 
-  void _navigateToDoctorDetail(DoctorModel doctorModel) {
-    Navigator.pushNamed(
+  void fetchDoctorList() async {
+    try {
+      List<Doctor> fetchedDoctors = await _doctorApiService.getDoctorList();
+      setState(() {
+        widget.doctors = fetchedDoctors; // Use widget.doctors here
+      });
+    } catch (error) {
+      // Handle the error
+      print('Error fetching doctors: $error');
+    }
+  }
+
+  // void _navigateToDoctorDetail(DoctorModel doctorModel) {
+  //   Navigator.pushNamed(
+  //     context,
+  //     "/pages/detail_page",
+  //     arguments: doctorModel,
+  //   );
+  // }
+  void _navigateToDoctorDetail(Doctor doctorModel, int index) {
+    Navigator.push(
       context,
-      "/pages/detail_page",
-      arguments: doctorModel,
+      MaterialPageRoute(
+        builder: (context) =>
+            DetailPage(doctors: [doctorModel], selectedIndex: 0),
+      ),
     );
   }
 
@@ -92,106 +113,53 @@ class _BookingDoctorListPageState extends State<BookingDoctorListPage> {
   }
 
   Widget _doctorsList() {
-    return SliverList(
-      delegate: SliverChildListDelegate(
-        [
-          Padding(
-            padding: EdgeInsets.all(16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(
-                  "Please choose a Doctor",
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-          ),
-          ListView.separated(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: doctorDataList.length,
-            separatorBuilder: (context, index) => SizedBox(height: 10),
-            itemBuilder: (context, index) {
-              final doctorModel = doctorDataList[index];
-              return GestureDetector(
-                onTap: () {
-                  _navigateToDoctorDetail(doctorModel);
-                },
-                child: Container(
-                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                    boxShadow: <BoxShadow>[
-                      BoxShadow(
-                        offset: Offset(4, 4),
-                        blurRadius: 10,
-                        color: Colors.grey.withOpacity(0.2),
-                      ),
-                      BoxShadow(
-                        offset: Offset(-3, 0),
-                        blurRadius: 15,
-                        color: Colors.grey.withOpacity(0.1),
-                      )
-                    ],
-                  ),
-                  child: InkWell(
-                    // onTap: () {
-                    //   Navigator.push(
-                    //       context,
-                    //       MaterialPageRoute(
-                    //         builder: (context) => SliverDoctorDetail(),
-                    //       ));
-                    //   // _navigateToDoctorDetail(doctorModel);
-                    // },
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                    child: Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-                      child: ListTile(
-                        contentPadding: EdgeInsets.all(0),
-                        leading: ClipRRect(
-                          borderRadius: BorderRadius.all(Radius.circular(13)),
-                          child: Container(
-                            height: 55,
-                            width: 55,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: randomColor(),
-                            ),
-                            child: Image.asset(
-                              doctorModel.image,
-                              height: 50,
-                              width: 50,
-                              fit: BoxFit.contain,
-                            ),
-                          ),
+    return FutureBuilder<List<Doctor>>(
+      future: _doctorApiService.getDoctorList(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else {
+          var data = snapshot.data;
+          if (data == null || data.isEmpty) {
+            return Center(child: Text('No doctors found'));
+          } else {
+            return Column(
+              children: [
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: data?.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: randomColor(),
+                          child: data?[index].imagePath != null &&
+                                  data[index].imagePath!.isNotEmpty
+                              ? Image.network(
+                                  data[index].imagePath![0] as String)
+                              : Container(),
                         ),
                         title: Text(
-                          doctorModel.name,
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
+                          '${data?[index].fullName}',
+                          style: TextStyle(fontWeight: FontWeight.w600),
                         ),
                         subtitle: Text(
-                          doctorModel.type,
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
+                          'Khoa: ${data?[index].spectiality}',
+                          style: TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        trailing: Icon(
-                          Icons.keyboard_arrow_right,
-                          size: 30,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                      ),
-                    ),
+                        onTap: () {
+                          _navigateToDoctorDetail(data![index], index);
+                        },
+                      );
+                    },
                   ),
                 ),
-              );
-            },
-          ),
-        ],
-      ),
+              ],
+            );
+          }
+        }
+      },
     );
   }
 
@@ -218,7 +186,6 @@ class _BookingDoctorListPageState extends State<BookingDoctorListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-       
         elevation: 0,
         backgroundColor: Theme.of(context).backgroundColor,
         // leading: Icon(
@@ -232,20 +199,20 @@ class _BookingDoctorListPageState extends State<BookingDoctorListPage> {
             size: 30,
             color: Colors.grey,
           ),
-        SizedBox(width: 10,),
+          SizedBox(
+            width: 10,
+          ),
         ],
       ),
-      body: CustomScrollView(
-        slivers: <Widget>[
-          SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                _searchField(),
-                // _category(),
-              ],
-            ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // _header(),
+          _searchField(),
+          // _category(),
+          Expanded(
+            child: _doctorsList(),
           ),
-          _doctorsList(),
         ],
       ),
     );

@@ -1,16 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
 import 'package:provider/provider.dart';
-import 'package:uber_doctor_flutter/src/model/doctor_model.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/booking_list_page.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/booking_page.dart';
-
-import 'package:uber_doctor_flutter/src/pages/detail_page.dart';
 import 'package:uber_doctor_flutter/src/pages/home_page.dart';
-import 'package:uber_doctor_flutter/src/pages/login_page.dart';
-import 'package:uber_doctor_flutter/src/pages/phone_page.dart';
 import 'package:uber_doctor_flutter/src/pages/profile_page.dart';
-import 'package:uber_doctor_flutter/src/pages/splash_page.dart';
 import 'package:uber_doctor_flutter/src/widgets/Visit_Provider.dart';
 
 
@@ -48,6 +42,26 @@ const List<TabItem> items = [
   //   title: 'detail',
   // ),
 ];
+const List<TabItem> doctoritems = [
+  TabItem(
+    icon: Icons.home,
+    title: 'Home',
+  ),
+ TabItem(
+    icon: Icons.phone,
+    title: 'phone',
+    
+  ),
+
+  TabItem(
+    icon: Icons.calendar_month,
+    title: 'Appointment',
+  ),
+  TabItem(
+    icon: Icons.account_box,
+    title: 'profile',
+  ),
+];
 
 class CurrentPage extends StatelessWidget {
   Color colorSelect = const Color(0XFF0686F8);
@@ -79,7 +93,6 @@ class CurrentPage extends StatelessWidget {
 
   Widget _buildContent(BuildContext context) {
     final visit = context.watch<VisitProvider>().visit;
-
     switch (visit) {
       case 0:
         return HomePage();
@@ -102,3 +115,5 @@ class CurrentPage extends StatelessWidget {
     }
   }
 }
+
+

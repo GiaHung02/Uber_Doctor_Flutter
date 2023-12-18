@@ -126,7 +126,7 @@ class DetailPage extends StatelessWidget {
                             ),
                             ProgressWidget(
                               value: (selectedDoctor.price ?? 0).toDouble(),
-                              totalValue: 10,
+                              totalValue: 100000,
                               activeColor: Color.fromARGB(255, 12, 248, 103),
                               backgroundColor: LightColor.grey.withOpacity(.3),
                               title: "Price",
@@ -148,7 +148,7 @@ class DetailPage extends StatelessWidget {
                         ),
                         Text("About", style: titleStyle).vP16,
                         Text(
-                          selectedDoctor.email ?? '',
+                          selectedDoctor.description ?? '',
                           style: TextStyles.body.subTitleColor,
                         ),
                         Padding(

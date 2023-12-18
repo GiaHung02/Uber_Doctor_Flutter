@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:uber_doctor_flutter/main.dart';
 import 'package:uber_doctor_flutter/src/pages/home_page.dart';
+import 'package:uber_doctor_flutter/src/pages/login_page.dart';
 
 import 'package:uber_doctor_flutter/src/theme/extention.dart';
 import 'package:uber_doctor_flutter/src/theme/light_color.dart';
@@ -18,7 +19,10 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
      Future.delayed(Duration(seconds: 2)).then((_) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => MyHomePage('0', title: 'Home page',)));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) =>
+       MyBsPage('0', title: 'Home page',)
+      // LoginPage(),
+       ));
     });
     super.initState();
   }
@@ -30,7 +34,7 @@ class _SplashPageState extends State<SplashPage> {
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage("assets/images/hitler.jpg"),
+                image: AssetImage("assets/images/wallpaper.jpg"),
                 fit: BoxFit.fill,
               ),
             ),
@@ -58,9 +62,9 @@ class _SplashPageState extends State<SplashPage> {
                   flex: 2,
                   child: SizedBox(),
                 ),
-                Image.asset("assets/images/nazi.jpg", height: 100,),
+                // Image.asset("assets/images/nazi.jpg", height: 100,),
                 Text(
-                  "Time Health",
+                  "Uber Doctor",
                   style: TextStyles.h1Style.white,
                 ),
                 Text(

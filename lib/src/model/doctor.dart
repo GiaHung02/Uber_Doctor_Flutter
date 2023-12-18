@@ -15,6 +15,7 @@ class Doctor {
   int? rate;
   double? price;
   int? exp;
+  String? description;
 
   Doctor({
     this.id,
@@ -30,6 +31,7 @@ class Doctor {
     this.rate,
     this.price,
     this.exp,
+    this.description
   });
 
   factory Doctor.fromJson(Map<String, dynamic>? json) {
@@ -47,6 +49,7 @@ class Doctor {
       rate: json?['rate'],
       price: json?['price'],
       exp: json?['exp'],
+      description: json?['description']
     );
   }
 
@@ -65,6 +68,7 @@ class Doctor {
       'rate': rate,
       'price': price,
       'exp': exp,
+      'description': description
     };
     return data;
   }

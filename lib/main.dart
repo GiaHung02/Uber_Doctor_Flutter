@@ -12,6 +12,7 @@ import 'package:uber_doctor_flutter/src/pages/booking/booking_doctor_list_page.d
 import 'package:uber_doctor_flutter/src/pages/booking/booking_list_page.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/booking_page.dart';
 import 'package:uber_doctor_flutter/src/pages/detail_page.dart';
+import 'package:uber_doctor_flutter/src/pages/doctor/doctor_home_page.dart';
 import 'package:uber_doctor_flutter/src/pages/doctor_register_page.dart';
 import 'package:uber_doctor_flutter/src/pages/home_page.dart';
 import 'package:uber_doctor_flutter/src/pages/login_page.dart';
@@ -75,14 +76,19 @@ class MyApp extends StatelessWidget {
           'verify_register': (context) => MyVerifyRegister(),
           'doctor/register': (context) => DoctorRegisterPage(),
           'patient/register': (context) => PatientRegisterPage(),
-           'pages/detail_page': (context) =>
-            DetailPage(doctors: [], selectedIndex: 0,),
+          'pages/detail_page': (context) => DetailPage(
+                doctors: [],
+                selectedIndex: 0,
+              ),
           '/success_booking': (context) => AppointmentBooked(),
           '/booking_page': (context) => BookingPage(),
           '/booking_list_page': (context) => BookingDoctorListPage(),
           '/booking_detail_page': (context) => BookingDetailPage(),
           'login': (context) => LoginPage(),
-            '/pages/search_page': (context) => SearchPageWidget(),
+          '/pages/search_page': (context) => SearchPageWidget(),
+
+          //Bs navigate
+          '/bs_home_page': (context) => MyBsPage(title: 'bs home', 'bs home'),
         },
         debugShowCheckedModeBanner: false,
       ),
@@ -106,8 +112,8 @@ class _MyHomePageState extends State<MyHomePage> {
     Call(navigatorKey: GlobalKey()),
     // SymptomPage(),
     BookingDoctorListPage(),
-    ProfilePage(),
-    LoginPage(),
+    // ProfilePage(),
+    // LoginPage(),
     //  DetailPage(doctors: [], selectedIndex: 0,),
     // BookingListPage(),
     AppointmentPage()
@@ -171,6 +177,56 @@ class _MyHomePageState extends State<MyHomePage> {
         chipStyle: const ChipStyle(drawHexagon: true),
       ),
       body: pages[_page],
+    );
+  }
+}
+
+/// Bac si Route
+
+class MyBsPage extends StatefulWidget {
+  const MyBsPage(String s, {Key? key, required this.title}) : super(key: key);
+  final String title;
+
+  @override
+  State<MyBsPage> createState() => _MyBsPageState();
+}
+
+// khai bao cac trang de dieu huong den
+class _MyBsPageState extends State<MyBsPage> {
+  var _page = 0;
+  final pages = [
+    DoctorHomePage(),
+  LoginPage(),
+    AppointmentPage(),
+    ProfilePage(),
+  ];
+  int visit = 0;
+  double height = 30;
+  Color colorSelect = const Color(0XFF0686F8);
+  Color color = const Color(0XFF7AC0FF);
+  Color color2 = const Color(0XFF96B1FD);
+  Color bgColor = const Color(0XFF1752FE);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      bottomNavigationBar: BottomBarInspiredOutside(
+        items: doctoritems,
+        backgroundColor: bgColor,
+        color: color2,
+        colorSelected: Colors.white,
+        indexSelected: visit,
+        onTap: (index) => setState(() {
+          visit = index;
+          _page = index;
+        }),
+        top: -28,
+        animated: true,
+        itemStyle: ItemStyle.hexagon,
+        chipStyle: const ChipStyle(drawHexagon: true),
+      ),
+      body: pages[_page],
+    
     );
   }
 }

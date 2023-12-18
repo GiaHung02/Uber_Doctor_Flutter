@@ -43,10 +43,13 @@ class LoginPageState extends State<LoginPage> {
           return false;
         },
         child: Padding(
+          
           padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 50),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
+            
+          
             children: [
              Positioned(
                 top: 20,

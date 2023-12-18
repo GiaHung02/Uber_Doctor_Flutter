@@ -19,6 +19,7 @@ import 'package:uber_doctor_flutter/src/pages/patient_register_page.dart';
 import 'package:uber_doctor_flutter/src/pages/payment_page.dart';
 import 'package:uber_doctor_flutter/src/pages/phone_page.dart';
 import 'package:uber_doctor_flutter/src/pages/profile_page.dart';
+import 'package:uber_doctor_flutter/src/pages/push_notication.dart';
 import 'package:uber_doctor_flutter/src/pages/search_page.dart';
 import 'package:uber_doctor_flutter/src/pages/splash_page.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/success_booked.dart';
@@ -106,9 +107,10 @@ class _MyHomePageState extends State<MyHomePage> {
     Call(navigatorKey: GlobalKey()),
     // SymptomPage(),
     BookingDoctorListPage(),
-    ProfilePage(),
+    // ProfilePage(),
     LoginPage(),
-    //  DetailPage(doctors: [], selectedIndex: 0,),
+    // Push(),
+     DetailPage(doctors: [], selectedIndex: 0,),
     // BookingListPage(),
     AppointmentPage()
   ];

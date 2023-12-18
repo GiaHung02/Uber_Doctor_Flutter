@@ -18,6 +18,7 @@ import 'package:uber_doctor_flutter/src/theme/colors.dart';
 import 'package:uber_doctor_flutter/src/theme/styles.dart';
 import 'package:uber_doctor_flutter/src/widgets/custom_appbar.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
+import 'package:flutter_paypal_payment/flutter_paypal_payment.dart';
 
 void sendSuccessDataToBackend(
   double? price,
@@ -36,7 +37,7 @@ void sendSuccessDataToBackend(
       "statusBooking": "complete",
       "isAvailable": true,
       "bookingDate": null,
-      "appointmentDate": "2023-11-13",
+      "appointmentDate": "19/12/2023",
       "appointmentTime": "15:00:00",
       "symptoms": "Ung Thu",
       "notes": "Ung Thu",
@@ -141,210 +142,212 @@ class DetailBody extends StatelessWidget {
   Widget build(BuildContext context) {
     //lấy dữ liệu từ trang booking
     final bookingDetail = ModalRoute.of(context)!.settings.arguments as Map;
+
     //decode tu json
     final doctor = Doctor.fromJson(jsonDecode(bookingDetail["doctor"]));
+    // final bookingDetail = BookingDetailPage.fromJson(jsonDecode(bookingDetail["booking"]));
     return Container(
-      padding: EdgeInsets.all(20),
-      margin: EdgeInsets.only(bottom: 30),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Container(
-            padding: EdgeInsets.all(10.0),
-            decoration: BoxDecoration(
-              color: Color.fromARGB(255, 222, 226, 230),
-              borderRadius: BorderRadius.circular(10.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Color.fromARGB(255, 195, 193, 193).withOpacity(0.5),
-                  blurRadius: 5.0,
-                  spreadRadius: 2.0,
-                ),
-              ],
-            ),
-            child: Column(children: [
-              DetailDoctorCard(
-                doctor: doctor,
-              ),
-              SizedBox(
-                height: 15,
-              ),
-              DoctorInfo(doctor: doctor),
-            ]),
-          ),
-          SizedBox(
-            height: 12,
-          ),
-          // Time booking
-          Text(
-            'Time:',
-            style: kTitleStyle,
-          ),
-          Container(
-            padding: EdgeInsets.all(10.0),
-            decoration: BoxDecoration(
-              color: Color.fromARGB(255, 191, 212, 232),
-              borderRadius: BorderRadius.circular(10.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  blurRadius: 5.0,
-                  spreadRadius: 2.0,
-                ),
-              ],
-            ),
-            child: Text(
-              ' ${bookingDetail['getTime']}',
-              style: TextStyle(
-                color: Color.fromARGB(255, 114, 114, 114),
-                fontSize: 17.0,
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 15,
-          ),
-          Text(
-            'Date booking:',
-            style: kTitleStyle,
-          ),
-          Container(
-            padding: EdgeInsets.all(10.0),
-            decoration: BoxDecoration(
-              color: Color.fromARGB(255, 191, 212, 232),
-              borderRadius: BorderRadius.circular(10.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  blurRadius: 5.0,
-                  spreadRadius: 2.0,
-                ),
-              ],
-            ),
-            child: Text(
-              ' ${bookingDetail['getDate']}',
-              style: TextStyle(
-                color: Color.fromARGB(255, 114, 114, 114),
-                fontSize: 17.0,
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 15,
-          ),
-
-          // Price booking
-          Text(
-            'Price:',
-            style: kTitleStyle,
-          ),
-          Container(
-            padding: EdgeInsets.all(10.0),
-            decoration: BoxDecoration(
-              color: Color.fromARGB(255, 191, 212, 232),
-              borderRadius: BorderRadius.circular(10.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  blurRadius: 5.0,
-                  spreadRadius: 2.0,
-                ),
-              ],
-            ),
-            child: Text(
-              '${doctor.price} VND',
-              style: TextStyle(
-                color: Color.fromARGB(255, 114, 114, 114),
-                fontSize: 17.0,
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 25,
-          ),
-          ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => UsePaypal(
-                        sandboxMode: true,
-                        clientId: "${Constants.clientId}",
-                        secretKey: "${Constants.secretKey}",
-                        returnURL: "${Constants.returnURL}",
-                        cancelURL: "${Constants.cancelURL}",
-                        transactions: [
-                          {
-                            "amount": {
-                              "total": '${doctor.price}',
-                              // "total": '',
-                              "currency": "USD",
-                              // "details": {
-                              //   "subtotal": '10.12',
-                              //   "shipping": '0',
-                              //   "shipping_discount": 0
-                              // }
-                            },
-                            "description":
-                                "The payment transaction description.",
-                            // "payment_options": {
-                            //   "allowed_payment_method":
-                            //       "INSTANT_FUNDING_SOURCE"
-                            // },
-                            // "item_list": {
-                            //   "items": [
-                            //     {
-                            //       "name": "A demo product",
-                            //       "quantity": 1,
-                            //       "price": '10.12',
-                            //       "currency": "USD"
-                            //     }
-                            //   ],
-
-                            //   // shipping address is not required though
-                            //   "shipping_address": {
-                            //     "recipient_name": "Jane Foster",
-                            //     "line1": "Travis County",
-                            //     "line2": "",
-                            //     "city": "Austin",
-                            //     "country_code": "US",
-                            //     "postal_code": "73301",
-                            //     "phone": "+00000000",
-                            //     "state": "Texas"
-                            //   },
-                            // }
-                          }
-                        ],
-                        note: "Contact us for any questions on your order.",
-                        onSuccess: (Map params) {
-                          print("onSuccess: $params");
-                          UIHelper.showAlertDialog('Payment Successfully',
-                              title: 'Success');
-                          // Navigator.of(context as BuildContext).pushNamed("/success_booking");
-                          print(params);
-
-                          sendSuccessDataToBackend(
-                            doctor.price,
-                            doctor.id,
-                          );
-                        },
-                        onError: (error) {
-                          print("onError: $error");
-                          UIHelper.showAlertDialog(
-                              'Unable to completet the Payment',
-                              title: 'Error');
-                        },
-                        onCancel: (params) {
-                          print('cancelled: $params');
-                          UIHelper.showAlertDialog('Payment Cannceled',
-                              title: 'Cancel');
-                        }),
+        padding: EdgeInsets.all(20),
+        margin: EdgeInsets.only(bottom: 30),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              padding: EdgeInsets.all(10.0),
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 222, 226, 230),
+                borderRadius: BorderRadius.circular(10.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Color.fromARGB(255, 195, 193, 193).withOpacity(0.5),
+                    blurRadius: 5.0,
+                    spreadRadius: 2.0,
                   ),
-                );
-              },
-              child: Text('Payment Booking'))
-        ],
-      ),
-    );
+                ],
+              ),
+              child: Column(children: [
+                DetailDoctorCard(
+                  doctor: doctor,
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                DoctorInfo(doctor: doctor),
+              ]),
+            ),
+            SizedBox(
+              height: 12,
+            ),
+            // Time booking
+            Text(
+              'Time:',
+              style: kTitleStyle,
+            ),
+            Container(
+              padding: EdgeInsets.all(10.0),
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 191, 212, 232),
+                borderRadius: BorderRadius.circular(10.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    blurRadius: 5.0,
+                    spreadRadius: 2.0,
+                  ),
+                ],
+              ),
+              child: Text(
+                ' ${bookingDetail['getTime']}',
+                style: TextStyle(
+                  color: Color.fromARGB(255, 114, 114, 114),
+                  fontSize: 17.0,
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            Text(
+              'Date booking:',
+              style: kTitleStyle,
+            ),
+            Container(
+              padding: EdgeInsets.all(10.0),
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 191, 212, 232),
+                borderRadius: BorderRadius.circular(10.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    blurRadius: 5.0,
+                    spreadRadius: 2.0,
+                  ),
+                ],
+              ),
+              child: Text(
+                ' ${bookingDetail['getDate']}',
+                style: TextStyle(
+                  color: Color.fromARGB(255, 114, 114, 114),
+                  fontSize: 17.0,
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 15,
+            ),
+
+            // Price booking
+            Text(
+              'Price:',
+              style: kTitleStyle,
+            ),
+            Container(
+              padding: EdgeInsets.all(10.0),
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 191, 212, 232),
+                borderRadius: BorderRadius.circular(10.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    blurRadius: 5.0,
+                    spreadRadius: 2.0,
+                  ),
+                ],
+              ),
+              child: Text(
+                '${doctor.price} VND',
+                style: TextStyle(
+                  color: Color.fromARGB(255, 114, 114, 114),
+                  fontSize: 17.0,
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 25,
+            ),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => UsePaypal(
+                          sandboxMode: true,
+                          clientId: "${Constants.clientId}",
+                          secretKey: "${Constants.secretKey}",
+                          returnURL: "${Constants.returnURL}",
+                          cancelURL: "${Constants.cancelURL}",
+                          transactions: [
+                            {
+                              "amount": {
+                                "total": '${doctor.price}',
+                                // "total": '',
+                                "currency": "USD",
+                                // "details": {
+                                //   "subtotal": '10.12',
+                                //   "shipping": '0',
+                                //   "shipping_discount": 0
+                                // }
+                              },
+                              "description":
+                                  "The payment transaction description.",
+                              // "payment_options": {
+                              //   "allowed_payment_method":
+                              //       "INSTANT_FUNDING_SOURCE"
+                              // },
+                              // "item_list": {
+                              //   "items": [
+                              //     {
+                              //       "name": "A demo product",
+                              //       "quantity": 1,
+                              //       "price": '10.12',
+                              //       "currency": "USD"
+                              //     }
+                              //   ],
+
+                              //   // shipping address is not required though
+                              //   "shipping_address": {
+                              //     "recipient_name": "Jane Foster",
+                              //     "line1": "Travis County",
+                              //     "line2": "",
+                              //     "city": "Austin",
+                              //     "country_code": "US",
+                              //     "postal_code": "73301",
+                              //     "phone": "+00000000",
+                              //     "state": "Texas"
+                              //   },
+                              // }
+                            }
+                          ],
+                          note: "Contact us for any questions on your order.",
+                          onSuccess: (Map params) {
+                            print("onSuccess: $params");
+                            UIHelper.showAlertDialog('Payment Successfully',
+                                title: 'Success');
+                            // Navigator.of(context as BuildContext).pushNamed("/success_booking");
+                            print(params);
+
+                            sendSuccessDataToBackend(
+                              doctor.price,
+                              doctor.id,
+                              // bookingDetail.
+                            );
+                          },
+                          onError: (error) {
+                            print("onError: $error");
+                            UIHelper.showAlertDialog(
+                                'Unable to completet the Payment',
+                                title: 'Error');
+                          },
+                          onCancel: (params) {
+                            print('cancelled: $params');
+                            UIHelper.showAlertDialog('Payment Cannceled',
+                                title: 'Cancel');
+                          }),
+                    ),
+                  );
+                },
+                child: Text('Payment Booking'))
+          ],
+        ));
   }
 }
 
@@ -571,7 +574,7 @@ class _PaymentPageState extends State<PaymentPage> {
 
     mainInit();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build

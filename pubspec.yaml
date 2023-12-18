@@ -61,7 +61,7 @@ dependencies:
   zego_uikit: ^2.14.9
   intl: ^0.18.1
   import_sorter: ^4.6.0
-  firebase_messaging: ^14.7.6
+  firebase_messaging: ^14.7.9
   google_fonts: ^4.0.4
   flutter_paypal: ^0.2.0
   one_context: ^2.1.0
@@ -69,6 +69,10 @@ dependencies:
   json_serializable: ^6.7.1
   build_runner: ^2.4.6
   dio: ^5.4.0
+  firebase_analytics: ^10.7.4
+  onesignal_flutter: ^5.0.4
+  flutter_paypal_payment: ^1.0.6
+
   
   
 

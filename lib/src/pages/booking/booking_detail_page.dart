@@ -1,28 +1,61 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:ffi';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_paypal/flutter_paypal.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/get_navigation.dart';
 import 'package:one_context/one_context.dart';
-import 'package:uber_doctor_flutter/src/api/api_service.dart';
 import 'package:uber_doctor_flutter/src/constants/url_api.dart';
-import 'package:uber_doctor_flutter/src/helpers/ui_helper.dart';
-import 'package:uber_doctor_flutter/src/model/doctor.dart';
-
+import 'package:uber_doctor_flutter/src/model/booking.dart';
+import 'package:uber_doctor_flutter/src/theme/button.dart';
 import 'package:uber_doctor_flutter/src/theme/colors.dart';
 import 'package:uber_doctor_flutter/src/theme/styles.dart';
 import 'package:uber_doctor_flutter/src/widgets/custom_appbar.dart';
-import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
+
+import '../../helpers/ui_helper.dart';
 
 void sendSuccessDataToBackend(
-  double? price,
-  int? id,
-) async {
+    double? price, int? id, Map<String, dynamic> bookingDetail) async {
+  // Ensure that "patients" key exists and is a map
+// Ensure that "patients" key exists and is a map
+  final dynamic patientsValue = bookingDetail['patients'];
+  String convertDateFormat(String inputDate) {
+    // Chuyển đổi từ "12/19/2023" sang "2023-12-19"
+    List<String> dateParts = inputDate.split('/');
+    String formattedDate = "${dateParts[2]}-${dateParts[0]}-${dateParts[1]}";
+    return formattedDate;
+  }
+
+  String formattedAppointmentDate =
+      convertDateFormat(bookingDetail["appointmentDate"]);
+
+// Parse JSON string if "patients" key is a String
+  final Map<String, dynamic>? patientsData = patientsValue is String
+      ? jsonDecode(patientsValue)
+      : patientsValue as Map<String, dynamic>?;
+
+// Extract patient ID if "patients" key is a map and contains "id" property
+  final int? patientId = patientsData != null ? patientsData['id'] : null;
+//     print('>>>>>>>>>>>>>>>>>>>>>>appointmentDate: ${bookingDetail["appointmentDate"]}');
+//     print('>>>>>>>>>>>>>>>>>>>>>>appointmentTime: ${bookingDetail["appointmentTime"]}');
+//     print('>>>>>>>>>>>>>>>>>>>>>>symptoms: ${bookingDetail["symptoms"]}');
+//     print('>>>>>>>>>>>>>>>>>>>>>>notes: ${bookingDetail["notes"]}');
+//     print('>>>>>>>>>>>>>>>>>>>>>>doctỏ id: ${id}');
+//     print('>>>>>>>>>>>>>>>>>>>>>>price: ${price}');
+// print('Dữ Liệu Yêu Cầu: ${json.encode({
+//   "appointmentDate": bookingDetail["appointmentDate"],
+//   "appointmentTime": bookingDetail["appointmentTime"],
+//   "symptoms": bookingDetail["symptoms"],
+//   "notes": bookingDetail["notes"],
+//   "patients": {
+//     "id": patientId,
+//     // Các trường bệnh nhân khác
+//   },
+//   "doctors": {
+//     "id": id,
+//     // Các trường bác sĩ khác
+//   }
+// })}');
   try {
     Dio dio = Dio();
     Response response = await dio.post('$domain2/api/v1/payment/create', data: {
@@ -31,68 +64,26 @@ void sendSuccessDataToBackend(
       "patientName": "Hoang",
       "message": "payment success with PayPal"
     });
+
     Response response1 =
         await dio.post('$domain2/api/v1/booking/create', data: {
-      "statusBooking": "complete",
-      "isAvailable": true,
-      "bookingDate": null,
-      "appointmentDate": "2023-11-13",
-      "appointmentTime": "15:00:00",
-      "symptoms": "Ung Thu",
-      "notes": "Ung Thu",
+      "appointmentDate": formattedAppointmentDate,
+      "appointmentTime": bookingDetail["appointmentTime"],
+      "symptoms": bookingDetail["symptoms"],
+      "notes": bookingDetail["notes"],
       "price": price,
       "bookingAttachedFile": null,
-      "patients": {"id": 2},
-      "doctors": {"id": id}
+      "patients": {
+        "id": patientId, 
+      },
+      "doctors": {
+        "id": id,
+      }
     });
 
-    // if (response.statusCode == 201) {
-    //   // UIHelper.showAlertDialog("payment success ");
-
-    //   showDialog(
-    //     context: Get.context!,
-    //     builder: (context) {
-    //       return AlertDialog(
-    //         title: const Row(
-    //           children: [
-    //             Icon(Icons.no_accounts,
-    //                 color: Colors.redAccent), // Updated icon
-    //             SizedBox(width: 17),
-    //             Expanded(
-    //               // Wrap Text in Expanded to avoid overflow
-    //               child: Text(
-    //                 'Access Denied',
-    //                 style: TextStyle(
-    //                   color: Colors.black,
-    //                   fontWeight: FontWeight.bold,
-    //                   fontSize: 16, // Adjust font size as needed
-    //                 ),
-    //                 overflow: TextOverflow.ellipsis, // Prevents text wrapping
-    //               ),
-    //             ),
-    //           ],
-    //         ),
-    //         content: Text(
-    //           'Admin cant not login product app',
-    //           style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-    //         ),
-    //         actions: <Widget>[
-    //           TextButton(
-    //             child: Text('OK', style: TextStyle(color: Colors.blueAccent)),
-    //             onPressed: () => Navigator.of(context).pop(),
-    //           ),
-    //         ],
-    //         shape:
-    //             RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-    //         backgroundColor: Colors.white,
-    //       );
-    //     },
-    //   );
-    // }
-
     // Xử lý kết quả từ backend (response.data)
-    print('Backend Response: ${response.data}');
-    print('Backend Response: ${response.statusCode}');
+    // print('Backend Response: ${response1.data}');
+    print('>>>>>>>>>>>>>>>>>>>>>>>>>>> Backend Response: ${response1.statusCode}');
   } catch (e) {
     if (e is DioError) {
       // Xử lý DioError, kiểm tra mã lỗi 403 và thực hiện hành động tương ứng
@@ -194,7 +185,7 @@ class DetailBody extends StatelessWidget {
               ],
             ),
             child: Text(
-              ' ${bookingDetail['getTime']}',
+              ' ${bookingDetail['appointmentTime']}',
               style: TextStyle(
                 color: Color.fromARGB(255, 114, 114, 114),
                 fontSize: 17.0,
@@ -204,6 +195,7 @@ class DetailBody extends StatelessWidget {
           SizedBox(
             height: 15,
           ),
+
           Text(
             'Date booking:',
             style: kTitleStyle,
@@ -222,7 +214,7 @@ class DetailBody extends StatelessWidget {
               ],
             ),
             child: Text(
-              ' ${bookingDetail['getDate']}',
+              ' ${bookingDetail['appointmentDate']}',
               style: TextStyle(
                 color: Color.fromARGB(255, 114, 114, 114),
                 fontSize: 17.0,
@@ -232,6 +224,73 @@ class DetailBody extends StatelessWidget {
           SizedBox(
             height: 15,
           ),
+          if (bookingDetail['symptoms'] != null &&
+              bookingDetail['symptoms'] != '')
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  'Symptoms:',
+                  style: kTitleStyle,
+                ),
+                Container(
+                  padding: EdgeInsets.all(10.0),
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 191, 212, 232),
+                    borderRadius: BorderRadius.circular(10.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        blurRadius: 5.0,
+                        spreadRadius: 2.0,
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    ' ${bookingDetail['symptoms']}',
+                    style: TextStyle(
+                      color: Color.fromARGB(255, 114, 114, 114),
+                      fontSize: 17.0,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 15),
+              ],
+            ),
+
+          // Kiểm tra và hiển thị Notes nếu có dữ liệu
+          if (bookingDetail['notes'] != null && bookingDetail['notes'] != '')
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  'Notes:',
+                  style: kTitleStyle,
+                ),
+                Container(
+                  padding: EdgeInsets.all(10.0),
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 191, 212, 232),
+                    borderRadius: BorderRadius.circular(10.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        blurRadius: 5.0,
+                        spreadRadius: 2.0,
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    ' ${bookingDetail['notes']}',
+                    style: TextStyle(
+                      color: Color.fromARGB(255, 114, 114, 114),
+                      fontSize: 17.0,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 15),
+              ],
+            ),
 
           // Price booking
           Text(
@@ -252,7 +311,7 @@ class DetailBody extends StatelessWidget {
               ],
             ),
             child: Text(
-              '${doctor.price} VND',
+              '${doctor.price} USD',
               style: TextStyle(
                 color: Color.fromARGB(255, 114, 114, 114),
                 fontSize: 17.0,
@@ -262,86 +321,61 @@ class DetailBody extends StatelessWidget {
           SizedBox(
             height: 25,
           ),
-          ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => UsePaypal(
-                        sandboxMode: true,
-                        clientId: "${Constants.clientId}",
-                        secretKey: "${Constants.secretKey}",
-                        returnURL: "${Constants.returnURL}",
-                        cancelURL: "${Constants.cancelURL}",
-                        transactions: [
-                          {
-                            "amount": {
-                              "total": '${doctor.price}',
-                              // "total": '',
-                              "currency": "USD",
-                              // "details": {
-                              //   "subtotal": '10.12',
-                              //   "shipping": '0',
-                              //   "shipping_discount": 0
-                              // }
-                            },
-                            "description":
-                                "The payment transaction description.",
-                            // "payment_options": {
-                            //   "allowed_payment_method":
-                            //       "INSTANT_FUNDING_SOURCE"
-                            // },
-                            // "item_list": {
-                            //   "items": [
-                            //     {
-                            //       "name": "A demo product",
-                            //       "quantity": 1,
-                            //       "price": '10.12',
-                            //       "currency": "USD"
-                            //     }
-                            //   ],
 
-                            //   // shipping address is not required though
-                            //   "shipping_address": {
-                            //     "recipient_name": "Jane Foster",
-                            //     "line1": "Travis County",
-                            //     "line2": "",
-                            //     "city": "Austin",
-                            //     "country_code": "US",
-                            //     "postal_code": "73301",
-                            //     "phone": "+00000000",
-                            //     "state": "Texas"
-                            //   },
-                            // }
-                          }
-                        ],
-                        note: "Contact us for any questions on your order.",
-                        onSuccess: (Map params) {
-                          print("onSuccess: $params");
-                          UIHelper.showAlertDialog('Payment Successfully',
-                              title: 'Success');
-                          // Navigator.of(context as BuildContext).pushNamed("/success_booking");
-                          print(params);
+          Button(
+            width: double.infinity,
+            title: 'Payment Booking',
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (BuildContext context) => UsePaypal(
+                      sandboxMode: true,
+                      clientId: "${Constants.clientId}",
+                      secretKey: "${Constants.secretKey}",
+                      returnURL: "${Constants.returnURL}",
+                      cancelURL: "${Constants.cancelURL}",
+                      transactions: [
+                        {
+                          "amount": {
+                            "total": '${doctor.price}',
+                            // "total": '',
+                            "currency": "USD",
+                          },
+                          "description": "The payment transaction description.",
+                        }
+                      ],
+                      note: "Contact us for any questions on your order.",
+                      onSuccess: (Map params) {
+                        print("onSuccess: $params");
+                        UIHelper.showAlertDialog('Payment Successfully',
+                            title: 'Success');
 
-                          sendSuccessDataToBackend(
-                            doctor.price,
-                            doctor.id,
-                          );
-                        },
-                        onError: (error) {
-                          print("onError: $error");
-                          UIHelper.showAlertDialog(
-                              'Unable to completet the Payment',
-                              title: 'Error');
-                        },
-                        onCancel: (params) {
-                          print('cancelled: $params');
-                          UIHelper.showAlertDialog('Payment Cannceled',
-                              title: 'Cancel');
-                        }),
-                  ),
-                );
-              },
-              child: Text('Payment Booking'))
+                        // print(params);
+                        // print("Payment Status: $params['status']");
+                        // print("Payment Status: $params[datafirst_name]");
+
+                        sendSuccessDataToBackend(doctor.price, doctor.id,
+                            Map<String, dynamic>.from(bookingDetail));
+                        // Navigator.of(context)
+                        //     .pushNamed("/success_booking");
+                        
+                      },
+                      onError: (error) {
+                        print("onError: $error");
+                        UIHelper.showAlertDialog(
+                            'Unable to completet the Payment',
+                            title: 'Error');
+                      },
+                      onCancel: (params) {
+                        print('cancelled: $params');
+                        UIHelper.showAlertDialog('Payment Cannceled',
+                            title: 'Cancel');
+                      }),
+                ),
+              );
+            },
+            disable: false,
+          ),
         ],
       ),
     );
@@ -571,7 +605,7 @@ class _PaymentPageState extends State<PaymentPage> {
 
     mainInit();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build

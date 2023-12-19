@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:uber_doctor_flutter/src/api/api_service.dart';
-import 'package:uber_doctor_flutter/src/model/doctor.dart';
-import 'package:uber_doctor_flutter/src/model/pathologycal.dart';
 import 'package:uber_doctor_flutter/src/pages/detail_page.dart';
+
+import '../model/booking.dart';
 
 class SearchPageWidget extends StatefulWidget {
   @override

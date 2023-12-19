@@ -16,11 +16,11 @@ const List<TabItem> items = [
     icon: Icons.home,
     title: 'Home',
   ),
-  TabItem(
-    icon: Icons.phone,
-    title: 'phone',
+  // TabItem(
+  //   icon: Icons.phone,
+  //   title: 'phone',
     
-  ),
+  // ),
   TabItem(
     icon: Icons.coronavirus,
     title: 'symptom',
@@ -42,6 +42,9 @@ const List<TabItem> items = [
   //   title: 'detail',
   // ),
 ];
+
+
+
 const List<TabItem> doctoritems = [
   TabItem(
     icon: Icons.home,

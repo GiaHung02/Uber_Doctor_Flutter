@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:uber_doctor_flutter/src/api/api_service.dart';
-import 'package:uber_doctor_flutter/src/model/doctor.dart'; // Assuming Doctor model is in this path
 import 'package:uber_doctor_flutter/src/theme/button.dart';
 import 'package:uber_doctor_flutter/src/theme/extention.dart';
 import 'package:uber_doctor_flutter/src/theme/light_color.dart';
@@ -10,6 +9,7 @@ import 'package:uber_doctor_flutter/src/theme/theme.dart';
 import 'package:uber_doctor_flutter/src/widgets/custom_appbar.dart';
 import 'package:uber_doctor_flutter/src/widgets/progress_widget.dart';
 import 'package:uber_doctor_flutter/src/widgets/rating_start.dart';
+import '../model/booking.dart';
 
 class DetailPage extends StatelessWidget {
   final List<Doctor> doctors;
@@ -23,7 +23,23 @@ class DetailPage extends StatelessWidget {
     Doctor selectedDoctor = (doctors.isNotEmpty &&
             selectedIndex < doctors.length)
         ? doctors[selectedIndex]
-        : Doctor(); // Replace Doctor() with the default value for a Doctor object
+        : Doctor(
+            id: 1,
+            phoneNumber: '',
+            password: '',
+            fullName: '',
+            email: '',
+            wallet: null,
+            bankingAccount: '',
+            imagePath: '',
+            address: '',
+            accepted: null,
+            status: true,
+            spectiality: '',
+            rate: null,
+            price: null,
+            exp:
+                null); // Replace Doctor() with the default value for a Doctor object
 
     TextStyle titleStyle = TextStyles.title
         .copyWith(fontSize: 25)

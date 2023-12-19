@@ -73,14 +73,17 @@ class MyApp extends StatelessWidget {
           'verify_register': (context) => MyVerifyRegister(),
           'doctor/register': (context) => DoctorRegisterPage(),
           'patient/register': (context) => PatientRegisterPage(),
-           'pages/detail_page': (context) =>
-            DetailPage(doctors: [], selectedIndex: 0,),
+          'pages/detail_page': (context) => DetailPage(
+                doctors: [],
+                selectedIndex: 0,
+              ),
           '/success_booking': (context) => AppointmentBooked(),
           '/booking_page': (context) => BookingPage(),
           '/booking_list_page': (context) => BookingDoctorListPage(),
           '/booking_detail_page': (context) => BookingDetailPage(),
           'login': (context) => LoginPage(),
-            '/pages/search_page': (context) => SearchPageWidget(),
+          '/pages/search_page': (context) => SearchPageWidget(),
+          '/appointment_page': (context) => AppointmentPage(),
         },
         debugShowCheckedModeBanner: false,
       ),
@@ -104,10 +107,11 @@ class _MyHomePageState extends State<MyHomePage> {
     Call(navigatorKey: GlobalKey()),
     SymptomPage(),
     BookingDoctorListPage(),
-    ProfilePage(),
-    // LoginPage(),
+    // ProfilePage(),
+    LoginPage(),
     //  DetailPage(doctors: [], selectedIndex: 0,),
     BookingListPage(),
+
     AppointmentPage()
   ];
   int visit = 0;

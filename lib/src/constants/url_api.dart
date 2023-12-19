@@ -1,9 +1,9 @@
 // String domain = 'http://192.168.31.40:8080/';
 
 // School
-// String domain = 'http://172.16.1.221:8080/';   
+String domain = 'http://172.16.1.95:8080/';   
 // Home   
- String domain = 'http://192.168.1.202:8080/';     
+//  String domain = 'http://192.168.1.202:8080/';     
 
 
 

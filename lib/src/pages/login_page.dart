@@ -8,6 +8,8 @@ class LoginPage extends StatefulWidget {
 
   static String verify = "";
   static String approle = "";
+  static String userid = "";
+
   static String phoneNum = "";
 
   @override
@@ -191,10 +193,10 @@ class _LoginPageState extends State<LoginPage> {
                                 var sendPhone = int.parse(phone).toString();
 
                                 if (_isChecked) {
-                                  var check =
-                                      loginController.loginDoctor(sendPhone,context);
+                                  var check = loginController.loginDoctor(
+                                      sendPhone, context);
 
-                                  if (await check) {
+                                  if (await check != null) {
                                     await FirebaseAuth.instance
                                         .verifyPhoneNumber(
                                       phoneNumber:
@@ -207,6 +209,7 @@ class _LoginPageState extends State<LoginPage> {
                                           int? resendToken) {
                                         LoginPage.verify = verificationId;
                                         LoginPage.approle = "Doctor";
+                                        LoginPage.userid = check.toString();
 
                                         Navigator.pushNamed(context, 'verify');
                                       },
@@ -218,12 +221,10 @@ class _LoginPageState extends State<LoginPage> {
                                         context, 'doctor/register');
                                   }
                                 } else {
-                                  var check =
-                                      loginController.loginPatient(sendPhone,context);
+                                  var check = loginController.loginPatient(
+                                      sendPhone, context);
 
-                                  print(await check);
-
-                                  if (await check) {
+                                  if (await check != null) {
                                     await FirebaseAuth.instance
                                         .verifyPhoneNumber(
                                       phoneNumber:
@@ -236,6 +237,8 @@ class _LoginPageState extends State<LoginPage> {
                                           int? resendToken) {
                                         LoginPage.verify = verificationId;
                                         LoginPage.approle = "Patient";
+                                        LoginPage.userid = check.toString();
+
                                         Navigator.pushNamed(context, 'verify');
 
                                         // Navigator.pushReplacement(

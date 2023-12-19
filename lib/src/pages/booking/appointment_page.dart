@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:provider/provider.dart';
+import 'package:uber_doctor_flutter/src/model/AuthProvider.dart';
 
 class AppointmentPage extends StatefulWidget {
   const AppointmentPage({Key? key}) : super(key: key);
@@ -7,7 +10,7 @@ class AppointmentPage extends StatefulWidget {
   State<AppointmentPage> createState() => _AppointmentPageState();
 }
 
-enum FilterStatus { pending,upcoming, complete, cancel }
+enum FilterStatus { pending, upcoming, complete, cancel }
 
 class _AppointmentPageState extends State<AppointmentPage> {
   FilterStatus status = FilterStatus.upcoming;
@@ -41,16 +44,16 @@ class _AppointmentPageState extends State<AppointmentPage> {
   @override
   Widget build(BuildContext context) {
     List<dynamic> filterSchedules = schedules.where((var schedule) {
-      switch (schedule['status']){
-        case 'pending' :
-        schedule['status'] = FilterStatus.upcoming;
-        break;
+      switch (schedule['status']) {
+        case 'pending':
+          schedule['status'] = FilterStatus.upcoming;
+          break;
         case 'complete':
-        schedule['status'] = FilterStatus.complete;
-        break;
+          schedule['status'] = FilterStatus.complete;
+          break;
         case 'cancel':
-        schedule['status'] = FilterStatus.cancel;
-        break;
+          schedule['status'] = FilterStatus.cancel;
+          break;
       }
       return schedule['status'] == status;
     }).toList();
@@ -208,7 +211,11 @@ class _AppointmentPageState extends State<AppointmentPage> {
                                       style: OutlinedButton.styleFrom(
                                           backgroundColor:
                                               Color.fromARGB(255, 1, 78, 141)),
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Provider.of<MyAuthProvider>(context,
+                                                listen: false)
+                                            .logout();
+                                      },
                                       child: Text(
                                         'Reschedule',
                                         style: TextStyle(color: Colors.white),

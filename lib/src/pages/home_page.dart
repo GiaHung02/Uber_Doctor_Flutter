@@ -1,6 +1,9 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:uber_doctor_flutter/src/api/api_service.dart';
+import 'package:uber_doctor_flutter/src/model/AuthProvider.dart';
+import 'package:provider/provider.dart';
+
 import 'package:uber_doctor_flutter/src/model/data.dart';
 import 'package:uber_doctor_flutter/src/model/doctor.dart';
 import 'package:uber_doctor_flutter/src/pages/detail_page.dart';
@@ -246,7 +249,8 @@ class _HomePageState extends State<HomePage> {
                           backgroundColor: randomColor(),
                           child: data?[index].imagePath != null &&
                                   data[index].imagePath!.isNotEmpty
-                              ? Image.network(data[index].imagePath![0] as String)
+                              ? Image.network(
+                                  data[index].imagePath![0] as String)
                               : Container(),
                         ),
                         title: Text(
@@ -330,7 +334,9 @@ class _HomePageState extends State<HomePage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _header(),
-          _searchField(),
+          if (Provider.of<MyAuthProvider>(context).role == "Patient" &&
+              Provider.of<MyAuthProvider>(context).token != null)
+            _searchField(),
           _category(),
           Expanded(
             child: _doctorsList(),

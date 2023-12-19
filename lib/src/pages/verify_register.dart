@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
+import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
 import 'package:uber_doctor_flutter/src/controllers/auth/signup_controller.dart';
+import 'package:uber_doctor_flutter/src/model/AuthProvider.dart';
 import 'package:uber_doctor_flutter/src/model/register_doctor_model.dart';
 import 'package:uber_doctor_flutter/src/model/register_patient_model.dart';
 import 'package:uber_doctor_flutter/src/pages/doctor_register_page.dart';
@@ -149,21 +151,25 @@ class _MyVerifyRegisterState extends State<MyVerifyRegister> {
                         // Kiểm tra xem token có giá trị hay không
                         if (token != null) {
                           if (!PatientRegisterPage.verify.isEmpty) {
-                            var status = signUpController.createPatient(
+                            var id = signUpController.createPatient(
                                 patientModel, context);
 
-                            if (await status == 201) {
+                            if (await id != -1) {
                               QuickAlert.show(
                                 context: context,
                                 type: QuickAlertType.success,
                                 text: "Registered successfully",
                                 onConfirmBtnTap: () {
+                                  Provider.of<MyAuthProvider>(context,
+                                          listen: false)
+                                      .setTokenAndRole(
+                                          token, "Patient", id.toString());
                                   Navigator.pushNamedAndRemoveUntil(
                                       context, "home", (route) => false);
                                 },
                                 confirmBtnText: 'Back to login',
                               );
-                            } else if (await status == 123) {
+                            } else if (await id == -1) {
                               QuickAlert.show(
                                 context: context,
                                 type: QuickAlertType.error,
@@ -178,21 +184,26 @@ class _MyVerifyRegisterState extends State<MyVerifyRegister> {
                               );
                             }
                           } else {
-                            var status = signUpController.createDoctor(
+                            var id = signUpController.createDoctor(
                                 doctorModel, context);
-                            print(await status);
-                            if (await status == 200) {
+                            print(await id);
+                            if (await id != -1) {
                               QuickAlert.show(
                                 context: context,
                                 type: QuickAlertType.success,
                                 text: "Registered successfully",
                                 onConfirmBtnTap: () {
+                                  Provider.of<MyAuthProvider>(context,
+                                          listen: false)
+                                      .setTokenAndRole(
+                                          token, "Doctor", id.toString());
+
                                   Navigator.pushNamedAndRemoveUntil(
                                       context, "home", (route) => false);
                                 },
                                 confirmBtnText: 'Back to login',
                               );
-                            } else if (await status == 123) {
+                            } else if (await id == -1) {
                               QuickAlert.show(
                                 context: context,
                                 type: QuickAlertType.error,

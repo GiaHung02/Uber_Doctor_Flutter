@@ -40,14 +40,14 @@ class SignUpController extends GetxController {
       print(apiResponse.data);
       print(apiResponse.message);
 
-      return apiResponse.status;
+      return apiResponse.data.id;
     } catch (e) {
       QuickAlert.show(
         context: context,
         type: QuickAlertType.error,
         text: 'Switch to a different IP or a different WiFi',
       );
-      return 123;
+      return -1;
     }
   }
 
@@ -61,14 +61,14 @@ class SignUpController extends GetxController {
       );
       Map<String, dynamic> responseMap = json.decode(response.body);
       ApiResponse apiResponse = ApiResponse.fromJson(responseMap);
-      return apiResponse.status;
+      return apiResponse.data.id;
     } catch (e) {
       QuickAlert.show(
         context: context,
         type: QuickAlertType.error,
         text: 'Switch to a different IP or a different WiFi',
       );
-      return 123;
+      return -1;
     }
   }
 }

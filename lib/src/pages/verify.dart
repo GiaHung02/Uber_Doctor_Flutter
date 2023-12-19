@@ -129,12 +129,22 @@ class _MyVerifyState extends State<MyVerify> {
                           // In token ra console (để kiểm tra, có thể loại bỏ trong production)
                           print('Firebase Auth Token: $token');
 
+                          var id = LoginPage.userid;
+                          
+                          print('Firebase id: $id');
+
                           Provider.of<MyAuthProvider>(context, listen: false)
-                              .setTokenAndRole(token, LoginPage.approle);
+                              .setTokenAndRole(
+                                  token, LoginPage.approle, LoginPage.userid);
 
                           // Chuyển đến trang home
-                          Navigator.pushNamedAndRemoveUntil(
-                              context, "home", (route) => false);
+                          if (LoginPage.approle == "Doctor") {
+                            Navigator.pushNamedAndRemoveUntil(
+                                context, "home", (route) => false);
+                          } else {
+                            Navigator.pushNamedAndRemoveUntil(
+                                context, "home", (route) => false);
+                          }
                         } else {}
                       } catch (e) {
                         var mycontext = context;

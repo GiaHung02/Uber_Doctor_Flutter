@@ -3,8 +3,8 @@ class Booking {
   String statusBooking;
   bool? isAvailable;
   DateTime? bookingDate;
-  String? appointmentDate;
-  String? appointmentTime;
+  String appointmentDate;
+  String appointmentTime;
   String? symptoms;
   String? notes;
   double? price;
@@ -90,60 +90,114 @@ class Patient {
       rate: json['rate'],
     );
   }
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {
+      'id': id,
+      'phoneNumber': phoneNumber,
+      'password': password,
+      'fullName': fullName,
+      'role': role,
+      'email': email,
+      'address': address,
+      'wallet': wallet,
+      'bankingAccount': bankingAccount,
+      'medicalRecord': medicalRecord, // Chỉnh sửa tên trường để phản ánh đúng tên từ API
+      'status': status,
+      'rate': rate,
+      
+    };
+    return data;
+  }
 }
 
 class Doctor {
-  int id;
-  String phoneNumber;
-  String password;
-  String fullName;
-  String email;
-  double? wallet;
+  int? id;
+  String? phoneNumber;
+  String? fullName;
+  String? email;
   String? bankingAccount;
   String? imagePath;
   String? address;
   bool? accepted;
   bool? status;
-  String? spectiality;
+  String? spectiality; // Chỉnh sửa tên trường để phản ánh đúng tên từ API
   int? rate;
   double? price;
   int? exp;
+  String? description;
 
   Doctor({
-    required this.id,
-    required this.phoneNumber,
-    required this.password,
-    required this.fullName,
-    required this.email,
-    required this.wallet,
-    required this.bankingAccount,
-    required this.imagePath,
-    required this.address,
-    required this.accepted,
-    required this.status,
-    required this.spectiality,
-    required this.rate,
-    required this.price,
-    required this.exp,
+    this.id,
+    this.phoneNumber,
+    this.fullName,
+    this.email,
+    this.bankingAccount,
+    this.imagePath,
+    this.address,
+    this.accepted,
+    this.status,
+    this.spectiality,
+    this.rate,
+    this.price,
+    this.exp,
+    this.description
   });
 
-  factory Doctor.fromJson(Map<String, dynamic> json) {
+  factory Doctor.fromJson(Map<String, dynamic>? json) {
     return Doctor(
-      id: json['id'],
-      phoneNumber: json['phoneNumber'],
-      password: json['password'],
-      fullName: json['fullName'],
-      email: json['email'],
-      wallet: json['wallet'],
-      bankingAccount: json['bankingAccount'],
-      imagePath: json['imagePath'],
-      address: json['address'],
-      accepted: json['accepted'],
-      status: json['status'],
-      spectiality: json['spectiality'],
-      rate: json['rate'],
-      price: json['price'],
-      exp: json['exp'],
+      id: json?['id'],
+      phoneNumber: json?['phoneNumber'],
+      fullName: json?['fullName'],
+      email: json?['email'],
+      bankingAccount: json?['bankingAccount'],
+      imagePath: json?['imagePath'],
+      address: json?['address'],
+      accepted: json?['accepted'],
+      status: json?['status'],
+      spectiality: json?['spectiality'], // Chỉnh sửa tên trường để phản ánh đúng tên từ API
+      rate: json?['rate'],
+      price: json?['price'],
+      exp: json?['exp'],
+      description: json?['description']
     );
   }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {
+      'id': id,
+      'phoneNumber': phoneNumber,
+      'fullName': fullName,
+      'email': email,
+      'bankingAccount': bankingAccount,
+      'imagePath': imagePath,
+      'address': address,
+      'accepted': accepted,
+      'status': status,
+      'spectiality': spectiality, // Chỉnh sửa tên trường để phản ánh đúng tên từ API
+      'rate': rate,
+      'price': price,
+      'exp': exp,
+      'description': description
+    };
+    return data;
+  }
+
+  Doctor toDoctor() {
+    return Doctor(
+      id: id!,
+      phoneNumber: phoneNumber!,
+      fullName: fullName!,
+      email: email!,
+      bankingAccount: bankingAccount!,
+      imagePath: imagePath!,
+      address: address!,
+      accepted: accepted!,
+      status: status!,
+      spectiality: spectiality!,
+      rate: rate!,
+      price: price!,
+      exp: exp!,
+    );
+  }
+
 }

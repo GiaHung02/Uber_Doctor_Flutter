@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:uber_doctor_flutter/src/api/api_service.dart';
-import 'package:uber_doctor_flutter/src/model/doctor.dart';
+import 'package:uber_doctor_flutter/src/model/booking.dart';
 import 'package:uber_doctor_flutter/src/pages/detail_page.dart';
 
 class BookingDoctorListPage extends StatefulWidget {

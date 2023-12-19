@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:uber_doctor_flutter/src/api/api_service.dart';
+import 'package:uber_doctor_flutter/src/model/booking.dart';
 import 'package:uber_doctor_flutter/src/model/doctor.dart';
 import 'package:uber_doctor_flutter/src/model/pathologycal.dart';
 import 'package:uber_doctor_flutter/src/pages/detail_page.dart';
@@ -43,58 +44,49 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
   }
 
   Widget _buildBody() {
-  return Center(
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          'What Doctor Are You Looking For?',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: const Color.fromARGB(255, 10, 10, 10)),
-          textAlign: TextAlign.center,
-        ),
-        SizedBox(height: 20),
-        Expanded(
-          child: ListView.builder(
-            itemCount: _doctorSearchList.length,
-            itemBuilder: (context, index) {
-              var currentDoctor = _doctorSearchList[index];
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Expanded(
+        child: ListView.builder(
+          itemCount: _doctorSearchList.length,
+          itemBuilder: (context, index) {
+            var currentDoctor = _doctorSearchList[index];
 
-              return GestureDetector(
-                onTap: () {
-                  _navigateToDoctorDetail(currentDoctor);
-                },
-                child: ListTile(
-                  title: Row(
-                    children: [
-                      // Display doctor information as needed
-                      Text(
-                        '${currentDoctor.fullName ?? ""}',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                      ),
-                      SizedBox(width: 20),
-                      // Add additional information as needed
-                    ],
-                  ),
+            return GestureDetector(
+              onTap: () {
+                _navigateToDoctorDetail(currentDoctor);
+              },
+              child: ListTile(
+                title: Row(
+                  children: [
+                    // Display doctor information as needed
+                    Text(
+                      '${currentDoctor.fullName ?? ""}',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                    ),
+                    SizedBox(width: 20),
+                    // Add additional information as needed
+                  ],
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
-      ],
+      ),
+    ],
+  );
+}
+
+void _navigateToDoctorDetail(Doctor doctorModel) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => DetailPage(doctors: [doctorModel], selectedIndex: 0),
     ),
   );
 }
 
-
-  void _navigateToDoctorDetail(Doctor doctorModel) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => DetailPage(doctors: [doctorModel], selectedIndex: 0),
-      ),
-    );
-  }
 
   void _getDoctorList(String query) {
     _doctorList.getDoctorList(query: query).then((doctorList) {
@@ -110,3 +102,4 @@ class _SearchPageWidgetState extends State<SearchPageWidget> {
     });
   }
 }
+

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:uber_doctor_flutter/src/api/api_service.dart';
+import 'package:uber_doctor_flutter/src/model/booking.dart';
 import 'package:uber_doctor_flutter/src/model/doctor.dart'; // Assuming Doctor model is in this path
 import 'package:uber_doctor_flutter/src/theme/button.dart';
 import 'package:uber_doctor_flutter/src/theme/extention.dart';
@@ -122,12 +123,11 @@ class DetailPage extends StatelessWidget {
                               activeColor: Color.fromARGB(255, 210, 245, 13),
                               backgroundColor: LightColor.grey.withOpacity(.3),
                               title: "EXP",
-                               
                               durationTime: 500,
                             ),
                             ProgressWidget(
                               value: (selectedDoctor.price ?? 0).toDouble(),
-                              totalValue: 100000000,
+                              totalValue: 100000,
                               activeColor: Color.fromARGB(255, 12, 248, 103),
                               backgroundColor: LightColor.grey.withOpacity(.3),
                               title: "Price",

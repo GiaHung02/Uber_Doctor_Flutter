@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:uber_doctor_flutter/src/model/doctor.dart'; // Assuming Doctor model is in this path
+import 'package:uber_doctor_flutter/src/api/api_service.dart';
 import 'package:uber_doctor_flutter/src/theme/button.dart';
 import 'package:uber_doctor_flutter/src/theme/extention.dart';
 import 'package:uber_doctor_flutter/src/theme/light_color.dart';
@@ -9,6 +9,7 @@ import 'package:uber_doctor_flutter/src/theme/theme.dart';
 import 'package:uber_doctor_flutter/src/widgets/custom_appbar.dart';
 import 'package:uber_doctor_flutter/src/widgets/progress_widget.dart';
 import 'package:uber_doctor_flutter/src/widgets/rating_start.dart';
+import '../model/booking.dart';
 
 class DetailPage extends StatelessWidget {
   final List<Doctor> doctors;
@@ -22,7 +23,23 @@ class DetailPage extends StatelessWidget {
     Doctor selectedDoctor = (doctors.isNotEmpty &&
             selectedIndex < doctors.length)
         ? doctors[selectedIndex]
-        : Doctor(); // Replace Doctor() with the default value for a Doctor object
+        : Doctor(
+            id: 1,
+            phoneNumber: '',
+            password: '',
+            fullName: '',
+            email: '',
+            wallet: null,
+            bankingAccount: '',
+            imagePath: '',
+            address: '',
+            accepted: null,
+            status: true,
+            spectiality: '',
+            rate: null,
+            price: null,
+            exp:
+                null); // Replace Doctor() with the default value for a Doctor object
 
     TextStyle titleStyle = TextStyles.title
         .copyWith(fontSize: 25)
@@ -34,12 +51,11 @@ class DetailPage extends StatelessWidget {
     }
 
     return Scaffold(
-         appBar: CustomAppBar(
+      appBar: CustomAppBar(
         appTitle: 'Doctor detail',
         icon: const FaIcon(Icons.arrow_back_ios),
       ),
       backgroundColor: LightColor.extraLightBlue,
-      
       body: SafeArea(
         bottom: false,
         child: Stack(
@@ -49,12 +65,17 @@ class DetailPage extends StatelessWidget {
               height: AppTheme.fullHeight(context) * 0.45,
               decoration: BoxDecoration(
                 shape: BoxShape.rectangle,
-                image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: AssetImage('assets/images/goku.jpg'),
-                ),
+                image: selectedDoctor.imagePath != null &&
+                        selectedDoctor.imagePath!.isNotEmpty
+                    ? DecorationImage(
+                        fit: BoxFit.cover,
+                        image: NetworkImage(
+                            "$domain/${selectedDoctor.imagePath!}"),
+                      )
+                    : null,
               ),
             ),
+
             DraggableScrollableSheet(
               maxChildSize: .8,
               initialChildSize: .6,
@@ -112,27 +133,27 @@ class DetailPage extends StatelessWidget {
                         Row(
                           children: <Widget>[
                             ProgressWidget(
-                              value: (selectedDoctor.id ?? 0).toDouble(),
+                              value: (selectedDoctor.exp ?? 0).toDouble(),
                               totalValue: 10,
-                              activeColor: LightColor.purpleExtraLight,
+                              activeColor: Color.fromARGB(255, 210, 245, 13),
                               backgroundColor: LightColor.grey.withOpacity(.3),
-                              title: "Good Review",
+                              title: "EXP",
                               durationTime: 500,
                             ),
                             ProgressWidget(
-                              value: (selectedDoctor.exp ?? 0).toDouble(),
-                              totalValue: 10,
-                              activeColor: LightColor.purpleLight,
+                              value: (selectedDoctor.price ?? 0).toDouble(),
+                              totalValue: 100000,
+                              activeColor: Color.fromARGB(255, 12, 248, 103),
                               backgroundColor: LightColor.grey.withOpacity(.3),
-                              title: "Total Score",
+                              title: "Price",
                               durationTime: 300,
                             ),
                             ProgressWidget(
                               value: (selectedDoctor.rate ?? 0).toDouble(),
                               totalValue: 5,
-                              activeColor: LightColor.purple,
+                              activeColor: Color.fromARGB(255, 248, 14, 197),
                               backgroundColor: LightColor.grey.withOpacity(.3),
-                              title: "Satisfaction",
+                              title: "Like",
                               durationTime: 800,
                             ),
                           ],
@@ -143,7 +164,7 @@ class DetailPage extends StatelessWidget {
                         ),
                         Text("About", style: titleStyle).vP16,
                         Text(
-                          selectedDoctor.email ?? '',
+                          selectedDoctor.description ?? '',
                           style: TextStyles.body.subTitleColor,
                         ),
                         Padding(
@@ -152,8 +173,7 @@ class DetailPage extends StatelessWidget {
                             width: double.infinity,
                             title: 'Book Appointment',
                             onPressed: () {
-                              Navigator.of(context).pushNamed(
-                                  '/booking_page',
+                              Navigator.of(context).pushNamed('/booking_page',
                                   arguments: selectedDoctor);
                             },
                             disable: false,

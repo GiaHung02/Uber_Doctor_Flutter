@@ -196,7 +196,7 @@ class _LoginPageState extends State<LoginPage> {
                                   var check = loginController.loginDoctor(
                                       sendPhone, context);
 
-                                  if (await check != null) {
+                                  if (await check != -1) {
                                     await FirebaseAuth.instance
                                         .verifyPhoneNumber(
                                       phoneNumber:
@@ -221,10 +221,10 @@ class _LoginPageState extends State<LoginPage> {
                                         context, 'doctor/register');
                                   }
                                 } else {
-                                  var check = loginController.loginPatient(
-                                      sendPhone, context);
+                                  var check = await loginController
+                                      .loginPatient(sendPhone, context);
 
-                                  if (await check != null) {
+                                  if (check != -1) {
                                     await FirebaseAuth.instance
                                         .verifyPhoneNumber(
                                       phoneNumber:
@@ -237,7 +237,11 @@ class _LoginPageState extends State<LoginPage> {
                                           int? resendToken) {
                                         LoginPage.verify = verificationId;
                                         LoginPage.approle = "Patient";
+
                                         LoginPage.userid = check.toString();
+                                        print(
+                                            "==============================================================");
+                                        print(LoginPage.userid);
 
                                         Navigator.pushNamed(context, 'verify');
 

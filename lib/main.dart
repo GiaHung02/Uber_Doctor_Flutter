@@ -8,25 +8,26 @@ import 'package:uber_doctor_flutter/src/model/doctor_model.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/appointment_page.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/booking_detail_page.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/booking_doctor_list_page.dart';
-import 'package:uber_doctor_flutter/src/pages/booking/booking_list_page.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/booking_page.dart';
 import 'package:uber_doctor_flutter/src/pages/detail_page.dart';
+import 'package:uber_doctor_flutter/src/pages/doctorApp/doctor_appointment_page.dart';
+import 'package:uber_doctor_flutter/src/pages/doctorApp/doctor_home_page.dart';
+import 'package:uber_doctor_flutter/src/pages/doctorApp/doctor_profile_page.dart';
 import 'package:uber_doctor_flutter/src/pages/doctor_register_page.dart';
 import 'package:uber_doctor_flutter/src/pages/home_page.dart';
 import 'package:uber_doctor_flutter/src/pages/login_page.dart';
 import 'package:uber_doctor_flutter/src/pages/patient_register_page.dart';
 import 'package:uber_doctor_flutter/src/pages/phone_page.dart';
-import 'package:uber_doctor_flutter/src/pages/profile_page.dart';
 import 'package:uber_doctor_flutter/src/pages/search_page.dart';
 import 'package:uber_doctor_flutter/src/pages/splash_page.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/success_booked.dart';
-import 'package:uber_doctor_flutter/src/pages/symptom_page.dart';
 import 'package:uber_doctor_flutter/src/pages/verify.dart';
 import 'package:uber_doctor_flutter/src/pages/verify_register.dart';
 import 'package:uber_doctor_flutter/src/theme/theme.dart';
 import 'package:uber_doctor_flutter/src/widgets/BottomNavHexagon.dart';
 
 import 'src/model/AuthProvider.dart';
+import 'src/pages/booking/booking_list_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -83,7 +84,10 @@ class MyApp extends StatelessWidget {
           '/booking_detail_page': (context) => BookingDetailPage(),
           'login': (context) => LoginPage(),
           '/pages/search_page': (context) => SearchPageWidget(),
-          '/appointment_page': (context) => AppointmentPage(),
+           '/user_appointment_page': (context) => AppointmentBooked(),
+
+          //Bs navigate
+          '/bs_home_page': (context) => MyBsPage(title: 'bs home', 'bs home'),
         },
         debugShowCheckedModeBanner: false,
       ),
@@ -104,14 +108,14 @@ class _MyHomePageState extends State<MyHomePage> {
   var _page = 0;
   final pages = [
     HomePage(),
-    Call(navigatorKey: GlobalKey()),
-    SymptomPage(),
+    // Call(navigatorKey: GlobalKey()),
+    // SymptomPage(),
     BookingDoctorListPage(),
     // ProfilePage(),
     LoginPage(),
     //  DetailPage(doctors: [], selectedIndex: 0,),
+    AppointmentPage(),
     BookingListPage(),
-
     AppointmentPage()
   ];
   int visit = 0;
@@ -173,6 +177,56 @@ class _MyHomePageState extends State<MyHomePage> {
         chipStyle: const ChipStyle(drawHexagon: true),
       ),
       body: pages[_page],
+    );
+  }
+}
+
+////////////////////////////////////////////////////////////////////////
+/// Bac si Route
+class MyBsPage extends StatefulWidget {
+  const MyBsPage(String s, {Key? key, required this.title}) : super(key: key);
+  final String title;
+
+  @override
+  State<MyBsPage> createState() => _MyBsPageState();
+}
+
+// khai bao cac trang de dieu huong den
+class _MyBsPageState extends State<MyBsPage> {
+  var _page = 0;
+  final pages = [
+    DoctorHomePage(),
+ Call(navigatorKey: GlobalKey()),
+    DoctorAppointmentPage(),
+    DoctorProfilePage(),
+  ];
+  int visit = 0;
+  double height = 30;
+  Color colorSelect = const Color(0XFF0686F8);
+  Color color = const Color(0XFF7AC0FF);
+  Color color2 = const Color(0XFF96B1FD);
+  Color bgColor = const Color(0XFF1752FE);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      bottomNavigationBar: BottomBarInspiredOutside(
+        items: doctoritems,
+        backgroundColor: bgColor,
+        color: color2,
+        colorSelected: Colors.white,
+        indexSelected: visit,
+        onTap: (index) => setState(() {
+          visit = index;
+          _page = index;
+        }),
+        top: -28,
+        animated: true,
+        itemStyle: ItemStyle.hexagon,
+        chipStyle: const ChipStyle(drawHexagon: true),
+      ),
+      body: pages[_page],
+    
     );
   }
 }

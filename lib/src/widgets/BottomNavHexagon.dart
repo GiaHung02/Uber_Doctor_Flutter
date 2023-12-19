@@ -1,16 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
 import 'package:provider/provider.dart';
-import 'package:uber_doctor_flutter/src/model/doctor_model.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/booking_list_page.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/booking_page.dart';
-
-import 'package:uber_doctor_flutter/src/pages/detail_page.dart';
 import 'package:uber_doctor_flutter/src/pages/home_page.dart';
-import 'package:uber_doctor_flutter/src/pages/login_page.dart';
-import 'package:uber_doctor_flutter/src/pages/phone_page.dart';
 import 'package:uber_doctor_flutter/src/pages/profile_page.dart';
-import 'package:uber_doctor_flutter/src/pages/splash_page.dart';
 import 'package:uber_doctor_flutter/src/widgets/Visit_Provider.dart';
 
 
@@ -22,11 +16,11 @@ const List<TabItem> items = [
     icon: Icons.home,
     title: 'Home',
   ),
-  TabItem(
-    icon: Icons.phone,
-    title: 'phone',
+  // TabItem(
+  //   icon: Icons.phone,
+  //   title: 'phone',
     
-  ),
+  // ),
   TabItem(
     icon: Icons.coronavirus,
     title: 'symptom',
@@ -43,9 +37,32 @@ const List<TabItem> items = [
     icon: Icons.login_rounded,
     title: 'bookinglist',
   ),
+  // TabItem(
+  //   icon: Icons.details_rounded,
+  //   title: 'detail',
+  // ),
+];
+
+
+
+const List<TabItem> doctoritems = [
   TabItem(
-    icon: Icons.details_rounded,
-    title: 'detail',
+    icon: Icons.home,
+    title: 'Home',
+  ),
+ TabItem(
+    icon: Icons.phone,
+    title: 'phone',
+    
+  ),
+
+  TabItem(
+    icon: Icons.calendar_month,
+    title: 'Appointment',
+  ),
+  TabItem(
+    icon: Icons.account_box,
+    title: 'profile',
   ),
 ];
 
@@ -79,22 +96,21 @@ class CurrentPage extends StatelessWidget {
 
   Widget _buildContent(BuildContext context) {
     final visit = context.watch<VisitProvider>().visit;
-
     switch (visit) {
       case 0:
         return HomePage();
       case 1:
         // return Phone();
       case 2:
-        return SplashPage();
-      case 3:
         return BookingPage();
+      case 3:
+        return BookingListPage();
       case 4:
         return ProfilePage();
       case 5:
         return BookingListPage();
-      case 6:
-        return DetailPage(doctors: [], selectedIndex: 0,);
+      // case 6:
+      //   return DetailPage(doctors: [], selectedIndex: 0,);
 ;
       default:
         // Trang mặc định hoặc xử lý ngoại lệ
@@ -102,3 +118,5 @@ class CurrentPage extends StatelessWidget {
     }
   }
 }
+
+

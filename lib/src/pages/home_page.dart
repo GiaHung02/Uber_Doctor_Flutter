@@ -1,14 +1,10 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:uber_doctor_flutter/src/api/api_service.dart';
-import 'package:uber_doctor_flutter/src/model/AuthProvider.dart';
-import 'package:provider/provider.dart';
-
-import 'package:uber_doctor_flutter/src/model/data.dart';
-import 'package:uber_doctor_flutter/src/model/doctor.dart';
 import 'package:uber_doctor_flutter/src/pages/detail_page.dart';
 import 'package:uber_doctor_flutter/src/pages/search_page.dart';
-import 'dart:typed_data';
+
+import '../model/booking.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
@@ -24,17 +20,32 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    fetchDoctorList();
   }
 
   void fetchDoctorList() async {
     try {
       List<Doctor> fetchedDoctors = await _doctorApiService.getDoctorList();
+
+      // Lọc danh sách bác sĩ với điều kiện status = true
+      List<Doctor> activeDoctors =
+          fetchedDoctors.where((doctor) => doctor.status ?? false).toList();
+
+      // Sắp xếp danh sách bác sĩ theo rate giảm dần và exp giảm dần
+      activeDoctors.sort((a, b) {
+        int result = (b.rate ?? 0).compareTo(a.rate ?? 0);
+        if (result == 0) {
+          // Nếu rate bằng nhau, sắp xếp theo exp giảm dần
+          result = (b.exp ?? 0).compareTo(a.exp ?? 0);
+        }
+        return result;
+      });
+
       setState(() {
-        widget.doctors = fetchedDoctors; // Use widget.doctors here
+        widget.doctors = activeDoctors;
       });
     } catch (error) {
-      // Handle the error
-      print('Error fetching doctors: $error');
+      print('Error fetching and sorting doctors: $error');
     }
   }
 
@@ -53,20 +64,6 @@ class _HomePageState extends State<HomePage> {
       context,
       MaterialPageRoute(
         builder: (context) => SearchPageWidget(),
-      ),
-    );
-  }
-
-  Widget _header() {
-    return Padding(
-      padding: EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text("Heil", style: TextStyle(fontSize: 24)),
-          Text("Hitler",
-              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
-        ],
       ),
     );
   }
@@ -139,16 +136,16 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         SizedBox(
-          height: MediaQuery.of(context).size.height * 0.28,
+          height: MediaQuery.of(context).size.height * 0.22,
           width: MediaQuery.of(context).size.width,
           child: ListView(
             scrollDirection: Axis.horizontal,
             children: <Widget>[
-              _categoryCard("Chemist & Drugist", "350 + Stores",
+              _categoryCard("Chemist ", "350 + Stores",
                   color: Colors.green, lightColor: Colors.lightGreen),
-              _categoryCard("Covid - 19 Specialist", "899 Doctors",
+              _categoryCard("Covid - 19 ", "899 Doctors",
                   color: Colors.blue, lightColor: Colors.lightBlue),
-              _categoryCard("Cardiologists Specialist", "500 + Doctors",
+              _categoryCard("Cardiologists", "500 + Doctors",
                   color: Colors.orange, lightColor: Colors.lightBlueAccent),
               _categoryCard("Dermatologist", "300 + Doctors",
                   color: Colors.green, lightColor: Colors.lightGreen),
@@ -201,7 +198,7 @@ class _HomePageState extends State<HomePage> {
                         padding: EdgeInsets.all(8),
                         child: Text(title,
                             style: TextStyle(
-                                fontSize: 24, fontWeight: FontWeight.bold)),
+                                fontSize: 20, fontWeight: FontWeight.bold)),
                       ),
                     ),
                     SizedBox(height: 10),
@@ -225,55 +222,136 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _doctorsList() {
-    return FutureBuilder<List<Doctor>>(
-      future: _doctorApiService.getDoctorList(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        } else {
-          var data = snapshot.data;
-          if (data == null || data.isEmpty) {
-            return Center(child: Text('No doctors found'));
-          } else {
-            return Column(
-              children: [
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: data?.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: randomColor(),
-                          child: data?[index].imagePath != null &&
-                                  data[index].imagePath!.isNotEmpty
-                              ? Image.network(
-                                  data[index].imagePath![0] as String)
-                              : Container(),
-                        ),
-                        title: Text(
-                          '${data?[index].fullName}',
-                          style: TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                        subtitle: Text(
-                          '${data?[index].spectiality}',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        onTap: () {
-                          _navigateToDoctorDetail(data![index], index);
-                        },
-                      );
-                    },
+  Widget _doctorCard(Doctor doctor, int index) {
+    print('doctor image: ${doctor.imagePath}');
+    return Card(
+      elevation: 5.0,
+      margin: EdgeInsets.all(10.0),
+      child: ListTile(
+        contentPadding: EdgeInsets.all(2),
+        leading: Container(
+          width: 80.0,
+          child: Column(
+            children: [
+              Container(
+                width: 56.0,
+                height: 56.0,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color:
+                          Color.fromARGB(255, 152, 151, 151).withOpacity(0.8),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: Offset(0, 1),
+                    ),
+                  ],
+                ),
+                child: CircleAvatar(
+                  radius: 34.0,
+                  backgroundColor: randomColor(),
+                  child: ClipOval(
+                    child: SizedBox(
+                      width: 52.0,
+                      height: 52.0,
+                      child: doctor.imagePath != null &&
+                              doctor.imagePath!.isNotEmpty
+                          ? Image.network(
+                              "$domain/${doctor.imagePath!}",
+                              fit: BoxFit.cover,
+                            )
+                          : Container(),
+                    ),
                   ),
                 ),
-              ],
-            );
-          }
-        }
-      },
+              ),
+            ],
+          ),
+        ),
+        title: Text(
+          '${doctor.fullName}',
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: EdgeInsets.all(2),
+              height: 24,
+              width: 150,
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(222, 221, 221, 1),
+                borderRadius: BorderRadius.circular(5.0),
+              ),
+              child: Text(
+                'Special: ${doctor.spectiality}',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[500],
+                ),
+              ),
+            ),
+            Text(
+              'Exp: ${doctor.exp}',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.grey[500],
+              ),
+            ),
+            Container(
+              height: 18,
+              width: 50,
+              margin: EdgeInsets.only(bottom: 4),
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 227, 124, 15),
+                borderRadius: BorderRadius.circular(5.0),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    '${doctor.rate}',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  SizedBox(width: 2.0),
+                  Icon(Icons.star, color: Colors.white, size: 14.0),
+                ],
+              ),
+            ),
+          ],
+        ),
+        trailing: Container(
+          margin: EdgeInsets.only(right: 8),
+          child: ElevatedButton(
+            onPressed: () {
+              _navigateToDoctorDetail(doctor, index);
+            },
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+            ),
+            child: Text(
+              "Đặt hẹn",
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ),
+        onTap: () {
+          _navigateToDoctorDetail(doctor, index);
+        },
+      ),
     );
+  }
+
+  Widget _doctorsList() {
+    return widget.doctors.isEmpty
+        ? Center(child: Text('No Doctor'))
+        : ListView.builder(
+            itemCount: widget.doctors.length,
+            itemBuilder: (context, index) {
+              return _doctorCard(widget.doctors[index], index);
+            },
+          );
   }
 
   Color randomColor() {
@@ -333,11 +411,16 @@ class _HomePageState extends State<HomePage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _header(),
-          if (Provider.of<MyAuthProvider>(context).role == "Patient" &&
-              Provider.of<MyAuthProvider>(context).token != null)
-            _searchField(),
+          // _header(),
+          _searchField(),
           _category(),
+          Padding(
+            padding: EdgeInsets.all(10),
+            child: Text(
+              "Top Doctors",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ),
           Expanded(
             child: _doctorsList(),
           ),

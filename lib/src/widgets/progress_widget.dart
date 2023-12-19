@@ -86,7 +86,7 @@ class _ProgressWidgetState extends State<ProgressWidget>
           SizedBox(height: 40),
           Text(
             widget.title,
-            style: TextStyle(fontSize: 14, color: LightColor.grey),
+            style: TextStyle(fontSize: 14, color: const Color.fromARGB(255, 9, 10, 13)),
           )
         ],
       ),

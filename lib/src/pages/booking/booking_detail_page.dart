@@ -1,12 +1,102 @@
 import 'dart:convert';
-
+import 'dart:developer';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_paypal/flutter_paypal.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:uber_doctor_flutter/src/model/doctor.dart';
+import 'package:one_context/one_context.dart';
+import 'package:uber_doctor_flutter/src/constants/url_api.dart';
+import 'package:uber_doctor_flutter/src/model/booking.dart';
 import 'package:uber_doctor_flutter/src/theme/button.dart';
 import 'package:uber_doctor_flutter/src/theme/colors.dart';
 import 'package:uber_doctor_flutter/src/theme/styles.dart';
 import 'package:uber_doctor_flutter/src/widgets/custom_appbar.dart';
+
+import '../../helpers/ui_helper.dart';
+
+void sendSuccessDataToBackend(
+    double? price, int? id, Map<String, dynamic> bookingDetail) async {
+  // Ensure that "patients" key exists and is a map
+// Ensure that "patients" key exists and is a map
+  final dynamic patientsValue = bookingDetail['patients'];
+  String convertDateFormat(String inputDate) {
+    // Chuyển đổi từ "12/19/2023" sang "2023-12-19"
+    List<String> dateParts = inputDate.split('/');
+    String formattedDate = "${dateParts[2]}-${dateParts[0]}-${dateParts[1]}";
+    return formattedDate;
+  }
+
+  String formattedAppointmentDate =
+      convertDateFormat(bookingDetail["appointmentDate"]);
+
+// Parse JSON string if "patients" key is a String
+  final Map<String, dynamic>? patientsData = patientsValue is String
+      ? jsonDecode(patientsValue)
+      : patientsValue as Map<String, dynamic>?;
+
+// Extract patient ID if "patients" key is a map and contains "id" property
+  final int? patientId = patientsData != null ? patientsData['id'] : null;
+//     print('>>>>>>>>>>>>>>>>>>>>>>appointmentDate: ${bookingDetail["appointmentDate"]}');
+//     print('>>>>>>>>>>>>>>>>>>>>>>appointmentTime: ${bookingDetail["appointmentTime"]}');
+//     print('>>>>>>>>>>>>>>>>>>>>>>symptoms: ${bookingDetail["symptoms"]}');
+//     print('>>>>>>>>>>>>>>>>>>>>>>notes: ${bookingDetail["notes"]}');
+//     print('>>>>>>>>>>>>>>>>>>>>>>doctỏ id: ${id}');
+//     print('>>>>>>>>>>>>>>>>>>>>>>price: ${price}');
+// print('Dữ Liệu Yêu Cầu: ${json.encode({
+//   "appointmentDate": bookingDetail["appointmentDate"],
+//   "appointmentTime": bookingDetail["appointmentTime"],
+//   "symptoms": bookingDetail["symptoms"],
+//   "notes": bookingDetail["notes"],
+//   "patients": {
+//     "id": patientId,
+//     // Các trường bệnh nhân khác
+//   },
+//   "doctors": {
+//     "id": id,
+//     // Các trường bác sĩ khác
+//   }
+// })}');
+  try {
+    Dio dio = Dio();
+    Response response = await dio.post('$domain2/api/v1/payment/create', data: {
+      "paymentPhone": "0972984029",
+      "price": price,
+      "patientName": "Hoang",
+      "message": "payment success with PayPal"
+    });
+
+    Response response1 =
+        await dio.post('$domain2/api/v1/booking/create', data: {
+      "appointmentDate": formattedAppointmentDate,
+      "appointmentTime": bookingDetail["appointmentTime"],
+      "symptoms": bookingDetail["symptoms"],
+      "notes": bookingDetail["notes"],
+      "price": price,
+      "bookingAttachedFile": null,
+      "patients": {
+        "id": patientId, 
+      },
+      "doctors": {
+        "id": id,
+      }
+    });
+
+    // Xử lý kết quả từ backend (response.data)
+    // print('Backend Response: ${response1.data}');
+    print('>>>>>>>>>>>>>>>>>>>>>>>>>>> Backend Response: ${response1.statusCode}');
+  } catch (e) {
+    if (e is DioError) {
+      // Xử lý DioError, kiểm tra mã lỗi 403 và thực hiện hành động tương ứng
+      if (e.response?.statusCode == 403) {
+        // Xử lý lỗi 403 ở đây
+      } else {
+        // Xử lý các trường hợp khác
+      }
+    } else {
+      // Xử lý các loại lỗi khác
+    }
+  }
+}
 
 class BookingDetailPage extends StatelessWidget {
   const BookingDetailPage({Key? key}) : super(key: key);
@@ -14,7 +104,7 @@ class BookingDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CustomAppBar(
+      appBar: CustomAppBar(
         appTitle: 'Appointment',
         icon: const FaIcon(Icons.arrow_back_ios),
       ),
@@ -78,36 +168,6 @@ class DetailBody extends StatelessWidget {
           ),
           // Time booking
           Text(
-            'Date booking:',
-            style: kTitleStyle,
-          ),
-          Container(
-            padding: EdgeInsets.all(10.0),
-            decoration: BoxDecoration(
-              color: Color.fromARGB(255, 191, 212, 232),
-              borderRadius: BorderRadius.circular(10.0),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  blurRadius: 5.0,
-                  spreadRadius: 2.0,
-                ),
-              ],
-            ),
-            child: Text(
-              ' ${bookingDetail['getDate']}',
-              style: TextStyle(
-                color: Color.fromARGB(255, 114, 114, 114),
-                fontSize: 17.0,
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 15,
-          ),
-
-          // Time booking
-          Text(
             'Time:',
             style: kTitleStyle,
           ),
@@ -125,7 +185,7 @@ class DetailBody extends StatelessWidget {
               ],
             ),
             child: Text(
-              ' ${bookingDetail['getTime']}',
+              ' ${bookingDetail['appointmentTime']}',
               style: TextStyle(
                 color: Color.fromARGB(255, 114, 114, 114),
                 fontSize: 17.0,
@@ -135,6 +195,102 @@ class DetailBody extends StatelessWidget {
           SizedBox(
             height: 15,
           ),
+
+          Text(
+            'Date booking:',
+            style: kTitleStyle,
+          ),
+          Container(
+            padding: EdgeInsets.all(10.0),
+            decoration: BoxDecoration(
+              color: Color.fromARGB(255, 191, 212, 232),
+              borderRadius: BorderRadius.circular(10.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  blurRadius: 5.0,
+                  spreadRadius: 2.0,
+                ),
+              ],
+            ),
+            child: Text(
+              ' ${bookingDetail['appointmentDate']}',
+              style: TextStyle(
+                color: Color.fromARGB(255, 114, 114, 114),
+                fontSize: 17.0,
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 15,
+          ),
+          if (bookingDetail['symptoms'] != null &&
+              bookingDetail['symptoms'] != '')
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  'Symptoms:',
+                  style: kTitleStyle,
+                ),
+                Container(
+                  padding: EdgeInsets.all(10.0),
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 191, 212, 232),
+                    borderRadius: BorderRadius.circular(10.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        blurRadius: 5.0,
+                        spreadRadius: 2.0,
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    ' ${bookingDetail['symptoms']}',
+                    style: TextStyle(
+                      color: Color.fromARGB(255, 114, 114, 114),
+                      fontSize: 17.0,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 15),
+              ],
+            ),
+
+          // Kiểm tra và hiển thị Notes nếu có dữ liệu
+          if (bookingDetail['notes'] != null && bookingDetail['notes'] != '')
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  'Notes:',
+                  style: kTitleStyle,
+                ),
+                Container(
+                  padding: EdgeInsets.all(10.0),
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 191, 212, 232),
+                    borderRadius: BorderRadius.circular(10.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        blurRadius: 5.0,
+                        spreadRadius: 2.0,
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    ' ${bookingDetail['notes']}',
+                    style: TextStyle(
+                      color: Color.fromARGB(255, 114, 114, 114),
+                      fontSize: 17.0,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 15),
+              ],
+            ),
 
           // Price booking
           Text(
@@ -155,7 +311,7 @@ class DetailBody extends StatelessWidget {
               ],
             ),
             child: Text(
-              '${doctor.price} VND',
+              '${doctor.price} USD',
               style: TextStyle(
                 color: Color.fromARGB(255, 114, 114, 114),
                 fontSize: 17.0,
@@ -165,20 +321,58 @@ class DetailBody extends StatelessWidget {
           SizedBox(
             height: 25,
           ),
+
           Button(
             width: double.infinity,
-            title: 'Payment',
-            onPressed: () async {
-              Navigator.of(context)
-                  .pushNamed('/',arguments: bookingDetail);
-              // final booking = await DioProvider().bookAppointment(
-              //     getDate, getDay, getTime, doctor['doctor_id'], token!);
+            title: 'Payment Booking',
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (BuildContext context) => UsePaypal(
+                      sandboxMode: true,
+                      clientId: "${Constants.clientId}",
+                      secretKey: "${Constants.secretKey}",
+                      returnURL: "${Constants.returnURL}",
+                      cancelURL: "${Constants.cancelURL}",
+                      transactions: [
+                        {
+                          "amount": {
+                            "total": '${doctor.price}',
+                            // "total": '',
+                            "currency": "USD",
+                          },
+                          "description": "The payment transaction description.",
+                        }
+                      ],
+                      note: "Contact us for any questions on your order.",
+                      onSuccess: (Map params) {
+                        print("onSuccess: $params");
+                        UIHelper.showAlertDialog('Payment Successfully',
+                            title: 'Success');
 
-              //if booking return status code 200, then redirect to success booking page
+                        // print(params);
+                        // print("Payment Status: $params['status']");
+                        // print("Payment Status: $params[datafirst_name]");
 
-              // if (booking == 200) {
-              // Navigator.of(context).pushNamed('/booking_detail_page');
-              // }
+                        sendSuccessDataToBackend(doctor.price, doctor.id,
+                            Map<String, dynamic>.from(bookingDetail));
+                        // Navigator.of(context)
+                        //     .pushNamed("/success_booking");
+                        
+                      },
+                      onError: (error) {
+                        print("onError: $error");
+                        UIHelper.showAlertDialog(
+                            'Unable to completet the Payment',
+                            title: 'Error');
+                      },
+                      onCancel: (params) {
+                        print('cancelled: $params');
+                        UIHelper.showAlertDialog('Payment Cannceled',
+                            title: 'Cancel');
+                      }),
+                ),
+              );
             },
             disable: false,
           ),
@@ -324,16 +518,97 @@ class DetailDoctorCard extends StatelessWidget {
                   ],
                 ),
               ),
-              Image(
-                image: NetworkImage(
-                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcREpIkClC9oX1l5NYvDU-9sRGZufk18bvSFEA&usqp=CAU",
+              ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(13)),
+                child: Container(
+                  height: 100,
+                  width: 100,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(15),
+                    color: Colors.blue, // Update with your color logic
+                  ),
+                  child:
+                      doctor.imagePath != null && doctor.imagePath!.isNotEmpty
+                          ? Image.network(
+                              "$domain2/${doctor.imagePath!}",
+                              fit: BoxFit.cover,
+                            )
+                          : Container(),
                 ),
-                width: 100,
-              )
+              ),
             ],
           ),
         ),
       ),
     );
+  }
+}
+
+bool debugShowCheckedModeBanner = false;
+const localeEnglish = [Locale('en', '')];
+
+// void mainInit() {
+//   runApp(const Payment());
+// }
+
+void mainInit() => OnePlatform.app = () => Payment();
+
+class Payment extends StatelessWidget {
+  // const Payment({super.key});
+
+  Payment({super.key}) {
+    print('>> MyApp2 loaded!');
+    OneContext().key = GlobalKey<NavigatorState>();
+  }
+
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    log('>> MyApp - build()');
+    // Place that widget on most top
+
+    // return MaterialApp(
+    //   title: 'Flutter Demo',
+    //   theme: ThemeData(
+    //     primarySwatch: Colors.blue,
+    //   ),
+    //   home: const PaymentPage(title: '',),
+    // );
+
+    return OneNotification(
+      builder: (_, __) => MaterialApp(
+        title: 'Flutter Demo',
+        home: const PaymentPage(title: 'Flutter Demo Home Page'),
+        builder: OneContext().builder,
+        navigatorKey: OneContext().key,
+      ),
+    );
+  }
+}
+
+class PaymentPage extends StatefulWidget {
+  const PaymentPage({super.key, required this.title});
+
+  final String title;
+
+  @override
+  State<PaymentPage> createState() => _PaymentPageState();
+}
+
+class _PaymentPageState extends State<PaymentPage> {
+  int _counter = 0;
+
+  void _incrementCounter() {
+    setState(() {
+      _counter++;
+    });
+
+    mainInit();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    throw UnimplementedError();
   }
 }

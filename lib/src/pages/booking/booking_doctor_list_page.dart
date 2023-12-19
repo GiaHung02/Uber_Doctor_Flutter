@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:uber_doctor_flutter/src/api/api_service.dart';
-import 'package:uber_doctor_flutter/src/model/doctor.dart';
+import 'package:uber_doctor_flutter/src/model/booking.dart';
 import 'package:uber_doctor_flutter/src/pages/detail_page.dart';
 
 class BookingDoctorListPage extends StatefulWidget {
@@ -20,17 +20,22 @@ class _BookingDoctorListPageState extends State<BookingDoctorListPage> {
     super.initState();
     fetchDoctorList();
   }
-
-  void fetchDoctorList() async {
-    try {
-      List<Doctor> fetchedDoctors = await _doctorApiService.getDoctorList();
-      setState(() {
-        widget.doctors = fetchedDoctors; // Use widget.doctors here
-      });
-    } catch (error) {
-      print('Error fetching doctors: $error');
-    }
+void fetchDoctorList() async {
+  try {
+    List<Doctor> fetchedDoctors = await _doctorApiService.getDoctorList();
+    
+    // Lọc danh sách bác sĩ với điều kiện status = true
+    List<Doctor> activeDoctors = fetchedDoctors.where((doctor) => doctor.status ?? false).toList();
+print(activeDoctors.length);
+    setState(() {
+      widget.doctors = activeDoctors; // Sử dụng widget.doctors ở đây
+    });
+  } catch (error) {
+    print('Error fetching doctors: $error');
   }
+}
+
+
 
   void _navigateToDoctorDetail(Doctor doctorModel, int index) {
     Navigator.push(
@@ -85,8 +90,8 @@ class _BookingDoctorListPageState extends State<BookingDoctorListPage> {
           child: Column(
             children: [
               Container(
-                 width: 56.0,
-                    height: 56.0,
+                width: 56.0,
+                height: 56.0,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   boxShadow: [
@@ -100,21 +105,22 @@ class _BookingDoctorListPageState extends State<BookingDoctorListPage> {
                   ],
                 ),
                 child: CircleAvatar(
-                radius: 34.0,
-                backgroundColor: randomColor(),
-                child: ClipOval(
-                  child: SizedBox(
-                    width: 52.0,
-                    height: 52.0,
-                    child: doctor.imagePath != null && doctor.imagePath!.isNotEmpty
-                      ? Image.network(
-                          "$domain/${doctor.imagePath!}",
-                          fit: BoxFit.cover,
-                        )
-                      : Container(),
+                  radius: 34.0,
+                  backgroundColor: randomColor(),
+                  child: ClipOval(
+                    child: SizedBox(
+                      width: 52.0,
+                      height: 52.0,
+                      child: doctor.imagePath != null &&
+                              doctor.imagePath!.isNotEmpty
+                          ? Image.network(
+                              "$domain/${doctor.imagePath!}",
+                              fit: BoxFit.cover,
+                            )
+                          : Container(),
+                    ),
                   ),
                 ),
-              ),
               ),
             ],
           ),
@@ -150,21 +156,23 @@ class _BookingDoctorListPageState extends State<BookingDoctorListPage> {
               ),
             ),
             Container(
-              height: 16,
+              height: 18,
               width: 50,
+              margin: EdgeInsets.only(bottom: 4),
               decoration: BoxDecoration(
                 color: Color.fromARGB(255, 227, 124, 15),
                 borderRadius: BorderRadius.circular(5.0),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
+                
                 children: [
-                  Icon(Icons.star, color: Colors.white, size: 12.0),
-                  SizedBox(width: 2.0),
                   Text(
                     '${doctor.rate}',
                     style: TextStyle(color: Colors.white),
                   ),
+                  SizedBox(width: 2.0),
+                  Icon(Icons.star, color: Colors.white, size: 14.0),
                 ],
               ),
             ),
@@ -192,30 +200,17 @@ class _BookingDoctorListPageState extends State<BookingDoctorListPage> {
     );
   }
 
-  Widget _doctorsList() {
-    return FutureBuilder<List<Doctor>>(
-      future: _doctorApiService.getDoctorList(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
-        } else {
-          var data = snapshot.data;
-          if (data == null || data.isEmpty) {
-            return Center(child: Text('No doctors found'));
-          } else {
-            return ListView.builder(
-              itemCount: data?.length,
-              itemBuilder: (context, index) {
-                return _doctorCard(data![index], index);
-              },
-            );
-          }
-        }
-      },
-    );
-  }
+ Widget _doctorsList() {
+  return widget.doctors.isEmpty
+      ? Center(child: Text('No Doctor'))
+      : ListView.builder(
+          itemCount: widget.doctors.length,
+          itemBuilder: (context, index) {
+            return _doctorCard(widget.doctors[index], index);
+          },
+        );
+}
+
 
   Color randomColor() {
     var random = Random();

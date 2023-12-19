@@ -131,7 +131,7 @@ class _MyVerifyState extends State<MyVerify> {
 
                           var id = LoginPage.userid;
                           
-                          print('Firebase id: $id');
+                          print('Firebase id: _____________________________ $id');
 
                           Provider.of<MyAuthProvider>(context, listen: false)
                               .setTokenAndRole(
@@ -140,11 +140,13 @@ class _MyVerifyState extends State<MyVerify> {
                           // Chuyển đến trang home
                           if (LoginPage.approle == "Doctor") {
                             Navigator.pushNamedAndRemoveUntil(
-                                context, "home", (route) => false);
+                                context, "/bs_home_page", (route) => false);
                           } else {
                             Navigator.pushNamedAndRemoveUntil(
-                                context, "home", (route) => false);
+                                context, "/home_page", (route) => false);
                           }
+                          // Navigator.pushNamedAndRemoveUntil(
+                          //     context, "home", (route) => false);
                         } else {}
                       } catch (e) {
                         var mycontext = context;

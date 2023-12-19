@@ -6,16 +6,16 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:uber_doctor_flutter/src/model/booking.dart';
 import 'package:http/http.dart' as http;
 
-class AppointmentPage extends StatefulWidget {
-  const AppointmentPage({Key? key}) : super(key: key);
+class DoctorAppointmentPage extends StatefulWidget {
+  const DoctorAppointmentPage({Key? key}) : super(key: key);
 
   @override
-  State<AppointmentPage> createState() => _AppointmentPageState();
+  State<DoctorAppointmentPage> createState() => _DoctorAppointmentPageState();
 }
 
 enum FilterStatus { upcoming, complete, cancel }
 
-class _AppointmentPageState extends State<AppointmentPage> {
+class _DoctorAppointmentPageState extends State<DoctorAppointmentPage> {
   List<Booking> schedules = [];
 
   @override
@@ -27,40 +27,30 @@ class _AppointmentPageState extends State<AppointmentPage> {
 
   FilterStatus statusBooking = FilterStatus.upcoming;
   Alignment _alignment = Alignment.centerLeft;
-// Thêm hàm filterBookingsByPatientId vào _AppointmentPageState
-List<Booking> filterBookingsByPatientId(int patientId) {
-  return schedules
-      .where((booking) => booking.patients?.id == patientId)
-      .toList();
-}
 
-  // Thay đổi hàm fetchBookings trong _AppointmentPageState
-void fetchBookings() async {
-  final url = Uri.parse('$domain/api/v1/booking/list');
+  void fetchBookings() async {
+    final url = Uri.parse('$domain/api/v1/booking/list');
 
-  try {
-    final response = await http.get(url);
-    if (response.statusCode == 200) {
-      // Chuyển đổi JSON thành danh sách Booking và cập nhật state
-      setState(() {
-        // đoạn mã này để lọc danh sách booking theo patientId
-        int patientId = 2; // Thay thế bằng patient["id"] cụ thể
-        schedules = List<Booking>.from(jsonDecode(response.body)['data']
-            .map((booking) => Booking.fromJson(booking)))
-            .where((booking) => booking.patients?.id == patientId)
-            .toList();
-      });
-      
-    } else {
-      // Xử lý khi có lỗi từ API
-      print('Error: ${response.statusCode}');
+    try {
+      final response = await http.get(url);
+      // print(response.body);
+      if (response.statusCode == 200) {
+        // Chuyển đổi JSON thành danh sách Booking và cập nhật state
+        setState(() {
+          schedules = List<Booking>.from(jsonDecode(response.body)['data']
+              .map((booking) => Booking.fromJson(booking)));
+        });
+      } else {
+        // Xử lý khi có lỗi từ API
+        print('Error: ${response.statusCode}');
+      }
+    } catch (e) {
+      // Xử lý khi có lỗi kết nối
+      print('Error: $e');
     }
-  } catch (e) {
-    // Xử lý khi có lỗi kết nối
-    print('Error: $e');
+    //  print('schedule: $schedules');
+    print('booking length from api: ${schedules.length}');
   }
-  print('booking length from api: ${schedules.length}');
-}
 
   void reloadBookings() async {
     fetchBookings();
@@ -78,8 +68,8 @@ void fetchBookings() async {
           scheduleStatus = FilterStatus.upcoming;
           break;
         case 'complete':
-            scheduleStatus = FilterStatus.complete;
-            break;
+          scheduleStatus = FilterStatus.complete;
+          break;
         case 'cancel':
           scheduleStatus = FilterStatus.cancel;
           break;
@@ -260,14 +250,9 @@ void fetchBookings() async {
                                                 color: Colors.grey,
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.w600)),
-                                        
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                Container(
+                                        Container(
                                           height: 20,
-                                          width: 60,
+                                          width: 70,
                                           decoration: BoxDecoration(
                                             color: Color.fromARGB(
                                                 255, 227, 124, 15),
@@ -286,6 +271,13 @@ void fetchBookings() async {
                                             ],
                                           ),
                                         ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
                                 ScheduleCard(booking: _schedule),
                                 SizedBox(
                                   height: 10,
@@ -467,5 +459,3 @@ class ScheduleCard extends StatelessWidget {
     );
   }
 }
-/////
-

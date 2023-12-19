@@ -1,9 +1,11 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:uber_doctor_flutter/src/api/api_service.dart';
-import 'package:uber_doctor_flutter/src/model/doctor.dart';
 import 'package:uber_doctor_flutter/src/pages/detail_page.dart';
 import 'package:uber_doctor_flutter/src/pages/search_page.dart';
+
+import '../model/booking.dart';
+
 class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
   List<Doctor> doctors = [];
@@ -18,17 +20,32 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    fetchDoctorList();
   }
 
   void fetchDoctorList() async {
     try {
       List<Doctor> fetchedDoctors = await _doctorApiService.getDoctorList();
+
+      // Lọc danh sách bác sĩ với điều kiện status = true
+      List<Doctor> activeDoctors =
+          fetchedDoctors.where((doctor) => doctor.status ?? false).toList();
+
+      // Sắp xếp danh sách bác sĩ theo rate giảm dần và exp giảm dần
+      activeDoctors.sort((a, b) {
+        int result = (b.rate ?? 0).compareTo(a.rate ?? 0);
+        if (result == 0) {
+          // Nếu rate bằng nhau, sắp xếp theo exp giảm dần
+          result = (b.exp ?? 0).compareTo(a.exp ?? 0);
+        }
+        return result;
+      });
+
       setState(() {
-        widget.doctors = fetchedDoctors; // Use widget.doctors here
+        widget.doctors = activeDoctors;
       });
     } catch (error) {
-      // Handle the error
-      print('Error fetching doctors: $error');
+      print('Error fetching and sorting doctors: $error');
     }
   }
 
@@ -50,20 +67,6 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-
-  // Widget _header() {
-  //   return Padding(
-  //     padding: EdgeInsets.all(16),
-  //     child: Column(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: <Widget>[
-  //         Text("Heil", style: TextStyle(fontSize: 24)),
-  //         Text("Hitler",
-  //             style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
-  //       ],
-  //     ),
-  //   );
-  // }
 
   Widget _searchField() {
     return GestureDetector(
@@ -219,139 +222,136 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _doctorsList() {
-    return CustomScrollView(
-      slivers: [
-        FutureBuilder<List<Doctor>>(
-          future: _doctorApiService.getDoctorList(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return SliverToBoxAdapter(
-                child: Center(child: CircularProgressIndicator()),
-              );
-            } else if (snapshot.hasError) {
-              return SliverToBoxAdapter(
-                child: Center(child: Text('Error: ${snapshot.error}')),
-              );
-            } else {
-              var data = snapshot.data;
-              if (data == null || data.isEmpty) {
-                return SliverToBoxAdapter(
-                  child: Center(child: Text('No doctors found')),
-                );
-              } else {
-                return SliverList(
-                  delegate: SliverChildListDelegate(
-                    [
-                      Padding(
-                        padding: EdgeInsets.all(16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text(
-                              "Top Doctors",
-                              style: TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.bold),
-                            ),
-                          ],
-                        ),
-                      ),
-                      ListView.separated(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: data.length,
-                        separatorBuilder: (context, index) =>
-                            SizedBox(height: 10),
-                        itemBuilder: (context, index) {
-                          var doctor = data[index];
-
-                          return GestureDetector(
-                            onTap: () {
-                              _navigateToDoctorDetail(data![index], index);
-                            },
-                            child: Container(
-                              margin: EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 16),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(20)),
-                                boxShadow: <BoxShadow>[
-                                  BoxShadow(
-                                    offset: Offset(4, 4),
-                                    blurRadius: 10,
-                                    color: Colors.grey.withOpacity(0.2),
-                                  ),
-                                  BoxShadow(
-                                    offset: Offset(-3, 0),
-                                    blurRadius: 15,
-                                    color: Colors.grey.withOpacity(0.1),
-                                  )
-                                ],
-                              ),
-                              child: InkWell(
-                                onTap: () {
-                                  _navigateToDoctorDetail(data![index], index);
-                                },
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(20)),
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 18, vertical: 8),
-                                  child: ListTile(
-                                    contentPadding: EdgeInsets.all(0),
-                                    leading: ClipRRect(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(13)),
-                                      child: Container(
-                                        height: 55,
-                                        width: 55,
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(15),
-                                          color: Colors
-                                              .blue, // Update with your color logic
-                                        ),
-                                        child: doctor.imagePath != null &&
-                                                doctor.imagePath!.isNotEmpty
-                                            ? Image.network(
-                                                "$domain/${doctor.imagePath!}",
-                                                fit: BoxFit.cover,
-                                              )
-                                            : Container(),
-                                      ),
-                                    ),
-                                    title: Text(
-                                      '${doctor.fullName}',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w600),
-                                    ),
-                                    subtitle: Text(
-                                      '${doctor.spectiality}',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    trailing: Icon(
-                                      Icons.keyboard_arrow_right,
-                                      size: 30,
-                                      color: Theme.of(context).primaryColor,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
+  Widget _doctorCard(Doctor doctor, int index) {
+    print('doctor image: ${doctor.imagePath}');
+    return Card(
+      elevation: 5.0,
+      margin: EdgeInsets.all(10.0),
+      child: ListTile(
+        contentPadding: EdgeInsets.all(2),
+        leading: Container(
+          width: 80.0,
+          child: Column(
+            children: [
+              Container(
+                width: 56.0,
+                height: 56.0,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color:
+                          Color.fromARGB(255, 152, 151, 151).withOpacity(0.8),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: Offset(0, 1),
+                    ),
+                  ],
+                ),
+                child: CircleAvatar(
+                  radius: 34.0,
+                  backgroundColor: randomColor(),
+                  child: ClipOval(
+                    child: SizedBox(
+                      width: 52.0,
+                      height: 52.0,
+                      child: doctor.imagePath != null &&
+                              doctor.imagePath!.isNotEmpty
+                          ? Image.network(
+                              "$domain/${doctor.imagePath!}",
+                              fit: BoxFit.cover,
+                            )
+                          : Container(),
+                    ),
                   ),
-                );
-              }
-            }
-          },
+                ),
+              ),
+            ],
+          ),
         ),
-      ],
+        title: Text(
+          '${doctor.fullName}',
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: EdgeInsets.all(2),
+              height: 24,
+              width: 150,
+              decoration: BoxDecoration(
+                color: Color.fromRGBO(222, 221, 221, 1),
+                borderRadius: BorderRadius.circular(5.0),
+              ),
+              child: Text(
+                'Special: ${doctor.spectiality}',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[500],
+                ),
+              ),
+            ),
+            Text(
+              'Exp: ${doctor.exp}',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.grey[500],
+              ),
+            ),
+            Container(
+              height: 18,
+              width: 50,
+              margin: EdgeInsets.only(bottom: 4),
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 227, 124, 15),
+                borderRadius: BorderRadius.circular(5.0),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    '${doctor.rate}',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  SizedBox(width: 2.0),
+                  Icon(Icons.star, color: Colors.white, size: 14.0),
+                ],
+              ),
+            ),
+          ],
+        ),
+        trailing: Container(
+          margin: EdgeInsets.only(right: 8),
+          child: ElevatedButton(
+            onPressed: () {
+              _navigateToDoctorDetail(doctor, index);
+            },
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+            ),
+            child: Text(
+              "Đặt hẹn",
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ),
+        onTap: () {
+          _navigateToDoctorDetail(doctor, index);
+        },
+      ),
     );
+  }
+
+  Widget _doctorsList() {
+    return widget.doctors.isEmpty
+        ? Center(child: Text('No Doctor'))
+        : ListView.builder(
+            itemCount: widget.doctors.length,
+            itemBuilder: (context, index) {
+              return _doctorCard(widget.doctors[index], index);
+            },
+          );
   }
 
   Color randomColor() {
@@ -414,6 +414,13 @@ class _HomePageState extends State<HomePage> {
           // _header(),
           _searchField(),
           _category(),
+          Padding(
+            padding: EdgeInsets.all(10),
+            child: Text(
+              "Top Doctors",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ),
           Expanded(
             child: _doctorsList(),
           ),

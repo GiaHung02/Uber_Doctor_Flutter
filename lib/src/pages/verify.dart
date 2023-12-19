@@ -133,7 +133,6 @@ class _MyVerifyState extends State<MyVerify> {
                               .setTokenAndRole(token, LoginPage.approle);
 
                           // Chuyển đến trang home
-                          // Chuyển đến trang home
                           if (LoginPage.approle == "Doctor") {
                             Navigator.pushNamedAndRemoveUntil(
                                 context, "/bs_home_page", (route) => false);

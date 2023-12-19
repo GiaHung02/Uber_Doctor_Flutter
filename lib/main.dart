@@ -69,13 +69,13 @@ class MyApp extends StatelessWidget {
         initialRoute: 'home',
         navigatorKey: navigatorKey,
         routes: {
-          'home': (context) => SplashPage(),
+          '/home': (context) => SplashPage(),
           '/home_page': (context) => MyHomePage(title: 'home', "home"),
           'phone': (context) => LoginPage(),
           'verify': (context) => MyVerify(),
           'verify_register': (context) => MyVerifyRegister(),
           'doctor/register': (context) => DoctorRegisterPage(),
-          'patient/register': (context) => PatientRegisterPage(),
+          '/patient/register': (context) => PatientRegisterPage(),
            'pages/detail_page': (context) =>
             DetailPage(doctors: [], selectedIndex: 0,),
           '/success_booking': (context) => AppointmentBooked(),

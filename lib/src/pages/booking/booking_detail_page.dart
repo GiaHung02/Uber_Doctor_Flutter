@@ -145,6 +145,7 @@ class DetailBody extends StatelessWidget {
 
     //decode tu json
     final doctor = Doctor.fromJson(jsonDecode(bookingDetail["doctor"]));
+    // final booking = Booking
     // final bookingDetail = BookingDetailPage.fromJson(jsonDecode(bookingDetail["booking"]));
     return Container(
         padding: EdgeInsets.all(20),

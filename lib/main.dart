@@ -116,6 +116,7 @@ class _MyHomePageState extends State<MyHomePage> {
     //  DetailPage(doctors: [], selectedIndex: 0,),
     AppointmentPage(),
     BookingListPage(),
+    AppointmentPage()
   ];
   int visit = 0;
   double height = 30;

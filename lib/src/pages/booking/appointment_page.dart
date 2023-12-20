@@ -78,8 +78,8 @@ void fetchBookings() async {
           scheduleStatus = FilterStatus.upcoming;
           break;
         case 'complete':
-          scheduleStatus = FilterStatus.complete;
-          break;
+            scheduleStatus = FilterStatus.complete;
+            break;
         case 'cancel':
           scheduleStatus = FilterStatus.cancel;
           break;

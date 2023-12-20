@@ -24,10 +24,10 @@ class _SplashPageState extends State<SplashPage> {
       //  MyBsPage('0', title: 'Home page',)
 
       // chạy vô User thì uncomment dòng này
-      MyHomePage("home", title: "user home")
+      //MyHomePage("home", title: "user home")
 
       // chạy vô Login thì uncomment dòng này
-      // LoginPage(),
+      LoginPage(),
        ));
     });
     super.initState();

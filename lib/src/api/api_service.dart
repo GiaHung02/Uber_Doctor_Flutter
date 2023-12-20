@@ -3,19 +3,17 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:uber_doctor_flutter/src/model/booking.dart';
 
-
 import 'package:uber_doctor_flutter/src/model/pathologycal.dart';
 
 ///////// FIX PORT /////////
 
 /// API SEARCH SYMPTOMS AND RECOMMEND DOCTORS ///
-const String domain = "http://192.168.1.115:8080";
+const String domain = "http://192.168.5.95:8080";
 
 class FetchSymptomList {
   var data = <String, dynamic>{};
   List<Symptomslist> results = [];
   String urlList = '$domain/api/v1/pathologycal/list';
-  
 
   Future<List<Symptomslist>> getsymptomList({String? query}) async {
     var url = Uri.parse(urlList);
@@ -72,8 +70,14 @@ class FetchDoctorList {
           if (query != null && query.isNotEmpty) {
             results = results
                 .where((element) =>
-                    element.fullName?.toLowerCase().contains(query.toLowerCase()) == true ||
-                    element.spectiality?.toLowerCase().contains(query.toLowerCase()) == true ||
+                    element.fullName
+                            ?.toLowerCase()
+                            .contains(query.toLowerCase()) ==
+                        true ||
+                    element.spectiality
+                            ?.toLowerCase()
+                            .contains(query.toLowerCase()) ==
+                        true ||
                     element.imagePath!.contains(query.toLowerCase()))
                 .toList();
           }
@@ -93,7 +97,31 @@ class FetchDoctorList {
 }
 
 class ApiBooking {
-    static final String baseUrl = '$domain/api/v1';
+  static final String baseUrl = '$domain/api/v1';
+
+  static Future<List<Booking>> getBookingList() async {
+    final url = Uri.parse('$baseUrl/booking/list'); // Điều chỉnh endpoint API của bạn
+
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        // Chuyển đổi dữ liệu từ JSON sang List<Booking>
+        List<dynamic> data = json.decode(response.body)['data'];
+        List<Booking> bookings = data.map((item) => Booking.fromJson(item)).toList();
+
+        return bookings;
+      } else {
+        // Xử lý lỗi khi gọi API
+        print('Error: ${response.statusCode}');
+        return [];
+      }
+    } catch (e) {
+      // Xử lý lỗi kết nối
+      print('Error: $e');
+      return [];
+    }
+  }
 
   static Future<bool> cancelBooking(int bookingId) async {
     final url = Uri.parse('$baseUrl/booking/delete/$bookingId');
@@ -115,7 +143,35 @@ class ApiBooking {
       return false;
     }
   }
+static Future<bool> updateStatusToCancel(Booking booking) async {
+    final url = Uri.parse('$baseUrl/booking/update/${booking.id}');
+    Booking requestData = booking;
+    booking.statusBooking='cancel';
+    print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Booking update data:$requestData');
+    try {
+      final response = await http.put(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(requestData),
+      );
+
+      if (response.statusCode == 200) {
+        // Cập nhật trạng thái thành công
+        return true;
+      } else {
+        // Xử lý lỗi khi gọi API
+        print('Error: ${response.statusCode}');
+        return false;
+      }
+    } catch (e) {
+      // Xử lý lỗi kết nối
+      print('Error: $e');
+      return false;
+    }
+  }
+
 }
+
 
 class FetchDataException implements Exception {
   final String message;
@@ -127,11 +183,3 @@ class FetchDataException implements Exception {
     return "Exception: $message";
   }
 }
-
-
-
-
-
-
-
-

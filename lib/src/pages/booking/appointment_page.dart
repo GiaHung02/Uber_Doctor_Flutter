@@ -28,39 +28,38 @@ class _AppointmentPageState extends State<AppointmentPage> {
   FilterStatus statusBooking = FilterStatus.upcoming;
   Alignment _alignment = Alignment.centerLeft;
 // Thêm hàm filterBookingsByPatientId vào _AppointmentPageState
-List<Booking> filterBookingsByPatientId(int patientId) {
-  return schedules
-      .where((booking) => booking.patients?.id == patientId)
-      .toList();
-}
+  List<Booking> filterBookingsByPatientId(int patientId) {
+    return schedules
+        .where((booking) => booking.patients?.id == patientId)
+        .toList();
+  }
 
   // Thay đổi hàm fetchBookings trong _AppointmentPageState
-void fetchBookings() async {
-  final url = Uri.parse('$domain/api/v1/booking/list');
+  void fetchBookings() async {
+    final url = Uri.parse('$domain/api/v1/booking/list');
 
-  try {
-    final response = await http.get(url);
-    if (response.statusCode == 200) {
-      // Chuyển đổi JSON thành danh sách Booking và cập nhật state
-      setState(() {
-        // đoạn mã này để lọc danh sách booking theo patientId
-        int patientId = 2; // Thay thế bằng patient["id"] cụ thể
-        schedules = List<Booking>.from(jsonDecode(response.body)['data']
-            .map((booking) => Booking.fromJson(booking)))
-            .where((booking) => booking.patients?.id == patientId)
-            .toList();
-      });
-      
-    } else {
-      // Xử lý khi có lỗi từ API
-      print('Error: ${response.statusCode}');
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        // Chuyển đổi JSON thành danh sách Booking và cập nhật state
+        setState(() {
+          // đoạn mã này để lọc danh sách booking theo patientId
+          int patientId = 2; // Thay thế bằng patient["id"] cụ thể
+          schedules = List<Booking>.from(jsonDecode(response.body)['data']
+                  .map((booking) => Booking.fromJson(booking)))
+              .where((booking) => booking.patients?.id == patientId)
+              .toList();
+        });
+      } else {
+        // Xử lý khi có lỗi từ API
+        print('Error: ${response.statusCode}');
+      }
+    } catch (e) {
+      // Xử lý khi có lỗi kết nối
+      print('Error: $e');
     }
-  } catch (e) {
-    // Xử lý khi có lỗi kết nối
-    print('Error: $e');
+    print('booking length from api: ${schedules.length}');
   }
-  print('booking length from api: ${schedules.length}');
-}
 
   void reloadBookings() async {
     fetchBookings();
@@ -260,32 +259,29 @@ void fetchBookings() async {
                                                 color: Colors.grey,
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.w600)),
-                                        
                                       ],
                                     ),
                                   ],
                                 ),
                                 Container(
-                                          height: 20,
-                                          width: 60,
-                                          decoration: BoxDecoration(
-                                            color: Color.fromARGB(
-                                                255, 227, 124, 15),
-                                            borderRadius:
-                                                BorderRadius.circular(5.0),
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                _schedule.statusBooking,
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
+                                  height: 20,
+                                  width: 60,
+                                  decoration: BoxDecoration(
+                                    color: _schedule.statusBooking == 'cancel'
+                                        ? Colors.red
+                                        : Color.fromARGB(255, 227, 124, 15),
+                                    borderRadius: BorderRadius.circular(5.0),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        _schedule.statusBooking,
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                                 ScheduleCard(booking: _schedule),
                                 SizedBox(
                                   height: 10,
@@ -301,7 +297,7 @@ void fetchBookings() async {
                                           onPressed: () {
                                             // Gọi hàm để hiển thị hộp thoại xác nhận
                                             showCancelConfirmationDialog(
-                                                context, _schedule.id);
+                                                context, _schedule);
                                           },
                                           // onPressed: () async {
                                           //   // Gọi API để cancel booking khi nút "Cancel" được nhấn
@@ -363,7 +359,7 @@ void fetchBookings() async {
   }
 
   Future<void> showCancelConfirmationDialog(
-      BuildContext context, int bookingId) async {
+      BuildContext context, Booking booking) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // Click ngoài không đóng hộp thoại
@@ -388,7 +384,7 @@ void fetchBookings() async {
               child: Text('Xác nhận'),
               onPressed: () async {
                 // Gọi hàm để hủy đặt hẹn
-                bool success = await ApiBooking.cancelBooking(bookingId);
+                bool success = await ApiBooking.updateStatusToCancel(booking);
 
                 if (success) {
                   // Xoá booking thành công, bạn có thể thực hiện các hành động cần thiết

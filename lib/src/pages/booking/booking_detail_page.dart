@@ -36,26 +36,7 @@ void sendSuccessDataToBackend(
 
 // Extract patient ID if "patients" key is a map and contains "id" property
   final int? patientId = patientsData != null ? patientsData['id'] : null;
-//     print('>>>>>>>>>>>>>>>>>>>>>>appointmentDate: ${bookingDetail["appointmentDate"]}');
-//     print('>>>>>>>>>>>>>>>>>>>>>>appointmentTime: ${bookingDetail["appointmentTime"]}');
-//     print('>>>>>>>>>>>>>>>>>>>>>>symptoms: ${bookingDetail["symptoms"]}');
-//     print('>>>>>>>>>>>>>>>>>>>>>>notes: ${bookingDetail["notes"]}');
-//     print('>>>>>>>>>>>>>>>>>>>>>>doctỏ id: ${id}');
-//     print('>>>>>>>>>>>>>>>>>>>>>>price: ${price}');
-// print('Dữ Liệu Yêu Cầu: ${json.encode({
-//   "appointmentDate": bookingDetail["appointmentDate"],
-//   "appointmentTime": bookingDetail["appointmentTime"],
-//   "symptoms": bookingDetail["symptoms"],
-//   "notes": bookingDetail["notes"],
-//   "patients": {
-//     "id": patientId,
-//     // Các trường bệnh nhân khác
-//   },
-//   "doctors": {
-//     "id": id,
-//     // Các trường bác sĩ khác
-//   }
-// })}');
+
   try {
     Dio dio = Dio();
     Response response = await dio.post('$domain2/api/v1/payment/create', data: {
@@ -74,7 +55,7 @@ void sendSuccessDataToBackend(
       "price": price,
       "bookingAttachedFile": null,
       "patients": {
-        "id": patientId, 
+        "id": patientId,
       },
       "doctors": {
         "id": id,
@@ -83,7 +64,8 @@ void sendSuccessDataToBackend(
 
     // Xử lý kết quả từ backend (response.data)
     // print('Backend Response: ${response1.data}');
-    print('>>>>>>>>>>>>>>>>>>>>>>>>>>> Backend Response: ${response1.statusCode}');
+    print(
+        '>>>>>>>>>>>>>>>>>>>>>>>>>>> Backend Response: ${response1.statusCode}');
   } catch (e) {
     if (e is DioError) {
       // Xử lý DioError, kiểm tra mã lỗi 403 và thực hiện hành động tương ứng
@@ -330,10 +312,10 @@ class DetailBody extends StatelessWidget {
                 MaterialPageRoute(
                   builder: (BuildContext context) => UsePaypal(
                       sandboxMode: true,
-                      clientId: "${Constants.clientId}",
-                      secretKey: "${Constants.secretKey}",
-                      returnURL: "${Constants.returnURL}",
-                      cancelURL: "${Constants.cancelURL}",
+                      clientId: Constants.clientId,
+                      secretKey: Constants.secretKey,
+                      returnURL: Constants.returnURL,
+                      cancelURL: Constants.cancelURL,
                       transactions: [
                         {
                           "amount": {
@@ -358,7 +340,6 @@ class DetailBody extends StatelessWidget {
                             Map<String, dynamic>.from(bookingDetail));
                         // Navigator.of(context)
                         //     .pushNamed("/success_booking");
-                        
                       },
                       onError: (error) {
                         print("onError: $error");
@@ -565,15 +546,6 @@ class Payment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     log('>> MyApp - build()');
-    // Place that widget on most top
-
-    // return MaterialApp(
-    //   title: 'Flutter Demo',
-    //   theme: ThemeData(
-    //     primarySwatch: Colors.blue,
-    //   ),
-    //   home: const PaymentPage(title: '',),
-    // );
 
     return OneNotification(
       builder: (_, __) => MaterialApp(

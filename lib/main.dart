@@ -28,6 +28,7 @@ import 'package:uber_doctor_flutter/src/widgets/BottomNavHexagon.dart';
 
 import 'src/model/AuthProvider.dart';
 import 'src/pages/booking/booking_list_page.dart';
+import 'src/pages/profile_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -108,14 +109,14 @@ class _MyHomePageState extends State<MyHomePage> {
   var _page = 0;
   final pages = [
     HomePage(),
-    // Call(navigatorKey: GlobalKey()),
+    Call(navigatorKey: GlobalKey()),
     // SymptomPage(),
     BookingDoctorListPage(),
-    // ProfilePage(),
-    LoginPage(),
+    // LoginPage(),
     //  DetailPage(doctors: [], selectedIndex: 0,),
     AppointmentPage(),
-    BookingListPage(),
+    // BookingListPage(),
+    ProfilePage(),
   ];
   int visit = 0;
   double height = 30;

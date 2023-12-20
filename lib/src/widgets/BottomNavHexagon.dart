@@ -22,12 +22,12 @@ const List<TabItem> items = [
     
   ),
   TabItem(
-    icon: Icons.coronavirus,
-    title: 'symptom',
+    icon: Icons.health_and_safety,
+    title: 'Book',
   ),
   TabItem(
     icon: Icons.calendar_month,
-    title: 'Booking',
+    title: 'Appointment',
   ),
   TabItem(
     icon: Icons.account_box,

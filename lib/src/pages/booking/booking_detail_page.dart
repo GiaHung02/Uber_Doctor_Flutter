@@ -39,12 +39,12 @@ void sendSuccessDataToBackend(
 
   try {
     Dio dio = Dio();
-    Response response = await dio.post('$domain2/api/v1/payment/create', data: {
-      "paymentPhone": "0972984029",
-      "price": price,
-      "patientName": "Hoang",
-      "message": "payment success with PayPal"
-    });
+    // Response response = await dio.post('$domain2/api/v1/payment/create', data: {
+    //   "paymentPhone": "0972984029",
+    //   "price": price,
+    //   "patientName": "Hoang",
+    //   "message": "payment success with PayPal"
+    // });
 
     Response response1 =
         await dio.post('$domain2/api/v1/booking/create', data: {
@@ -306,58 +306,68 @@ class DetailBody extends StatelessWidget {
 
           Button(
             width: double.infinity,
-            title: 'Payment Booking',
+            title: 'Booking',
             onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (BuildContext context) => UsePaypal(
-                      sandboxMode: true,
-                      clientId: Constants.clientId,
-                      secretKey: Constants.secretKey,
-                      returnURL: Constants.returnURL,
-                      cancelURL: Constants.cancelURL,
-                      transactions: [
-                        {
-                          "amount": {
-                            "total": '${doctor.price}',
-                            // "total": '',
-                            "currency": "USD",
-                          },
-                          "description": "The payment transaction description.",
-                        }
-                      ],
-                      note: "Contact us for any questions on your order.",
-                      onSuccess: (Map params) {
-                        print("onSuccess: $params");
-                        UIHelper.showAlertDialog('Payment Successfully',
-                            title: 'Success');
+              // Navigator.of(context).push(
+              //   MaterialPageRoute(
+              //     builder: (BuildContext context) => UsePaypal(
+              //         sandboxMode: true,
+              //         clientId: Constants.clientId,
+              //         secretKey: Constants.secretKey,
+              //         returnURL: Constants.returnURL,
+              //         cancelURL: Constants.cancelURL,
+              //         transactions: [
+              //           {
+              //             "amount": {
+              //               "total": '${doctor.price}',
+              //               // "total": '',
+              //               "currency": "USD",
+              //             },
+              //             "description": "The payment transaction description.",
+              //           }
+              //         ],
+              //         note: "Contact us for any questions on your order.",
+              //         onSuccess: (Map params) {
+              //           print("onSuccess: $params");
+              //           UIHelper.showAlertDialog('Payment Successfully',
+              //               title: 'Success');
 
-                        // print(params);
-                        // print("Payment Status: $params['status']");
-                        // print("Payment Status: $params[datafirst_name]");
+              //           // print(params);
+              //           // print("Payment Status: $params['status']");
+              //           // print("Payment Status: $params[datafirst_name]");
 
-                        sendSuccessDataToBackend(doctor.price, doctor.id,
-                            Map<String, dynamic>.from(bookingDetail));
-                        // Navigator.of(context)
-                        //     .pushNamed("/success_booking");
-                      },
-                      onError: (error) {
-                        print("onError: $error");
-                        UIHelper.showAlertDialog(
-                            'Unable to completet the Payment',
-                            title: 'Error');
-                      },
-                      onCancel: (params) {
-                        print('cancelled: $params');
-                        UIHelper.showAlertDialog('Payment Cannceled',
-                            title: 'Cancel');
-                      }),
-                ),
-              );
+                      sendSuccessDataToBackend(doctor.price, doctor.id,
+                         Map<String, dynamic>.from(bookingDetail));
+              // Navigator.of(context).pushNamed("/success_booking");
+              //         },
+              //         onError: (error) {
+              //           print("onError: $error");
+              //           UIHelper.showAlertDialog(
+              //               'Unable to completet the Payment',
+              //               title: 'Error');
+              //         },
+              //         onCancel: (params) {
+              //           print('cancelled: $params');
+              //           UIHelper.showAlertDialog('Payment Cannceled',
+              //               title: 'Cancel');
+              //         }),
+              //   ),
+              // );
+              Navigator.of(context).pushNamed("/success_booking");
+              // showBookSuccessSnackbar(context);
             },
             disable: false,
           ),
         ],
+      ),
+    );
+  }
+
+  void showBookSuccessSnackbar(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Đã Thanh toán thành công!'),
+        duration: Duration(seconds: 3), // Thời gian hiển thị của snackbar
       ),
     );
   }

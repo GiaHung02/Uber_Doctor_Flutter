@@ -1,8 +1,12 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_paypal/flutter_paypal.dart';
 import 'package:uber_doctor_flutter/src/api/api_service.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:uber_doctor_flutter/src/constants/url_api.dart';
+import 'package:uber_doctor_flutter/src/helpers/ui_helper.dart';
 import 'package:uber_doctor_flutter/src/model/booking.dart';
 import 'package:http/http.dart' as http;
 
@@ -36,7 +40,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
 
   // Thay đổi hàm fetchBookings trong _AppointmentPageState
   void fetchBookings() async {
-    final url = Uri.parse('$domain/api/v1/booking/list');
+    final url = Uri.parse('$domain2/api/v1/booking/list');
 
     try {
       final response = await http.get(url);
@@ -62,6 +66,14 @@ class _AppointmentPageState extends State<AppointmentPage> {
   }
 
   void reloadBookings() async {
+    fetchBookings();
+    setState(() {
+      // Update state để rebuild trang
+    });
+  }
+
+  void reloadPayAfterBookings() async {
+    showPaySuccessSnackbar(context);
     fetchBookings();
     setState(() {
       // Update state để rebuild trang
@@ -174,7 +186,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                       return Card(
                           shape: RoundedRectangleBorder(
                             side: const BorderSide(
-                              color: Colors.grey,
+                              color: Color.fromARGB(255, 49, 16, 16),
                             ),
                             borderRadius: BorderRadius.circular(20),
                           ),
@@ -207,7 +219,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                                           child: _schedule.doctors?.imagePath !=
                                                   null
                                               ? Image.network(
-                                                  "$domain/${_schedule.doctors?.imagePath}",
+                                                  "$domain2/${_schedule.doctors?.imagePath}",
                                                   fit: BoxFit.cover,
                                                 )
                                               : Container(),
@@ -275,10 +287,31 @@ class _AppointmentPageState extends State<AppointmentPage> {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text(
-                                        _schedule.statusBooking,
-                                        style: TextStyle(color: Colors.white),
-                                      ),
+                                      if (_schedule.statusBooking == 'pending')
+                                        Text(
+                                          'Doctor is accepting, please waite',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      if (_schedule.statusBooking ==
+                                          'confirmed')
+                                        Text(
+                                          "Doctor confirmed schedule, let's pay",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      if (_schedule.statusBooking == 'upcoming')
+                                        Text(
+                                          'Upcoming schedule',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      if (_schedule.statusBooking == 'complete')
+                                        Text(
+                                          'This booking has completed',
+                                          style: TextStyle(color: Colors.white),
+                                        ), if (_schedule.statusBooking == 'cancel')
+                                        Text(
+                                          'This booking has canceled',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
                                     ],
                                   ),
                                 ),
@@ -291,7 +324,8 @@ class _AppointmentPageState extends State<AppointmentPage> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     if (_schedule.statusBooking == 'upcoming' ||
-                                        _schedule.statusBooking == 'pending')
+                                        _schedule.statusBooking == 'pending' ||
+                                        _schedule.statusBooking == 'confirmed')
                                       Expanded(
                                         child: OutlinedButton(
                                           onPressed: () {
@@ -332,17 +366,96 @@ class _AppointmentPageState extends State<AppointmentPage> {
                                     SizedBox(
                                       width: 20,
                                     ),
-                                    if (_schedule.statusBooking == 'upcoming' ||
-                                        _schedule.statusBooking == 'pending')
+                                    if (_schedule.statusBooking == 'confirmed')
                                       Expanded(
                                         child: OutlinedButton(
                                           style: OutlinedButton.styleFrom(
                                             backgroundColor:
                                                 Color.fromARGB(255, 1, 78, 141),
                                           ),
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                builder: (BuildContext
+                                                        context) =>
+                                                    UsePaypal(
+                                                        sandboxMode: true,
+                                                        clientId:
+                                                            Constants.clientId,
+                                                        secretKey:
+                                                            Constants.secretKey,
+                                                        returnURL:
+                                                            Constants.returnURL,
+                                                        cancelURL:
+                                                            Constants.cancelURL,
+                                                        transactions: [
+                                                          {
+                                                            "amount": {
+                                                              "total": 10,
+                                                              // "total": '',
+                                                              "currency": "USD",
+                                                            },
+                                                            "description":
+                                                                "The payment transaction description.",
+                                                          }
+                                                        ],
+                                                        note:
+                                                            "Contact us for any questions on your order.",
+                                                        onSuccess:
+                                                            (Map params) async {
+                                                          print(
+                                                              "onSuccess: $params");
+                                                          UIHelper.showAlertDialog(
+                                                              'Payment Successfully',
+                                                              title: 'Success');
+
+                                                          // print(params);
+                                                          // print("Payment Status: $params['status']");
+                                                          // print("Payment Status: $params[datafirst_name]");
+                                                          bool success =
+                                                              await ApiBooking
+                                                                  .updateStatusToUpcoming(
+                                                                      _schedule);
+
+                                                          if (success) {
+                                                            // Xoá booking thành công, bạn có thể thực hiện các hành động cần thiết
+                                                            // (ví dụ: cập nhật UI, hiển thị thông báo, vv.)
+                                                            print(
+                                                                'Pay successfully.');
+                                                            // Navigator.of(context).pushNamed(
+                                                            //   '/appointment_page',
+                                                            // );
+                                                            reloadPayAfterBookings();
+                                                            // Hiển thị thông báo thành công
+                                                          } else {
+                                                            // Xử lý khi cancel booking không thành công
+                                                            print(
+                                                                'Failed to Pay booking.');
+                                                          }
+                                                          // Navigator.of(context)
+                                                          //     .pop(); // Đóng hộp thoại
+                                                          // Navigator.of(context)
+                                                          //     .pushNamed("/success_booking");
+                                                        },
+                                                        onError: (error) {
+                                                          print(
+                                                              "onError: $error");
+                                                          UIHelper.showAlertDialog(
+                                                              'Unable to completet the Payment',
+                                                              title: 'Error');
+                                                        },
+                                                        onCancel: (params) {
+                                                          print(
+                                                              'cancelled: $params');
+                                                          UIHelper.showAlertDialog(
+                                                              'Payment Cannceled',
+                                                              title: 'Cancel');
+                                                        }),
+                                              ),
+                                            );
+                                          },
                                           child: Text(
-                                            'Reschedule',
+                                            'Pay Now',
                                             style:
                                                 TextStyle(color: Colors.white),
                                           ),
@@ -414,6 +527,15 @@ class _AppointmentPageState extends State<AppointmentPage> {
       SnackBar(
         content: Text('Đã hủy đặt hẹn thành công!'),
         duration: Duration(seconds: 2), // Thời gian hiển thị của snackbar
+      ),
+    );
+  }
+
+  void showPaySuccessSnackbar(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Đã Thanh toán thành công!'),
+        duration: Duration(seconds: 3), // Thời gian hiển thị của snackbar
       ),
     );
   }

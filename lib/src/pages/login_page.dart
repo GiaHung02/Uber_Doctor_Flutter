@@ -233,11 +233,11 @@ class _LoginPageState extends State<LoginPage> {
                                                 new DoctorRegisterPage()));
                                   }
                                 } else {
-                                  var check = loginController.loginPatient(
+                                  var check = await loginController.loginPatient(
                                       sendPhone, context);
 
                                   if (check != -1) {
-                                    await FirebaseAuth.instance
+                                     FirebaseAuth.instance
                                         .verifyPhoneNumber(
                                       phoneNumber:
                                           '${countryController.text + sendPhone}',

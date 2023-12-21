@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 // Package imports:
 import 'package:faker/faker.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
+import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
 import 'package:uber_doctor_flutter/constants.dart';
 import 'package:uber_doctor_flutter/login_service.dart';
@@ -17,21 +18,21 @@ import 'package:zego_uikit/zego_uikit.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 import 'package:http/http.dart' as http;
 
-class CallPage extends StatefulWidget {
-  const CallPage({Key? key}) : super(key: key);
+class CallPageDoctor extends StatefulWidget {
+  const CallPageDoctor({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => CallPageState();
 }
 
-class CallPageState extends State<CallPage> {
+class CallPageState extends State<CallPageDoctor> {
   final TextEditingController singleInviteeUserIDTextCtrl =
       TextEditingController();
   final TextEditingController groupInviteeUserIDsTextCtrl =
       TextEditingController();
   List<Booking> _schedules = [];
 
-  // get filterSchedules => null;
+  
 
   @override
   void initState() {
@@ -166,6 +167,8 @@ class CallPageState extends State<CallPage> {
         itemBuilder: (context, index) {
           final booking = _schedules[index];
           final doctorFullName = booking.doctors?.fullName ?? 'Unknown Doctor';
+          final patientsName = booking.patients?.fullName?? 'Unknown Patients';
+            // print('>>>>>>>>>>>>>>>>>>>>>''_schedule id: ${_schedule.doc}');
           // Booking(booking: bookings[index]);
           // print('>>>>>>>>>>>>>>>>>>>>>''_schedule id: ${_schedule.id}');
           // print('>>>>>>>>>>>>>>>>>>>>>''Doctor full name: ${_schedule.doctors!.fullName}');
@@ -213,11 +216,14 @@ class CallPageState extends State<CallPage> {
               // )
 
               Text(
-                '${booking.doctors!.fullName}(${random.fromPattern([
+                '${booking.patients!.fullName}(${random.fromPattern([
                       '######'
+                      
                     ])})',
                 style: textStyle,
+                
               )
+              
             ];
           }
 

@@ -3,22 +3,25 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:uber_doctor_flutter/constants.dart';
+import 'package:uber_doctor_flutter/login_service.dart';
 import 'package:uber_doctor_flutter/main.dart';
+import 'package:uber_doctor_flutter/src/call/util.dart';
 import 'package:uber_doctor_flutter/src/widgets/custom_appbar.dart';
 
 // Project imports:
-import '../../constants.dart';
-import '../../login_service.dart';
-import 'util.dart';
+// import '../../constants.dart';
+// import '../../login_service.dart';
+// import 'util.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+class LoginPageDoctor extends StatefulWidget {
+  const LoginPageDoctor({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => LoginPageState();
 }
 
-class LoginPageState extends State<LoginPage> {
+class LoginPageState extends State<LoginPageDoctor> {
   final _userIDTextCtrl = TextEditingController(text: 'user_id');
   final _passwordVisible = ValueNotifier<bool>(false);
 
@@ -96,7 +99,7 @@ class LoginPageState extends State<LoginPage> {
     return Center(
       child: RichText(
         text: const TextSpan(
-          text: 'UBER',
+          text: '',
           style: TextStyle(color: Colors.black, fontSize: 20),
           children: <TextSpan>[
             TextSpan(
@@ -154,7 +157,7 @@ class LoginPageState extends State<LoginPage> {
 
                 Navigator.pushNamed(
                   context,
-                  PageRouteNames.home,
+                  PageRouteNames.doctorCall,
                 );
               });
             },

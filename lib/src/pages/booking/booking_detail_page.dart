@@ -1,18 +1,41 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:ffi';
+import 'dart:io';
+
+
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_paypal/flutter_paypal.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:one_context/one_context.dart';
 import 'package:uber_doctor_flutter/src/constants/url_api.dart';
+import 'package:uber_doctor_flutter/src/helpers/ui_helper.dart';
 import 'package:uber_doctor_flutter/src/model/booking.dart';
 import 'package:uber_doctor_flutter/src/theme/button.dart';
 import 'package:uber_doctor_flutter/src/theme/colors.dart';
 import 'package:uber_doctor_flutter/src/theme/styles.dart';
 import 'package:uber_doctor_flutter/src/widgets/custom_appbar.dart';
+import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
+import 'package:flutter_paypal_payment/flutter_paypal_payment.dart';
 
-import '../../helpers/ui_helper.dart';
+// void showIncompleteStepSnackBar(BuildContext context) {
+//   ScaffoldMessenger.of(context).showSnackBar(
+//     SnackBar(
+//       content: AwesomeSnackbarContent(
+//         title: 'Incomplete Step',
+//         message: 'Please fill in all required information for Step .',
+//         contentType: ContentType.failure,
+//         inMaterialBanner: true,
+//       ),
+//       behavior: SnackBarBehavior.floating,
+//       backgroundColor: Color.fromARGB(0, 255, 255, 255),
+//     ),
+//   );
+// }
+
+
 
 void sendSuccessDataToBackend(
     double? price, int? id, Map<String, dynamic> bookingDetail) async {
@@ -132,8 +155,11 @@ class DetailBody extends StatelessWidget {
   Widget build(BuildContext context) {
     //lấy dữ liệu từ trang booking
     final bookingDetail = ModalRoute.of(context)!.settings.arguments as Map;
+
     //decode tu json
     final doctor = Doctor.fromJson(jsonDecode(bookingDetail["doctor"]));
+    // final booking = Booking
+    // final bookingDetail = BookingDetailPage.fromJson(jsonDecode(bookingDetail["booking"]));
     return Container(
       padding: EdgeInsets.all(20),
       margin: EdgeInsets.only(bottom: 30),
@@ -544,71 +570,70 @@ class DetailDoctorCard extends StatelessWidget {
   }
 }
 
-bool debugShowCheckedModeBanner = false;
-const localeEnglish = [Locale('en', '')];
+// bool debugShowCheckedModeBanner = false;
+// const localeEnglish = [Locale('en', '')];
 
-// void mainInit() {
-//   runApp(const Payment());
+// // void mainInit() {
+// //   runApp(const Payment());
+// // }
+
+// void mainInit() => OnePlatform.app = () => Payment();
+
+// class Payment extends StatelessWidget {
+//   // const Payment({super.key});
+
+//   Payment({super.key}) {
+//     print('>> MyApp2 loaded!');
+//     OneContext().key = GlobalKey<NavigatorState>();
+//   }
+
+//   // This widget is the root of your application.
+//   @override
+//   Widget build(BuildContext context) {
+//     log('>> MyApp - build()');
+//     // Place that widget on most top
+
+//     // return MaterialApp(
+//     //   title: 'Flutter Demo',
+//     //   theme: ThemeData(
+//     //     primarySwatch: Colors.blue,
+//     //   ),
+//     //   home: const PaymentPage(title: '',),
+//     // );
+
+//     return OneNotification(
+//       builder: (_, __) => MaterialApp(
+//         title: 'Flutter Demo',
+//         home: const PaymentPage(title: 'Flutter Demo Home Page'),
+//         builder: OneContext().builder,
+//         navigatorKey: OneContext().key,
+//       ),
+//     );
+//   }
 // }
 
-void mainInit() => OnePlatform.app = () => Payment();
+// class PaymentPage extends StatefulWidget {
+//   const PaymentPage({super.key, required this.title});
 
-class Payment extends StatelessWidget {
-  // const Payment({super.key});
+//   final String title;
 
-  Payment({super.key}) {
-    print('>> MyApp2 loaded!');
-    OneContext().key = GlobalKey<NavigatorState>();
-  }
+//   @override
+//   State<PaymentPage> createState() => _PaymentPageState();
+// }
 
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    log('>> MyApp - build()');
-    // Place that widget on most top
+// class _PaymentPageState extends State<PaymentPage> {
+//   int _counter = 0;
 
-    // return MaterialApp(
-    //   title: 'Flutter Demo',
-    //   theme: ThemeData(
-    //     primarySwatch: Colors.blue,
-    //   ),
-    //   home: const PaymentPage(title: '',),
-    // );
+//   void _incrementCounter() {
+//     setState(() {
+//       _counter++;
+//     });
 
-    return OneNotification(
-      builder: (_, __) => MaterialApp(
-        title: 'Flutter Demo',
-        home: const PaymentPage(title: 'Flutter Demo Home Page'),
-        builder: OneContext().builder,
-        navigatorKey: OneContext().key,
-      ),
-    );
-  }
-}
+  //   mainInit();
+  // }
 
-class PaymentPage extends StatefulWidget {
-  const PaymentPage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<PaymentPage> createState() => _PaymentPageState();
-}
-
-class _PaymentPageState extends State<PaymentPage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-
-    mainInit();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
-  }
-}
+  // @override
+  // Widget build(BuildContext context) {
+  //   // TODO: implement build
+  //   throw UnimplementedError();
+  // }

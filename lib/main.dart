@@ -10,14 +10,18 @@ import 'package:uber_doctor_flutter/src/pages/booking/booking_detail_page.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/booking_doctor_list_page.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/booking_page.dart';
 import 'package:uber_doctor_flutter/src/pages/detail_page.dart';
+import 'package:uber_doctor_flutter/src/pages/doctorApp/call_doctor.dart';
 import 'package:uber_doctor_flutter/src/pages/doctorApp/doctor_appointment_page.dart';
 import 'package:uber_doctor_flutter/src/pages/doctorApp/doctor_home_page.dart';
+import 'package:uber_doctor_flutter/src/pages/doctorApp/doctor_phone_page.dart';
 import 'package:uber_doctor_flutter/src/pages/doctorApp/doctor_profile_page.dart';
 import 'package:uber_doctor_flutter/src/pages/doctor_register_page.dart';
 import 'package:uber_doctor_flutter/src/pages/home_page.dart';
 import 'package:uber_doctor_flutter/src/pages/login_page.dart';
 import 'package:uber_doctor_flutter/src/pages/patient_register_page.dart';
 import 'package:uber_doctor_flutter/src/pages/phone_page.dart';
+import 'package:uber_doctor_flutter/src/pages/profile_page.dart';
+import 'package:uber_doctor_flutter/src/pages/push_notication.dart';
 import 'package:uber_doctor_flutter/src/pages/search_page.dart';
 import 'package:uber_doctor_flutter/src/pages/splash_page.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/success_booked.dart';
@@ -84,7 +88,7 @@ class MyApp extends StatelessWidget {
           '/booking_detail_page': (context) => BookingDetailPage(),
           'login': (context) => LoginPage(),
           '/pages/search_page': (context) => SearchPageWidget(),
-           '/user_appointment_page': (context) => AppointmentBooked(),
+          'call_doctor': (context) => CallPageDoctor(),
 
           //Bs navigate
           '/bs_home_page': (context) => MyBsPage(title: 'bs home', 'bs home'),
@@ -108,11 +112,11 @@ class _MyHomePageState extends State<MyHomePage> {
   var _page = 0;
   final pages = [
     HomePage(),
-    // Call(navigatorKey: GlobalKey()),
+    Call(navigatorKey: GlobalKey()),
     // SymptomPage(),
-    BookingDoctorListPage(),
+    // BookingDoctorListPage(),
     // ProfilePage(),
-    LoginPage(),
+    // LoginPage(),
     //  DetailPage(doctors: [], selectedIndex: 0,),
     AppointmentPage(),
     BookingListPage(),
@@ -196,7 +200,7 @@ class _MyBsPageState extends State<MyBsPage> {
   var _page = 0;
   final pages = [
     DoctorHomePage(),
- Call(navigatorKey: GlobalKey()),
+    CallDoctor(navigatorKey: GlobalKey()),
     DoctorAppointmentPage(),
     DoctorProfilePage(),
   ];
@@ -226,7 +230,6 @@ class _MyBsPageState extends State<MyBsPage> {
         chipStyle: const ChipStyle(drawHexagon: true),
       ),
       body: pages[_page],
-    
     );
   }
 }

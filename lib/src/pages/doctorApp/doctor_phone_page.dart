@@ -35,14 +35,14 @@ void mainInit() async {
       [ZegoUIKitSignalingPlugin()],
     );
 
-    runApp(Call(navigatorKey: navigatorKey));
+    runApp(CallDoctor(navigatorKey: navigatorKey));
   });
 }
 
-class Call extends StatefulWidget {
+class CallDoctor extends StatefulWidget {
   final GlobalKey<NavigatorState> navigatorKey;
 
-  const Call({
+  const CallDoctor({
     required this.navigatorKey,
     Key? key,
   }) : super(key: key);
@@ -51,7 +51,7 @@ class Call extends StatefulWidget {
   State<StatefulWidget> createState() => CallState();
 }
 
-class CallState extends State<Call> {
+class CallState extends State<CallDoctor> {
   @override
   void initState() {
     super.initState();
@@ -68,7 +68,7 @@ class CallState extends State<Call> {
     return MaterialApp(
       routes: routes,
       initialRoute:
-          currentUser.id.isEmpty ? PageRouteNames.login : PageRouteNames.home,
+          currentUser.id.isEmpty ? PageRouteNames.loginDoctor : PageRouteNames.doctorCall,
       color: Colors.red,
       theme: ThemeData(scaffoldBackgroundColor: const Color(0xFFEFEFEF)),
 

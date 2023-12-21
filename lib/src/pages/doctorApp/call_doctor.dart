@@ -36,12 +36,12 @@ class CallPageState extends State<CallPageDoctor> {
   void initState() {
     super.initState();
     // Gọi hàm để lấy dữ liệu từ API và cập nhật danh sách bookings
-    fetchBookings();
+    fetchBookingsinDoctor();
   }
 
   FilterStatus statusBooking = FilterStatus.upcoming;
   Alignment _alignment = Alignment.centerLeft;
-  void fetchBookings() async {
+  void fetchBookingsinDoctor() async {
     final url = Uri.parse('$domain/api/v1/booking/list');
 
     try {
@@ -53,7 +53,7 @@ class CallPageState extends State<CallPageDoctor> {
           int patientId = 2; // Thay thế bằng patient["id"] cụ thể
           _schedules = List<Booking>.from(jsonDecode(response.body)['data']
                   .map((booking) => Booking.fromJson(booking)))
-              .where((booking) => booking.statusBooking == 'upcoming')
+              .where((booking) => booking.statusBooking == 'cancel')
               .toList();
         });
       } else {
@@ -68,7 +68,7 @@ class CallPageState extends State<CallPageDoctor> {
   }
 
   void reloadBookings() async {
-    fetchBookings();
+    fetchBookingsinDoctor();
     setState(() {
       // Update state để rebuild trang
     });

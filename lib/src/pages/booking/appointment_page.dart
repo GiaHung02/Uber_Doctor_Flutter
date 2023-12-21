@@ -5,8 +5,10 @@ import 'package:uber_doctor_flutter/src/api/api_service.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:uber_doctor_flutter/src/constants/url_api.dart';
 import 'package:uber_doctor_flutter/src/helpers/ui_helper.dart';
+import 'package:uber_doctor_flutter/src/model/AuthProvider.dart';
 import 'package:uber_doctor_flutter/src/model/booking.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class AppointmentPage extends StatefulWidget {
   const AppointmentPage({Key? key}) : super(key: key);
@@ -39,27 +41,30 @@ class _AppointmentPageState extends State<AppointmentPage> {
   // Thay đổi hàm fetchBookings trong _AppointmentPageState
   void fetchBookings() async {
     final url = Uri.parse('$domain2/api/v1/booking/list');
-
-    try {
-      final response = await http.get(url);
-      if (response.statusCode == 200) {
-        // Chuyển đổi JSON thành danh sách Booking và cập nhật state
-        setState(() {
-          // đoạn mã này để lọc danh sách booking theo patientId
-          int patientId = 2; // Thay thế bằng patient["id"] cụ thể
-          schedules = List<Booking>.from(jsonDecode(response.body)['data']
-                  .map((booking) => Booking.fromJson(booking)))
-              .where((booking) => booking.patients?.id == patientId)
-              .toList();
-        });
-      } else {
-        // Xử lý khi có lỗi từ API
-        print('Error: ${response.statusCode}');
+    //  userid = null;
+    // if (Provider.of<MyAuthProvider>(context).token != null) {
+    //   userid = Provider.of<MyAuthProvider>(context).id
+    // }
+      try {
+        final response = await http.get(url);
+        if (response.statusCode == 200) {
+          // Chuyển đổi JSON thành danh sách Booking và cập nhật state
+          setState(() {
+            // đoạn mã này để lọc danh sách booking theo patientId
+            int patientId = 2; // Thay thế bằng patient["id"] cụ thể
+            schedules = List<Booking>.from(jsonDecode(response.body)['data']
+                    .map((booking) => Booking.fromJson(booking)))
+                .where((booking) => booking.patients?.id == patientId)
+                .toList();
+          });
+        } else {
+          // Xử lý khi có lỗi từ API
+          print('Error: ${response.statusCode}');
+        }
+      } catch (e) {
+        // Xử lý khi có lỗi kết nối
+        print('Error: $e');
       }
-    } catch (e) {
-      // Xử lý khi có lỗi kết nối
-      print('Error: $e');
-    }
     // print('booking length from api: ${schedules.length}');
   }
 
@@ -81,15 +86,14 @@ class _AppointmentPageState extends State<AppointmentPage> {
   @override
   Widget build(BuildContext context) {
     List<dynamic> filterSchedules = schedules.where((var schedule) {
-
       FilterStatus scheduleStatus;
       switch (schedule.statusBooking) {
         case 'upcoming':
           scheduleStatus = FilterStatus.upcoming;
           break;
         case 'complete':
-            scheduleStatus = FilterStatus.complete;
-            break;
+          scheduleStatus = FilterStatus.complete;
+          break;
         case 'cancel':
           scheduleStatus = FilterStatus.cancel;
           break;
@@ -306,7 +310,8 @@ class _AppointmentPageState extends State<AppointmentPage> {
                                         Text(
                                           'This booking has completed',
                                           style: TextStyle(color: Colors.white),
-                                        ), if (_schedule.statusBooking == 'cancel')
+                                        ),
+                                      if (_schedule.statusBooking == 'cancel')
                                         Text(
                                           'This booking has canceled',
                                           style: TextStyle(color: Colors.white),

@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:quickalert/models/quickalert_type.dart';
+import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:uber_doctor_flutter/src/controllers/auth/login_controller.dart';
 import 'package:uber_doctor_flutter/src/pages/verify.dart';
 
@@ -193,10 +195,10 @@ class _LoginPageState extends State<LoginPage> {
                                 var sendPhone = int.parse(phone).toString();
 
                                 if (_isChecked) {
-                                  var check = loginController.loginDoctor(
+                                  var check = await loginController.loginDoctor(
                                       sendPhone, context);
 
-                                  if (await check != -1) {
+                                  if (check != -1) {
                                     await FirebaseAuth.instance
                                         .verifyPhoneNumber(
                                       phoneNumber:
@@ -204,7 +206,13 @@ class _LoginPageState extends State<LoginPage> {
                                       verificationCompleted:
                                           (PhoneAuthCredential credential) {},
                                       verificationFailed:
-                                          (FirebaseAuthException e) {},
+                                          (FirebaseAuthException e) {
+                                        QuickAlert.show(
+                                          context: context,
+                                          type: QuickAlertType.error,
+                                          text: 'Can not send OTP',
+                                        );
+                                      },
                                       codeSent: (String verificationId,
                                           int? resendToken) {
                                         LoginPage.verify = verificationId;
@@ -232,7 +240,13 @@ class _LoginPageState extends State<LoginPage> {
                                       verificationCompleted:
                                           (PhoneAuthCredential credential) {},
                                       verificationFailed:
-                                          (FirebaseAuthException e) {},
+                                          (FirebaseAuthException e) {
+                                        QuickAlert.show(
+                                          context: context,
+                                          type: QuickAlertType.error,
+                                          text: 'Can not send OTP',
+                                        );
+                                      },
                                       codeSent: (String verificationId,
                                           int? resendToken) {
                                         LoginPage.verify = verificationId;

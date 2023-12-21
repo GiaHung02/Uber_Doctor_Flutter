@@ -39,7 +39,7 @@ class LoginController extends GetxController {
       if (apiResponse.status == 200) {
         return apiResponse.data;
       } else {
-        return null;
+        return -1;
       }
     } catch (e) {
       QuickAlert.show(
@@ -49,11 +49,11 @@ class LoginController extends GetxController {
       );
 
          print(" have many errrrrrrrrrrrrrrrrr==============================================================");
-      return null;
+      return -1;
     }
   }
 
-  Future<Long?> loginDoctor(String phone, context) async {
+  Future<int?> loginDoctor(String phone, context) async {
     isLoading.value = true;
     try {
       var myUrl = loginDoctorAPI + phone;
@@ -69,7 +69,7 @@ class LoginController extends GetxController {
       if (apiResponse.status == 200) {
         return apiResponse.data;
       } else {
-        return null;
+        return -1;
       }
     } catch (e) {
       QuickAlert.show(
@@ -77,7 +77,7 @@ class LoginController extends GetxController {
         type: QuickAlertType.error,
         text: 'Switch to a different IP or a different WiFi',
       );
-      return null;
+      return -1;
     }
   }
 }

@@ -197,7 +197,6 @@ class _LoginPageState extends State<LoginPage> {
                                 if (_isChecked) {
                                   var check = loginController.loginDoctor(
                                       sendPhone, context);
-                                 
 
                                   if (await check != -1) {
                                     await FirebaseAuth.instance
@@ -212,7 +211,7 @@ class _LoginPageState extends State<LoginPage> {
                                           int? resendToken) {
                                         LoginPage.verify = verificationId;
                                         LoginPage.approle = "Doctor";
-
+                                        LoginPage.userid = check.toString();
                                         Navigator.pushNamed(context, 'verify');
                                       },
                                       codeAutoRetrievalTimeout:
@@ -226,8 +225,8 @@ class _LoginPageState extends State<LoginPage> {
                                                 new DoctorRegisterPage()));
                                   }
                                 } else {
-                                  var check =
-                                      loginController.loginPatient(sendPhone,context);
+                                  var check = loginController.loginPatient(
+                                      sendPhone, context);
 
                                   if (check != -1) {
                                     await FirebaseAuth.instance
@@ -242,6 +241,7 @@ class _LoginPageState extends State<LoginPage> {
                                           int? resendToken) {
                                         LoginPage.verify = verificationId;
                                         LoginPage.approle = "Patient";
+                                        LoginPage.userid = check.toString();
                                         Navigator.pushNamed(context, 'verify');
 
                                         // Navigator.pushReplacement(

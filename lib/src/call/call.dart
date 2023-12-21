@@ -37,13 +37,13 @@ class CallPageState extends State<CallPage> {
   void initState() {
     super.initState();
     // Gọi hàm để lấy dữ liệu từ API và cập nhật danh sách bookings
-    fetchBookings();
+    fetchBookingsinUserCall();
   }
 
   FilterStatus statusBooking = FilterStatus.upcoming;
   Alignment _alignment = Alignment.centerLeft;
 
-  void fetchBookings() async {
+  void fetchBookingsinUserCall() async {
     final url = Uri.parse('$domain/api/v1/booking/list');
 
     try {
@@ -55,7 +55,7 @@ class CallPageState extends State<CallPage> {
           int patientId = 2; // Thay thế bằng patient["id"] cụ thể
           _schedules = List<Booking>.from(jsonDecode(response.body)['data']
                   .map((booking) => Booking.fromJson(booking)))
-              .where((booking) => booking.statusBooking == 'upcoming')
+              .where((booking) => booking.statusBooking == 'cancel')
               .toList();
         });
       } else {
@@ -66,11 +66,11 @@ class CallPageState extends State<CallPage> {
       // Xử lý khi có lỗi kết nối
       print('Error: $e');
     }
-    // print('booking length from api: ${schedules.length}');
+    print('>>>>>>>>>>>>>>>>>>>>>>>>booking length from api: ${_schedules.length}');
   }
 
   void reloadBookings() async {
-    fetchBookings();
+    fetchBookingsinUserCall();
     setState(() {
       // Update state để rebuild trang
     });
@@ -167,10 +167,8 @@ class CallPageState extends State<CallPage> {
         itemCount: _schedules.length,
         itemBuilder: (context, index) {
           final booking = _schedules[index];
-          final doctorFullName = booking.doctors?.fullName ?? 'Unknown Doctor';
+        
           // Booking(booking: bookings[index]);
-          // print('>>>>>>>>>>>>>>>>>>>>>''_schedule id: ${_schedule.id}');
-          // print('>>>>>>>>>>>>>>>>>>>>>''Doctor full name: ${_schedule.doctors!.fullName}');
 
           late TextEditingController inviteeUsersIDTextCtrl;
           late List<Widget> userInfo;
@@ -189,20 +187,6 @@ class CallPageState extends State<CallPage> {
               ),
               const Text(')'),
             ];
-          } else if (1 == index) {
-            inviteeUsersIDTextCtrl = groupInviteeUserIDsTextCtrl;
-            userInfo = [
-              const Text('group name ('),
-              inviteeIDFormField(
-                textCtrl: inviteeUsersIDTextCtrl,
-                formatters: [
-                  FilteringTextInputFormatter.allow(RegExp('[0-9,]')),
-                ],
-                labelText: "invitees ID",
-                hintText: "separate IDs by ','",
-              ),
-              const Text(')'),
-            ];
           } else {
             inviteeUsersIDTextCtrl = TextEditingController();
 
@@ -217,15 +201,11 @@ class CallPageState extends State<CallPage> {
               Column(
                 children: [
                   Text(
-                    '${booking.patients!.fullName}   -(${random.fromPattern([
+                    '${booking.patients!.fullName}  Id:${booking.id} -(${random.fromPattern([
                           '######'
                         ])})',
                     style: textStyle,
                   ),
-                    Text(
-                ' Booking Id:${booking.id} ',
-                style: textStyle,
-              )
                 ],
               ),
             ];

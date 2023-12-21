@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
+import '../../api/api_service.dart';
 import '../../model/booking.dart';
 
 class BookingPage extends StatefulWidget {
@@ -20,6 +21,11 @@ class BookingPage extends StatefulWidget {
   State<BookingPage> createState() => _BookingPageState();
 }
 
+enum TimeSlotStatus {
+  Available,
+  Booked,
+}
+
 List<Color> timeOfDayColors = [
   const Color.fromARGB(255, 135, 193, 241), // Màu sắc cho buổi sáng
   const Color.fromARGB(255, 148, 230, 151), // Màu sắc cho buổi chiều
@@ -27,6 +33,9 @@ List<Color> timeOfDayColors = [
 ];
 
 class _BookingPageState extends State<BookingPage> {
+  late tz.Location _bangkokTimeZone;
+  late tz.TZDateTime _currentTimeInBangkok;
+  late Map<DateTime, List<String>> bookedSlotsByDay;
   CalendarFormat _format = CalendarFormat.month;
   DateTime _focusDay = DateTime.now();
   DateTime _currentDay = DateTime.now();
@@ -37,47 +46,164 @@ class _BookingPageState extends State<BookingPage> {
   String? _selectedTime;
   String symptoms = '';
   String notes = '';
-  // String _bookingAttachedFile = '';
+
   List<String> doctorWorkingHours = [
-    "06:00",
-    "06:30",
-    "07:00",
-    "07:30",
-    "08:00",
-    "08:30",
-    "09:00",
-    "09:30",
-    "10:00",
-    "10:30",
-    "11:00",
-    "11:30",
-    "12:00",
-    "12:30",
-    "13:00",
-    "13:30",
-    "14:00",
-    "14:30",
-    "15:00",
-    "15:30",
-    "16:00",
-    "16:30",
-    "17:00",
-    "17:30",
-    "18:00",
-    "18:30",
-    "19:00",
-    "19:30",
-    "20:00",
-    "20:30",
-    "21:00",
-    "21:30",
-    "22:00",
-    "22:30",
-    "23:00",
-    "23:30",
+    "06:00", "06:30", "07:00", "07:30", "08:00", "08:30", "09:00", "09:30",
+    "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30",
+    "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30",
+    "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30",
+    "22:00", "22:30", "23:00", "23:30",
   ];
 
   @override
+  void initState() {
+    super.initState();
+    tz.initializeTimeZones();
+    _bangkokTimeZone = tz.getLocation('Asia/Bangkok');
+    tz.setLocalLocation(_bangkokTimeZone);
+    _currentTimeInBangkok = tz.TZDateTime.now(_bangkokTimeZone);
+    bookedSlotsByDay = Map<DateTime, List<String>>();
+    updateBookedSlots();
+  }
+
+  Future<void> updateBookedSlots() async {
+    List<Booking> bookedSlotsData = await ApiBooking.getBookingList();
+
+    for (var booking in bookedSlotsData) {
+      var bookingDate = DateTime.parse(booking.appointmentDate);
+      var slotTime = booking.appointmentTime;
+
+      if (!bookedSlotsByDay.containsKey(bookingDate)) {
+        bookedSlotsByDay[bookingDate] = [];
+      }
+
+      bookedSlotsByDay[bookingDate]!.add(slotTime);
+    }
+
+    setState(() {});
+  }
+
+  Widget _buildGridItem(int index, Color slotColor, String time) {
+    DateTime currentTime = tz.TZDateTime.now(_bangkokTimeZone);
+    DateTime slotTime = tz.TZDateTime(
+      _bangkokTimeZone,
+      _currentDay.year,
+      _currentDay.month,
+      _currentDay.day,
+      int.parse(time.split(':')[0]),
+      int.parse(time.split(':')[1]),
+    );
+
+    TimeOfDay formattedSlotTime = TimeOfDay.fromDateTime(slotTime);
+
+    if (bookedSlotsByDay.containsKey(_currentDay) &&
+        bookedSlotsByDay[_currentDay]!.contains(formattedSlotTime.format(context))) {
+      return Container(
+        margin: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey),
+          borderRadius: BorderRadius.circular(15),
+          color: Colors.grey,
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          doctorWorkingHours[index],
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      );
+    } else if (currentTime.isBefore(slotTime)) {
+      return InkWell(
+        splashColor: Colors.blue,
+        onTap: () {
+          setState(() {
+            _currentIndex = index;
+            _timeSelected = true;
+            _selectedTime = doctorWorkingHours[index];
+          });
+        },
+        child: Container(
+          margin: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: _currentIndex == index ? Colors.white : Colors.transparent,
+            ),
+            borderRadius: BorderRadius.circular(15),
+            color: _currentIndex == index ? Colors.blue : slotColor,
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            doctorWorkingHours[index],
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: _currentIndex == index ? Colors.white : Colors.black,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      );
+    } else {
+      return Container(
+        margin: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey),
+          borderRadius: BorderRadius.circular(15),
+          color: Colors.grey,
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          doctorWorkingHours[index],
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      );
+    }
+  }
+
+  Widget _buildSymptomsTextField() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      child: TextField(
+        onChanged: (value) {
+          setState(() {
+            symptoms = value;
+          });
+        },
+        decoration: InputDecoration(
+          labelText: 'Enter your Symptoms',
+          border: OutlineInputBorder(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNotesTextField() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      child: TextField(
+        onChanged: (value) {
+          setState(() {
+            notes = value;
+          });
+        },
+        decoration: InputDecoration(
+          labelText: 'Notes to Doctor',
+          border: OutlineInputBorder(),
+        ),
+      ),
+    );
+  }
+
+  List<String> buildAvailableTimes() {
+    return doctorWorkingHours;
+  }
+
   Widget build(BuildContext context) {
     final doctor = ModalRoute.of(context)!.settings.arguments as Doctor;
     List<String> availableTimes = buildAvailableTimes();
@@ -151,7 +277,6 @@ class _BookingPageState extends State<BookingPage> {
               children: [
                 _buildSymptomsTextField(),
                 _buildNotesTextField(),
-                // _buildBookingAttachedFileTextField(),
               ],
             ),
           ),
@@ -219,159 +344,5 @@ class _BookingPageState extends State<BookingPage> {
         });
       }),
     );
-  }
-
-  Widget _buildGridItem(int index, Color slotColor, String time) {
-    tz.initializeTimeZones();
-    var bangkokTimeZone = tz.getLocation('Asia/Bangkok');
-    tz.setLocalLocation(bangkokTimeZone);
-
-// Lấy thời gian hiện tại ở múi giờ 'Asia/Bangkok'
-    var currentTimeInBangkok = tz.TZDateTime.now(bangkokTimeZone);
-
-// Định dạng thời gian theo chuẩn PostgreSQL
-    var formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
-    String formattedTime = formatter.format(currentTimeInBangkok);
-
-// Chuyển đổi thành kiểu DateTime
-    DateTime currentTime = DateTime.parse(formattedTime);
-
-// In thời gian đã định dạng và chuyển đổi
-    // print('Current Time in Bangkok Timezone (String): $formattedTime');
-    // print('Current Time in Bangkok Timezone (DateTime): $currentTime');
-
-    DateTime slotTime = DateTime(
-      _currentDay.year,
-      _currentDay.month,
-      _currentDay.day,
-      int.parse(time.split(':')[0]),
-      int.parse(time.split(':')[1]),
-    );
-
-    // Nếu thời gian đã qua, ẩn slot time và đặt màu xám
-    if (currentTime.isBefore(slotTime)) {
-      return InkWell(
-        splashColor: Colors.blue,
-        onTap: () {
-          setState(() {
-            _currentIndex = index;
-            _timeSelected = true;
-            _selectedTime = doctorWorkingHours[index];
-          });
-        },
-        child: Container(
-          margin: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: _currentIndex == index ? Colors.white : Colors.transparent,
-            ),
-            borderRadius: BorderRadius.circular(15),
-            color: _currentIndex == index ? Colors.blue : slotColor,
-          ),
-          alignment: Alignment.center,
-          child: Text(
-            doctorWorkingHours[index],
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: _currentIndex == index ? Colors.white : Colors.black,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      );
-    } else {
-      // Nếu thời gian đã qua, ẩn slot time và đặt màu xám
-      return InkWell(
-        onTap: () {
-          setState(() {
-            _currentIndex = index;
-            _timeSelected = true;
-            _selectedTime = doctorWorkingHours[index];
-          });
-        },
-        child: Container(
-          margin: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey), // Đặt màu xám cho border
-            borderRadius: BorderRadius.circular(15),
-            color: Colors.grey, // Đặt màu xám cho nền
-          ),
-          alignment: Alignment.center,
-          child: Text(
-            doctorWorkingHours[index],
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.white, // Đặt màu trắng cho chữ
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      );
-    }
-  }
-
-  Widget _buildTimeSlot(String time) {
-    return InkWell(
-      onTap: () {
-        setState(() {
-          _currentIndex = null;
-          _timeSelected = true;
-          _selectedTime = time;
-        });
-      },
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 8),
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        child: Text(
-          time,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSymptomsTextField() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      child: TextField(
-        onChanged: (value) {
-          setState(() {
-            symptoms = value;
-          });
-        },
-        decoration: InputDecoration(
-          labelText: 'Enter your Symptoms',
-          border: OutlineInputBorder(),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNotesTextField() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      child: TextField(
-        onChanged: (value) {
-          setState(() {
-            notes = value;
-          });
-        },
-        decoration: InputDecoration(
-          labelText: 'Notes to Doctor',
-          border: OutlineInputBorder(),
-        ),
-      ),
-    );
-  }
-
-  List<String> buildAvailableTimes() {
-    return doctorWorkingHours;
   }
 }

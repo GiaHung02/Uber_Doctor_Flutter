@@ -79,7 +79,7 @@ print(activeDoctors.length);
   }
 
   Widget _doctorCard(Doctor doctor, int index) {
-    print('doctor image: ${doctor.imagePath}');
+    // print('doctor image: ${doctor.imagePath}');
     return Card(
       elevation: 5.0,
       margin: EdgeInsets.all(10.0),
@@ -202,7 +202,7 @@ print(activeDoctors.length);
 
  Widget _doctorsList() {
   return widget.doctors.isEmpty
-      ? Center(child: Text('No Doctor'))
+      ? Center(child: Text(''))
       : ListView.builder(
           itemCount: widget.doctors.length,
           itemBuilder: (context, index) {
@@ -237,6 +237,16 @@ print(activeDoctors.length);
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Theme.of(context).backgroundColor,
+         title: Container(
+        alignment: Alignment.center,
+        child: Text(
+          'Doctor List',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20, // Điều chỉnh kích thước chữ nếu cần thiết
+          ),
+        ),
+      ),
         actions: <Widget>[
           Icon(
             Icons.notifications_active,

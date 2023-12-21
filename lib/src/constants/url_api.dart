@@ -1,10 +1,10 @@
 // String domain = 'http://192.168.31.40:8080/';
 
 // School
-String domain = 'http://192.168.1.202:8080/';   
+String domain = 'http://172.16.0.57:8080/';   
 // Home   
 //  String domain = 'http://192.168.1.11:8080/'; 
-const String domain2 = "http://192.168.1.202:8080";    
+const String domain2 = "http://172.16.0.57:8080";    
 
 
 
@@ -19,7 +19,6 @@ String registerDoctorAPI = domain + 'api/v1/doctor/createjson';
 
 String GetDepartmentAPI = domain + 'api/v1/department/list';
 
-
 // String sendTokenAPI = domain + 'auth/send-token';
 // String resetPassAPI = domain + 'auth/forget-password/change-password';
 
@@ -31,4 +30,3 @@ class Constants {
   static const String returnURL = 'https://samplesite.com/return';
   static const String cancelURL = 'https://samplesite.com/cancel';
 }
-

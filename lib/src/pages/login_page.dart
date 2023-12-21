@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:quickalert/models/quickalert_type.dart';
 import 'package:quickalert/widgets/quickalert_dialog.dart';
 import 'package:uber_doctor_flutter/src/controllers/auth/login_controller.dart';
+import 'package:uber_doctor_flutter/src/pages/doctor_register_page.dart';
+import 'package:uber_doctor_flutter/src/pages/patient_register_page.dart';
 import 'package:uber_doctor_flutter/src/pages/verify.dart';
 
 class LoginPage extends StatefulWidget {
@@ -218,19 +220,21 @@ class _LoginPageState extends State<LoginPage> {
                                         LoginPage.verify = verificationId;
                                         LoginPage.approle = "Doctor";
                                         LoginPage.userid = check.toString();
-
                                         Navigator.pushNamed(context, 'verify');
                                       },
                                       codeAutoRetrievalTimeout:
                                           (String verificationId) {},
                                     );
                                   } else {
-                                    Navigator.pushNamed(
-                                        context, 'doctor/register');
+                                    Navigator.push(
+                                        context,
+                                        new MaterialPageRoute(
+                                            builder: (context) =>
+                                                new DoctorRegisterPage()));
                                   }
                                 } else {
-                                  var check = await loginController
-                                      .loginPatient(sendPhone, context);
+                                  var check = loginController.loginPatient(
+                                      sendPhone, context);
 
                                   if (check != -1) {
                                     await FirebaseAuth.instance
@@ -251,12 +255,7 @@ class _LoginPageState extends State<LoginPage> {
                                           int? resendToken) {
                                         LoginPage.verify = verificationId;
                                         LoginPage.approle = "Patient";
-
                                         LoginPage.userid = check.toString();
-                                        print(
-                                            "==============================================================");
-                                        print(LoginPage.userid);
-
                                         Navigator.pushNamed(context, 'verify');
 
                                         // Navigator.pushReplacement(
@@ -270,8 +269,11 @@ class _LoginPageState extends State<LoginPage> {
                                           (String verificationId) {},
                                     );
                                   } else {
-                                    Navigator.pushNamed(
-                                        context, 'patient/register');
+                                    Navigator.push(
+                                        context,
+                                        new MaterialPageRoute(
+                                            builder: (context) =>
+                                                new PatientRegisterPage()));
                                   }
                                 }
                               }

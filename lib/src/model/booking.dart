@@ -24,7 +24,7 @@ class Booking {
     required this.price,
     required this.bookingAttachedFile,
     required this.patients,
-    required this.doctors,
+    required this.doctors, required booking,
   });
 
   factory Booking.fromJson(Map<String, dynamic> json) {
@@ -40,7 +40,7 @@ class Booking {
       price: json['price'],
       bookingAttachedFile: json['bookingAttachedFile'],
       patients: Patient.fromJson(json['patients']),
-      doctors: Doctor.fromJson(json['doctors']),
+      doctors: Doctor.fromJson(json['doctors']), booking: null,
     );
   }
   Map<String, dynamic> toJson() {
@@ -66,7 +66,7 @@ class Patient {
   int id;
   String? phoneNumber;
   String? password;
-  String? fullName;
+  String fullName;
   bool? role;
   String? email;
   double? wallet;

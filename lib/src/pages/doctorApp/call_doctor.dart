@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 // Package imports:
 import 'package:faker/faker.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
+import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
 import 'package:uber_doctor_flutter/constants.dart';
 import 'package:uber_doctor_flutter/login_service.dart';
@@ -17,33 +18,30 @@ import 'package:zego_uikit/zego_uikit.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 import 'package:http/http.dart' as http;
 
-class CallPage extends StatefulWidget {
-  const CallPage({Key? key}) : super(key: key);
+class CallPageDoctor extends StatefulWidget {
+  const CallPageDoctor({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => CallPageState();
 }
 
-class CallPageState extends State<CallPage> {
+class CallPageState extends State<CallPageDoctor> {
   final TextEditingController singleInviteeUserIDTextCtrl =
       TextEditingController();
   final TextEditingController groupInviteeUserIDsTextCtrl =
       TextEditingController();
   List<Booking> _schedules = [];
 
-  // get filterSchedules => null;
-
   @override
   void initState() {
     super.initState();
     // Gọi hàm để lấy dữ liệu từ API và cập nhật danh sách bookings
-    fetchBookingsinUserCall();
+    fetchBookingsinDoctor();
   }
 
   FilterStatus statusBooking = FilterStatus.upcoming;
   Alignment _alignment = Alignment.centerLeft;
-
-  void fetchBookingsinUserCall() async {
+  void fetchBookingsinDoctor() async {
     final url = Uri.parse('$domain/api/v1/booking/list');
 
     try {
@@ -66,11 +64,11 @@ class CallPageState extends State<CallPage> {
       // Xử lý khi có lỗi kết nối
       print('Error: $e');
     }
-    print('>>>>>>>>>>>>>>>>>>>>>>>>booking length from api: ${_schedules.length}');
+    // print('booking length from api: ${schedules.length}');
   }
 
   void reloadBookings() async {
-    fetchBookingsinUserCall();
+    fetchBookingsinDoctor();
     setState(() {
       // Update state để rebuild trang
     });
@@ -159,7 +157,6 @@ class CallPageState extends State<CallPage> {
     // final TextEditingController singleInviteeUserIDTextCtrl =
     //     TextEditingController(text: '123456');
 
-    
     return Center(
       child: ListView.builder(
         shrinkWrap: true,
@@ -167,8 +164,13 @@ class CallPageState extends State<CallPage> {
         itemCount: _schedules.length,
         itemBuilder: (context, index) {
           final booking = _schedules[index];
-        
+          final doctorFullName = booking.doctors?.fullName ?? 'Unknown Doctor';
+          final doctorId = booking.doctors?.id ?? 'Unknown doctor id';
+          final patientsName = booking.patients?.fullName ?? 'Unknown Patients';
+          // print('>>>>>>>>>>>>>>>>>>>>>''_schedule id: ${_schedule.doc}');
           // Booking(booking: bookings[index]);
+          // print('>>>>>>>>>>>>>>>>>>>>>''_schedule id: ${_schedule.id}');
+          // print('>>>>>>>>>>>>>>>>>>>>>''Doctor full name: ${_schedule.doctors!.fullName}');
 
           late TextEditingController inviteeUsersIDTextCtrl;
           late List<Widget> userInfo;
@@ -187,6 +189,20 @@ class CallPageState extends State<CallPage> {
               ),
               const Text(')'),
             ];
+          } else if (1 == index) {
+            inviteeUsersIDTextCtrl = groupInviteeUserIDsTextCtrl;
+            userInfo = [
+              const Text('group name ('),
+              inviteeIDFormField(
+                textCtrl: inviteeUsersIDTextCtrl,
+                formatters: [
+                  FilteringTextInputFormatter.allow(RegExp('[0-9,]')),
+                ],
+                labelText: "invitees ID",
+                hintText: "separate IDs by ','",
+              ),
+              const Text(')'),
+            ];
           } else {
             inviteeUsersIDTextCtrl = TextEditingController();
 
@@ -201,13 +217,18 @@ class CallPageState extends State<CallPage> {
               Column(
                 children: [
                   Text(
-                    '${booking.patients!.fullName}  Id:${booking.id} -(${random.fromPattern([
+                    '${booking.patients!.fullName}   -(${random.fromPattern([
                           '######'
                         ])})',
                     style: textStyle,
                   ),
+                    Text(
+                ' Booking Id:${booking.id} ',
+                style: textStyle,
+              )
                 ],
               ),
+             
             ];
           }
 

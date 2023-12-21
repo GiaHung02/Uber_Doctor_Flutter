@@ -1,10 +1,14 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_paypal/flutter_paypal.dart';
 import 'package:uber_doctor_flutter/src/api/api_service.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:uber_doctor_flutter/src/constants/url_api.dart';
+import 'package:uber_doctor_flutter/src/helpers/ui_helper.dart';
+import 'package:uber_doctor_flutter/src/model/AuthProvider.dart';
 import 'package:uber_doctor_flutter/src/model/booking.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class AppointmentPage extends StatefulWidget {
   const AppointmentPage({Key? key}) : super(key: key);
@@ -28,41 +32,51 @@ class _AppointmentPageState extends State<AppointmentPage> {
   FilterStatus statusBooking = FilterStatus.upcoming;
   Alignment _alignment = Alignment.centerLeft;
 // Thêm hàm filterBookingsByPatientId vào _AppointmentPageState
-List<Booking> filterBookingsByPatientId(int patientId) {
-  return schedules
-      .where((booking) => booking.patients?.id == patientId)
-      .toList();
-}
+  List<Booking> filterBookingsByPatientId(int patientId) {
+    return schedules
+        .where((booking) => booking.patients?.id == patientId)
+        .toList();
+  }
 
   // Thay đổi hàm fetchBookings trong _AppointmentPageState
-void fetchBookings() async {
-  final url = Uri.parse('$domain/api/v1/booking/list');
-
-  try {
-    final response = await http.get(url);
-    if (response.statusCode == 200) {
-      // Chuyển đổi JSON thành danh sách Booking và cập nhật state
-      setState(() {
-        // đoạn mã này để lọc danh sách booking theo patientId
-        int patientId = 2; // Thay thế bằng patient["id"] cụ thể
-        schedules = List<Booking>.from(jsonDecode(response.body)['data']
-            .map((booking) => Booking.fromJson(booking)))
-            .where((booking) => booking.patients?.id == patientId)
-            .toList();
-      });
-      
-    } else {
-      // Xử lý khi có lỗi từ API
-      print('Error: ${response.statusCode}');
-    }
-  } catch (e) {
-    // Xử lý khi có lỗi kết nối
-    print('Error: $e');
+  void fetchBookings() async {
+    final url = Uri.parse('$domain2/api/v1/booking/list');
+    //  userid = null;
+    // if (Provider.of<MyAuthProvider>(context).token != null) {
+    //   userid = Provider.of<MyAuthProvider>(context).id
+    // }
+      try {
+        final response = await http.get(url);
+        if (response.statusCode == 200) {
+          // Chuyển đổi JSON thành danh sách Booking và cập nhật state
+          setState(() {
+            // đoạn mã này để lọc danh sách booking theo patientId
+            int patientId = 2; // Thay thế bằng patient["id"] cụ thể
+            schedules = List<Booking>.from(jsonDecode(response.body)['data']
+                    .map((booking) => Booking.fromJson(booking)))
+                .where((booking) => booking.patients?.id == patientId)
+                .toList();
+          });
+        } else {
+          // Xử lý khi có lỗi từ API
+          print('Error: ${response.statusCode}');
+        }
+      } catch (e) {
+        // Xử lý khi có lỗi kết nối
+        print('Error: $e');
+      }
+    // print('booking length from api: ${schedules.length}');
   }
-  print('booking length from api: ${schedules.length}');
-}
 
   void reloadBookings() async {
+    fetchBookings();
+    setState(() {
+      // Update state để rebuild trang
+    });
+  }
+
+  void reloadPayAfterBookings() async {
+    showPaySuccessSnackbar(context);
     fetchBookings();
     setState(() {
       // Update state để rebuild trang
@@ -78,8 +92,8 @@ void fetchBookings() async {
           scheduleStatus = FilterStatus.upcoming;
           break;
         case 'complete':
-            scheduleStatus = FilterStatus.complete;
-            break;
+          scheduleStatus = FilterStatus.complete;
+          break;
         case 'cancel':
           scheduleStatus = FilterStatus.cancel;
           break;
@@ -90,7 +104,7 @@ void fetchBookings() async {
       return scheduleStatus == statusBooking;
     }).toList();
 
-    print('fillerschedule: ${filterSchedules.length}');
+    // print('>>>>>>>>>>>>>>>>>>>>>>fillerschedule: ${filterSchedules}');
     return SafeArea(
         child: Padding(
       padding: const EdgeInsets.only(left: 20, top: 20, right: 20),
@@ -169,13 +183,13 @@ void fetchBookings() async {
                     itemCount: filterSchedules.length,
                     itemBuilder: ((context, index) {
                       Booking _schedule = filterSchedules[index];
-                      print('_schedule id: ${_schedule.id}');
+                      // print('_schedule id: ${_schedule.id}');
 
                       bool isLastElement = filterSchedules.length + 1 == index;
                       return Card(
                           shape: RoundedRectangleBorder(
                             side: const BorderSide(
-                              color: Colors.grey,
+                              color: Color.fromARGB(255, 49, 16, 16),
                             ),
                             borderRadius: BorderRadius.circular(20),
                           ),
@@ -208,7 +222,7 @@ void fetchBookings() async {
                                           child: _schedule.doctors?.imagePath !=
                                                   null
                                               ? Image.network(
-                                                  "$domain/${_schedule.doctors?.imagePath}",
+                                                  "$domain2/${_schedule.doctors?.imagePath}",
                                                   fit: BoxFit.cover,
                                                 )
                                               : Container(),
@@ -260,32 +274,51 @@ void fetchBookings() async {
                                                 color: Colors.grey,
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.w600)),
-                                        
                                       ],
                                     ),
                                   ],
                                 ),
                                 Container(
-                                          height: 20,
-                                          width: 60,
-                                          decoration: BoxDecoration(
-                                            color: Color.fromARGB(
-                                                255, 227, 124, 15),
-                                            borderRadius:
-                                                BorderRadius.circular(5.0),
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                _schedule.statusBooking,
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              ),
-                                            ],
-                                          ),
+                                  height: 20,
+                                  width: 60,
+                                  decoration: BoxDecoration(
+                                    color: _schedule.statusBooking == 'cancel'
+                                        ? Colors.red
+                                        : Color.fromARGB(255, 227, 124, 15),
+                                    borderRadius: BorderRadius.circular(5.0),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      if (_schedule.statusBooking == 'pending')
+                                        Text(
+                                          'Doctor is accepting, please waite',
+                                          style: TextStyle(color: Colors.white),
                                         ),
+                                      if (_schedule.statusBooking ==
+                                          'confirmed')
+                                        Text(
+                                          "Doctor confirmed schedule, let's pay",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      if (_schedule.statusBooking == 'upcoming')
+                                        Text(
+                                          'Upcoming schedule',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      if (_schedule.statusBooking == 'complete')
+                                        Text(
+                                          'This booking has completed',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      if (_schedule.statusBooking == 'cancel')
+                                        Text(
+                                          'This booking has canceled',
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                    ],
+                                  ),
+                                ),
                                 ScheduleCard(booking: _schedule),
                                 SizedBox(
                                   height: 10,
@@ -295,13 +328,14 @@ void fetchBookings() async {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     if (_schedule.statusBooking == 'upcoming' ||
-                                        _schedule.statusBooking == 'pending')
+                                        _schedule.statusBooking == 'pending' ||
+                                        _schedule.statusBooking == 'confirmed')
                                       Expanded(
                                         child: OutlinedButton(
                                           onPressed: () {
                                             // Gọi hàm để hiển thị hộp thoại xác nhận
                                             showCancelConfirmationDialog(
-                                                context, _schedule.id);
+                                                context, _schedule);
                                           },
                                           // onPressed: () async {
                                           //   // Gọi API để cancel booking khi nút "Cancel" được nhấn
@@ -336,17 +370,96 @@ void fetchBookings() async {
                                     SizedBox(
                                       width: 20,
                                     ),
-                                    if (_schedule.statusBooking == 'upcoming' ||
-                                        _schedule.statusBooking == 'pending')
+                                    if (_schedule.statusBooking == 'confirmed')
                                       Expanded(
                                         child: OutlinedButton(
                                           style: OutlinedButton.styleFrom(
                                             backgroundColor:
                                                 Color.fromARGB(255, 1, 78, 141),
                                           ),
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                builder: (BuildContext
+                                                        context) =>
+                                                    UsePaypal(
+                                                        sandboxMode: true,
+                                                        clientId:
+                                                            Constants.clientId,
+                                                        secretKey:
+                                                            Constants.secretKey,
+                                                        returnURL:
+                                                            Constants.returnURL,
+                                                        cancelURL:
+                                                            Constants.cancelURL,
+                                                        transactions: [
+                                                          {
+                                                            "amount": {
+                                                              "total": 10,
+                                                              // "total": '',
+                                                              "currency": "USD",
+                                                            },
+                                                            "description":
+                                                                "The payment transaction description.",
+                                                          }
+                                                        ],
+                                                        note:
+                                                            "Contact us for any questions on your order.",
+                                                        onSuccess:
+                                                            (Map params) async {
+                                                          print(
+                                                              "onSuccess: $params");
+                                                          UIHelper.showAlertDialog(
+                                                              'Payment Successfully',
+                                                              title: 'Success');
+
+                                                          // print(params);
+                                                          // print("Payment Status: $params['status']");
+                                                          // print("Payment Status: $params[datafirst_name]");
+                                                          bool success =
+                                                              await ApiBooking
+                                                                  .updateStatusToUpcoming(
+                                                                      _schedule);
+
+                                                          if (success) {
+                                                            // Xoá booking thành công, bạn có thể thực hiện các hành động cần thiết
+                                                            // (ví dụ: cập nhật UI, hiển thị thông báo, vv.)
+                                                            print(
+                                                                'Pay successfully.');
+                                                            // Navigator.of(context).pushNamed(
+                                                            //   '/appointment_page',
+                                                            // );
+                                                            reloadPayAfterBookings();
+                                                            // Hiển thị thông báo thành công
+                                                          } else {
+                                                            // Xử lý khi cancel booking không thành công
+                                                            print(
+                                                                'Failed to Pay booking.');
+                                                          }
+                                                          // Navigator.of(context)
+                                                          //     .pop(); // Đóng hộp thoại
+                                                          // Navigator.of(context)
+                                                          //     .pushNamed("/success_booking");
+                                                        },
+                                                        onError: (error) {
+                                                          print(
+                                                              "onError: $error");
+                                                          UIHelper.showAlertDialog(
+                                                              'Unable to completet the Payment',
+                                                              title: 'Error');
+                                                        },
+                                                        onCancel: (params) {
+                                                          print(
+                                                              'cancelled: $params');
+                                                          UIHelper.showAlertDialog(
+                                                              'Payment Cannceled',
+                                                              title: 'Cancel');
+                                                        }),
+                                              ),
+                                            );
+                                          },
                                           child: Text(
-                                            'Reschedule',
+                                            'Pay Now',
                                             style:
                                                 TextStyle(color: Colors.white),
                                           ),
@@ -363,7 +476,7 @@ void fetchBookings() async {
   }
 
   Future<void> showCancelConfirmationDialog(
-      BuildContext context, int bookingId) async {
+      BuildContext context, Booking booking) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // Click ngoài không đóng hộp thoại
@@ -388,7 +501,7 @@ void fetchBookings() async {
               child: Text('Xác nhận'),
               onPressed: () async {
                 // Gọi hàm để hủy đặt hẹn
-                bool success = await ApiBooking.cancelBooking(bookingId);
+                bool success = await ApiBooking.updateStatusToCancel(booking);
 
                 if (success) {
                   // Xoá booking thành công, bạn có thể thực hiện các hành động cần thiết
@@ -418,6 +531,15 @@ void fetchBookings() async {
       SnackBar(
         content: Text('Đã hủy đặt hẹn thành công!'),
         duration: Duration(seconds: 2), // Thời gian hiển thị của snackbar
+      ),
+    );
+  }
+
+  void showPaySuccessSnackbar(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Đã Thanh toán thành công!'),
+        duration: Duration(seconds: 3), // Thời gian hiển thị của snackbar
       ),
     );
   }

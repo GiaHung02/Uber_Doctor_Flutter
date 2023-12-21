@@ -1,8 +1,12 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_paypal/flutter_paypal.dart';
 import 'package:uber_doctor_flutter/src/api/api_service.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:uber_doctor_flutter/src/constants/url_api.dart';
+import 'package:uber_doctor_flutter/src/helpers/ui_helper.dart';
 import 'package:uber_doctor_flutter/src/model/booking.dart';
 import 'package:http/http.dart' as http;
 
@@ -12,6 +16,7 @@ class DoctorAppointmentPage extends StatefulWidget {
   @override
   State<DoctorAppointmentPage> createState() => _DoctorAppointmentPageState();
 }
+
 
 enum FilterStatus { upcoming, complete, cancel }
 
@@ -27,18 +32,28 @@ class _DoctorAppointmentPageState extends State<DoctorAppointmentPage> {
 
   FilterStatus statusBooking = FilterStatus.upcoming;
   Alignment _alignment = Alignment.centerLeft;
+// Thêm hàm filterBookingsByPatientId vào _DoctorAppointmentPageState
+  List<Booking> filterBookingsByPatientId(int doctorId) {
+    return schedules
+        .where((booking) => booking.doctors?.id == doctorId)
+        .toList();
+  }
 
+  // Thay đổi hàm fetchBookings trong _DoctorAppointmentPageState
   void fetchBookings() async {
-    final url = Uri.parse('$domain/api/v1/booking/list');
+    final url = Uri.parse('$domain2/api/v1/booking/list');
 
     try {
       final response = await http.get(url);
-      // print(response.body);
       if (response.statusCode == 200) {
         // Chuyển đổi JSON thành danh sách Booking và cập nhật state
         setState(() {
+          // đoạn mã này để lọc danh sách booking theo patientId
+          int doctorId = 1; // Thay thế bằng patient["id"] cụ thể
           schedules = List<Booking>.from(jsonDecode(response.body)['data']
-              .map((booking) => Booking.fromJson(booking)));
+                  .map((booking) => Booking.fromJson(booking)))
+              .where((booking) => booking.doctors?.id == doctorId)
+              .toList();
         });
       } else {
         // Xử lý khi có lỗi từ API
@@ -48,11 +63,18 @@ class _DoctorAppointmentPageState extends State<DoctorAppointmentPage> {
       // Xử lý khi có lỗi kết nối
       print('Error: $e');
     }
-    //  print('schedule: $schedules');
     print('booking length from api: ${schedules.length}');
   }
 
   void reloadBookings() async {
+   
+    fetchBookings();
+    setState(() {
+      // Update state để rebuild trang
+    });
+  }
+    void reloadPayAfterBookings() async {
+     showPaySuccessSnackbar(context); 
     fetchBookings();
     setState(() {
       // Update state để rebuild trang
@@ -179,7 +201,7 @@ class _DoctorAppointmentPageState extends State<DoctorAppointmentPage> {
                               children: [
                                 Row(
                                   mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                      MainAxisAlignment.spaceEvenly,
                                   children: [
                                     CircleAvatar(
                                       radius: 34.0,
@@ -198,7 +220,7 @@ class _DoctorAppointmentPageState extends State<DoctorAppointmentPage> {
                                           child: _schedule.doctors?.imagePath !=
                                                   null
                                               ? Image.network(
-                                                  "$domain/${_schedule.doctors?.imagePath}",
+                                                  "$domain2/${_schedule.doctors?.imagePath}",
                                                   fit: BoxFit.cover,
                                                 )
                                               : Container(),
@@ -221,7 +243,7 @@ class _DoctorAppointmentPageState extends State<DoctorAppointmentPage> {
                                             ),
                                             SizedBox(width: 8),
                                             Text(
-                                              _schedule.doctors!.fullName,
+                                              _schedule.patients!.fullName,
                                               style: TextStyle(
                                                 color: Colors.black,
                                                 fontWeight: FontWeight.w700,
@@ -233,7 +255,7 @@ class _DoctorAppointmentPageState extends State<DoctorAppointmentPage> {
                                           height: 5,
                                         ),
                                         Text(
-                                            'Spectial: ${_schedule.doctors!.spectiality}',
+                                            'Rate: ${_schedule.patients!.rate}',
                                             style: TextStyle(
                                                 color: Colors.grey,
                                                 fontSize: 12,
@@ -250,33 +272,28 @@ class _DoctorAppointmentPageState extends State<DoctorAppointmentPage> {
                                                 color: Colors.grey,
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.w600)),
-                                        Container(
-                                          height: 20,
-                                          width: 70,
-                                          decoration: BoxDecoration(
-                                            color: Color.fromARGB(
-                                                255, 227, 124, 15),
-                                            borderRadius:
-                                                BorderRadius.circular(5.0),
-                                          ),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                _schedule.statusBooking,
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
                                       ],
                                     ),
                                   ],
                                 ),
-                                SizedBox(
+                                Container(
                                   height: 20,
+                                  width: 60,
+                                  decoration: BoxDecoration(
+                                    color: _schedule.statusBooking == 'cancel'
+                                        ? Colors.red
+                                        : Color.fromARGB(255, 227, 124, 15),
+                                    borderRadius: BorderRadius.circular(5.0),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        _schedule.statusBooking,
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                                 ScheduleCard(booking: _schedule),
                                 SizedBox(
@@ -287,13 +304,14 @@ class _DoctorAppointmentPageState extends State<DoctorAppointmentPage> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     if (_schedule.statusBooking == 'upcoming' ||
-                                        _schedule.statusBooking == 'pending')
+                                        _schedule.statusBooking == 'pending'||
+                                        _schedule.statusBooking == 'confirmed')
                                       Expanded(
                                         child: OutlinedButton(
                                           onPressed: () {
                                             // Gọi hàm để hiển thị hộp thoại xác nhận
                                             showCancelConfirmationDialog(
-                                                context, _schedule.id);
+                                                context, _schedule);
                                           },
                                           // onPressed: () async {
                                           //   // Gọi API để cancel booking khi nút "Cancel" được nhấn
@@ -328,17 +346,116 @@ class _DoctorAppointmentPageState extends State<DoctorAppointmentPage> {
                                     SizedBox(
                                       width: 20,
                                     ),
-                                    if (_schedule.statusBooking == 'upcoming' ||
-                                        _schedule.statusBooking == 'pending')
+                                    if (_schedule.statusBooking == 'pending')
                                       Expanded(
                                         child: OutlinedButton(
                                           style: OutlinedButton.styleFrom(
                                             backgroundColor:
                                                 Color.fromARGB(255, 1, 78, 141),
                                           ),
-                                          onPressed: () {},
+                                          onPressed: () async {
+                                            // Navigator.of(context).push(
+                                            //   MaterialPageRoute(
+                                            //     builder: (BuildContext
+                                            //             context) =>
+                                            //         UsePaypal(
+                                            //             sandboxMode: true,
+                                            //             clientId:
+                                            //                 Constants.clientId,
+                                            //             secretKey:
+                                            //                 Constants.secretKey,
+                                            //             returnURL:
+                                            //                 Constants.returnURL,
+                                            //             cancelURL:
+                                            //                 Constants.cancelURL,
+                                            //             transactions: [
+                                            //               {
+                                            //                 "amount": {
+                                            //                   "total": 10,
+                                            //                   // "total": '',
+                                            //                   "currency": "USD",
+                                            //                 },
+                                            //                 "description":
+                                            //                     "The payment transaction description.",
+                                            //               }
+                                            //             ],
+                                            //             note:
+                                            //                 "Contact us for any questions on your order.",
+                                            //             onSuccess:
+                                            //                 (Map params) async {
+                                            //               print(
+                                            //                   "onSuccess: $params");
+                                            //               UIHelper.showAlertDialog(
+                                            //                   'Payment Successfully',
+                                            //                   title: 'Success');
+
+                                            //               // print(params);
+                                            //               // print("Payment Status: $params['status']");
+                                            //               // print("Payment Status: $params[datafirst_name]");
+                                            //               bool success =
+                                            //                   await ApiBooking
+                                            //                       .updateStatusToUpcoming(
+                                            //                           _schedule);
+
+                                            //               if (success) {
+                                            //                 // Xoá booking thành công, bạn có thể thực hiện các hành động cần thiết
+                                            //                 // (ví dụ: cập nhật UI, hiển thị thông báo, vv.)
+                                            //                 print(
+                                            //                     'Pay successfully.');
+                                            //                 // Navigator.of(context).pushNamed(
+                                            //                 //   '/appointment_page',
+                                            //                 // );
+                                            //                 reloadPayAfterBookings();
+                                            //                // Hiển thị thông báo thành công
+                                            //               } else {
+                                            //                 // Xử lý khi cancel booking không thành công
+                                            //                 print(
+                                            //                     'Failed to Pay booking.');
+                                            //               }
+                                            //               // Navigator.of(context)
+                                            //               //     .pop(); // Đóng hộp thoại
+                                            //               // Navigator.of(context)
+                                            //               //     .pushNamed("/success_booking");
+                                            //             },
+                                            //             onError: (error) {
+                                            //               print(
+                                            //                   "onError: $error");
+                                            //               UIHelper.showAlertDialog(
+                                            //                   'Unable to completet the Payment',
+                                            //                   title: 'Error');
+                                            //             },
+                                            //             onCancel: (params) {
+                                            //               print(
+                                            //                   'cancelled: $params');
+                                            //               UIHelper.showAlertDialog(
+                                            //                   'Payment Cannceled',
+                                            //                   title: 'Cancel');
+                                            //             }),
+                                            //   ),
+                                            // );
+                                             bool success =
+                                                              await ApiBooking
+                                                                  .updateStatusToConfirmed(
+                                                                      _schedule);
+
+                                                          if (success) {
+                                                            // Xoá booking thành công, bạn có thể thực hiện các hành động cần thiết
+                                                            // (ví dụ: cập nhật UI, hiển thị thông báo, vv.)
+                                                            print(
+                                                                'Agree successfully.');
+                                                            // Navigator.of(context).pushNamed(
+                                                            //   '/appointment_page',
+                                                            // );
+                                                            reloadPayAfterBookings();
+                                                           // Hiển thị thông báo thành công
+                                                          } else {
+                                                            // Xử lý khi cancel booking không thành công
+                                                            print(
+                                                                'Failed to Pay booking.');
+                                                          }
+                                          },
                                           child: Text(
-                                            'Reschedule',
+                                            'Agree',
                                             style:
                                                 TextStyle(color: Colors.white),
                                           ),
@@ -355,7 +472,7 @@ class _DoctorAppointmentPageState extends State<DoctorAppointmentPage> {
   }
 
   Future<void> showCancelConfirmationDialog(
-      BuildContext context, int bookingId) async {
+      BuildContext context, Booking booking) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // Click ngoài không đóng hộp thoại
@@ -380,7 +497,7 @@ class _DoctorAppointmentPageState extends State<DoctorAppointmentPage> {
               child: Text('Xác nhận'),
               onPressed: () async {
                 // Gọi hàm để hủy đặt hẹn
-                bool success = await ApiBooking.cancelBooking(bookingId);
+                bool success = await ApiBooking.updateStatusToCancel(booking);
 
                 if (success) {
                   // Xoá booking thành công, bạn có thể thực hiện các hành động cần thiết
@@ -410,6 +527,14 @@ class _DoctorAppointmentPageState extends State<DoctorAppointmentPage> {
       SnackBar(
         content: Text('Đã hủy đặt hẹn thành công!'),
         duration: Duration(seconds: 2), // Thời gian hiển thị của snackbar
+      ),
+    );
+  }
+   void showPaySuccessSnackbar(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Đã đồng ý lịch hẹn thành công!'),
+        duration: Duration(seconds: 3), // Thời gian hiển thị của snackbar
       ),
     );
   }
@@ -459,3 +584,6 @@ class ScheduleCard extends StatelessWidget {
     );
   }
 }
+/////
+
+

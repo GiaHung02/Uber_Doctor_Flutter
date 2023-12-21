@@ -223,7 +223,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _doctorCard(Doctor doctor, int index) {
-    print('doctor image: ${doctor.imagePath}');
+    // print('doctor image: ${doctor.imagePath}');
     return Card(
       elevation: 5.0,
       margin: EdgeInsets.all(10.0),

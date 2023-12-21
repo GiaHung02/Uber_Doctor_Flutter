@@ -16,27 +16,27 @@ const List<TabItem> items = [
     icon: Icons.home,
     title: 'Home',
   ),
-  // TabItem(
-  //   icon: Icons.phone,
-  //   title: 'phone',
-    
-  // ),
   TabItem(
-    icon: Icons.coronavirus,
-    title: 'symptom',
+    icon: Icons.phone,
+    title: 'phone',
+    
+  ),
+  TabItem(
+    icon: Icons.health_and_safety,
+    title: 'Book',
   ),
   TabItem(
     icon: Icons.calendar_month,
-    title: 'Booking',
+    title: 'Appointment',
   ),
   TabItem(
     icon: Icons.account_box,
     title: 'profile',
   ),
-  TabItem(
-    icon: Icons.login_rounded,
-    title: 'bookinglist',
-  ),
+  // TabItem(
+  //   icon: Icons.login_rounded,
+  //   title: 'bookinglist',
+  // ),
   // TabItem(
   //   icon: Icons.details_rounded,
   //   title: 'detail',

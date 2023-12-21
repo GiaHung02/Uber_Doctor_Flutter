@@ -1,40 +1,13 @@
 import 'dart:convert';
-import 'dart:developer';
-import 'dart:ffi';
-import 'dart:io';
-
-
-import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_paypal/flutter_paypal.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:one_context/one_context.dart';
 import 'package:uber_doctor_flutter/src/constants/url_api.dart';
-import 'package:uber_doctor_flutter/src/helpers/ui_helper.dart';
 import 'package:uber_doctor_flutter/src/model/booking.dart';
 import 'package:uber_doctor_flutter/src/theme/button.dart';
 import 'package:uber_doctor_flutter/src/theme/colors.dart';
 import 'package:uber_doctor_flutter/src/theme/styles.dart';
 import 'package:uber_doctor_flutter/src/widgets/custom_appbar.dart';
-import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
-import 'package:flutter_paypal_payment/flutter_paypal_payment.dart';
-
-// void showIncompleteStepSnackBar(BuildContext context) {
-//   ScaffoldMessenger.of(context).showSnackBar(
-//     SnackBar(
-//       content: AwesomeSnackbarContent(
-//         title: 'Incomplete Step',
-//         message: 'Please fill in all required information for Step .',
-//         contentType: ContentType.failure,
-//         inMaterialBanner: true,
-//       ),
-//       behavior: SnackBarBehavior.floating,
-//       backgroundColor: Color.fromARGB(0, 255, 255, 255),
-//     ),
-//   );
-// }
-
 
 
 void sendSuccessDataToBackend(
@@ -59,34 +32,9 @@ void sendSuccessDataToBackend(
 
 // Extract patient ID if "patients" key is a map and contains "id" property
   final int? patientId = patientsData != null ? patientsData['id'] : null;
-//     print('>>>>>>>>>>>>>>>>>>>>>>appointmentDate: ${bookingDetail["appointmentDate"]}');
-//     print('>>>>>>>>>>>>>>>>>>>>>>appointmentTime: ${bookingDetail["appointmentTime"]}');
-//     print('>>>>>>>>>>>>>>>>>>>>>>symptoms: ${bookingDetail["symptoms"]}');
-//     print('>>>>>>>>>>>>>>>>>>>>>>notes: ${bookingDetail["notes"]}');
-//     print('>>>>>>>>>>>>>>>>>>>>>>doctỏ id: ${id}');
-//     print('>>>>>>>>>>>>>>>>>>>>>>price: ${price}');
-// print('Dữ Liệu Yêu Cầu: ${json.encode({
-//   "appointmentDate": bookingDetail["appointmentDate"],
-//   "appointmentTime": bookingDetail["appointmentTime"],
-//   "symptoms": bookingDetail["symptoms"],
-//   "notes": bookingDetail["notes"],
-//   "patients": {
-//     "id": patientId,
-//     // Các trường bệnh nhân khác
-//   },
-//   "doctors": {
-//     "id": id,
-//     // Các trường bác sĩ khác
-//   }
-// })}');
+
   try {
     Dio dio = Dio();
-    Response response = await dio.post('$domain2/api/v1/payment/create', data: {
-      "paymentPhone": "0972984029",
-      "price": price,
-      "patientName": "Hoang",
-      "message": "payment success with PayPal"
-    });
 
     Response response1 =
         await dio.post('$domain2/api/v1/booking/create', data: {
@@ -97,7 +45,7 @@ void sendSuccessDataToBackend(
       "price": price,
       "bookingAttachedFile": null,
       "patients": {
-        "id": patientId, 
+        "id": patientId,
       },
       "doctors": {
         "id": id,
@@ -106,7 +54,8 @@ void sendSuccessDataToBackend(
 
     // Xử lý kết quả từ backend (response.data)
     // print('Backend Response: ${response1.data}');
-    print('>>>>>>>>>>>>>>>>>>>>>>>>>>> Backend Response: ${response1.statusCode}');
+    print(
+        '>>>>>>>>>>>>>>>>>>>>>>>>>>> Backend Response: ${response1.statusCode}');
   } catch (e) {
     if (e is DioError) {
       // Xử lý DioError, kiểm tra mã lỗi 403 và thực hiện hành động tương ứng
@@ -133,10 +82,7 @@ class BookingDetailPage extends StatelessWidget {
       ),
       body: CustomScrollView(
         slivers: [
-          // SliverAppBar(
-          //     pinned: true,
-          //     title: Text('Booking Detail'),
-          //     backgroundColor: Config.primaryColor),
+         
           SliverToBoxAdapter(
             child: DetailBody(),
           )
@@ -158,8 +104,7 @@ class DetailBody extends StatelessWidget {
 
     //decode tu json
     final doctor = Doctor.fromJson(jsonDecode(bookingDetail["doctor"]));
-    // final booking = Booking
-    // final bookingDetail = BookingDetailPage.fromJson(jsonDecode(bookingDetail["booking"]));
+  
     return Container(
       padding: EdgeInsets.all(20),
       margin: EdgeInsets.only(bottom: 30),
@@ -350,59 +295,27 @@ class DetailBody extends StatelessWidget {
 
           Button(
             width: double.infinity,
-            title: 'Payment Booking',
+            title: 'Booking',
             onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (BuildContext context) => UsePaypal(
-                      sandboxMode: true,
-                      clientId: "${Constants.clientId}",
-                      secretKey: "${Constants.secretKey}",
-                      returnURL: "${Constants.returnURL}",
-                      cancelURL: "${Constants.cancelURL}",
-                      transactions: [
-                        {
-                          "amount": {
-                            "total": '${doctor.price}',
-                            // "total": '',
-                            "currency": "USD",
-                          },
-                          "description": "The payment transaction description.",
-                        }
-                      ],
-                      note: "Contact us for any questions on your order.",
-                      onSuccess: (Map params) {
-                        print("onSuccess: $params");
-                        UIHelper.showAlertDialog('Payment Successfully',
-                            title: 'Success');
-
-                        // print(params);
-                        // print("Payment Status: $params['status']");
-                        // print("Payment Status: $params[datafirst_name]");
-
-                        sendSuccessDataToBackend(doctor.price, doctor.id,
-                            Map<String, dynamic>.from(bookingDetail));
-                        // Navigator.of(context)
-                        //     .pushNamed("/success_booking");
-                        
-                      },
-                      onError: (error) {
-                        print("onError: $error");
-                        UIHelper.showAlertDialog(
-                            'Unable to completet the Payment',
-                            title: 'Error');
-                      },
-                      onCancel: (params) {
-                        print('cancelled: $params');
-                        UIHelper.showAlertDialog('Payment Cannceled',
-                            title: 'Cancel');
-                      }),
-                ),
-              );
+              
+                      sendSuccessDataToBackend(doctor.price, doctor.id,
+                         Map<String, dynamic>.from(bookingDetail));
+              
+              Navigator.of(context).pushNamed("/success_booking");
+              // showBookSuccessSnackbar(context);
             },
             disable: false,
           ),
         ],
+      ),
+    );
+  }
+
+  void showBookSuccessSnackbar(BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Đã Thanh toán thành công!'),
+        duration: Duration(seconds: 3), // Thời gian hiển thị của snackbar
       ),
     );
   }
@@ -587,19 +500,10 @@ class DetailDoctorCard extends StatelessWidget {
 //     OneContext().key = GlobalKey<NavigatorState>();
 //   }
 
-//   // This widget is the root of your application.
-//   @override
-//   Widget build(BuildContext context) {
-//     log('>> MyApp - build()');
-//     // Place that widget on most top
-
-//     // return MaterialApp(
-//     //   title: 'Flutter Demo',
-//     //   theme: ThemeData(
-//     //     primarySwatch: Colors.blue,
-//     //   ),
-//     //   home: const PaymentPage(title: '',),
-//     // );
+  // This widget is the root of your application.
+  // @override
+  // Widget build(BuildContext context) {
+  //   log('>> MyApp - build()');
 
 //     return OneNotification(
 //       builder: (_, __) => MaterialApp(
@@ -637,3 +541,4 @@ class DetailDoctorCard extends StatelessWidget {
   //   // TODO: implement build
   //   throw UnimplementedError();
   // }
+// }

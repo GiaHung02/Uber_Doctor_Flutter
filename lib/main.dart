@@ -21,7 +21,6 @@ import 'package:uber_doctor_flutter/src/pages/login_page.dart';
 import 'package:uber_doctor_flutter/src/pages/patient_register_page.dart';
 import 'package:uber_doctor_flutter/src/pages/phone_page.dart';
 import 'package:uber_doctor_flutter/src/pages/profile_page.dart';
-import 'package:uber_doctor_flutter/src/pages/push_notication.dart';
 import 'package:uber_doctor_flutter/src/pages/search_page.dart';
 import 'package:uber_doctor_flutter/src/pages/splash_page.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/success_booked.dart';
@@ -31,7 +30,6 @@ import 'package:uber_doctor_flutter/src/theme/theme.dart';
 import 'package:uber_doctor_flutter/src/widgets/BottomNavHexagon.dart';
 
 import 'src/model/AuthProvider.dart';
-import 'src/pages/booking/booking_list_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -114,13 +112,12 @@ class _MyHomePageState extends State<MyHomePage> {
     HomePage(),
     Call(navigatorKey: GlobalKey()),
     // SymptomPage(),
-    // BookingDoctorListPage(),
-    // ProfilePage(),
+    BookingDoctorListPage(),
     // LoginPage(),
     //  DetailPage(doctors: [], selectedIndex: 0,),
     AppointmentPage(),
-    BookingListPage(),
-    AppointmentPage()
+    // BookingListPage(),
+    ProfilePage(),
   ];
   int visit = 0;
   double height = 30;
@@ -140,31 +137,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // bottomNavigationBar: CurvedNavigationBar(
-      //     index: 0,
-      //     color: Colors.blue,
-      //     backgroundColor: Colors.white,
-      //     buttonBackgroundColor: Colors.blue,
-      //     animationCurve: Curves.easeInOut,
-      //     animationDuration: Duration(milliseconds: 400),
-      //     onTap: (index) {
-      //       setState(() {
-      //         _page = index;
-      //       });
-      //     },
-      //     items: [
-      //       Icon(Icons.home),
-      //       Icon(Icons.phone),
-      //       Icon(Icons.coronavirus),
-      //       Icon(Icons.calendar_month),
-      //       Icon(Icons.account_box),
-      //     ]),
-      // body: pages[_page],
-
-      // drawer: CurrentPage(
-      //   selectedIndex: _selectedIndex,
-      //   onItemTapped: _onItemTapped,
-      // ),
+     
       bottomNavigationBar: BottomBarInspiredOutside(
         items: items,
         backgroundColor: bgColor,

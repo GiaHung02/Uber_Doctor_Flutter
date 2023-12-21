@@ -48,12 +48,15 @@ class CallPageState extends State<CallPage> {
 
     try {
       final response = await http.get(url);
-      // print(response.body);
       if (response.statusCode == 200) {
         // Chuyển đổi JSON thành danh sách Booking và cập nhật state
         setState(() {
+          // đoạn mã này để lọc danh sách booking theo patientId
+          int patientId = 2; // Thay thế bằng patient["id"] cụ thể
           _schedules = List<Booking>.from(jsonDecode(response.body)['data']
-              .map((booking) => Booking.fromJson(booking)));
+                  .map((booking) => Booking.fromJson(booking)))
+              .where((booking) => booking.statusBooking == 'upcoming')
+              .toList();
         });
       } else {
         // Xử lý khi có lỗi từ API
@@ -63,8 +66,7 @@ class CallPageState extends State<CallPage> {
       // Xử lý khi có lỗi kết nối
       print('Error: $e');
     }
-    //  print('schedule: $schedules');
-    print('booking length from api: ${_schedules.length}');
+    // print('booking length from api: ${schedules.length}');
   }
 
   void reloadBookings() async {
@@ -212,12 +214,20 @@ class CallPageState extends State<CallPage> {
               //   style: textStyle,
               // )
 
-              Text(
-                '${booking.doctors!.fullName}(${random.fromPattern([
-                      '######'
-                    ])})',
+              Column(
+                children: [
+                  Text(
+                    '${booking.patients!.fullName}   -(${random.fromPattern([
+                          '######'
+                        ])})',
+                    style: textStyle,
+                  ),
+                    Text(
+                ' Booking Id:${booking.id} ',
                 style: textStyle,
               )
+                ],
+              ),
             ];
           }
 

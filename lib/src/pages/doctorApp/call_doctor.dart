@@ -32,8 +32,6 @@ class CallPageState extends State<CallPageDoctor> {
       TextEditingController();
   List<Booking> _schedules = [];
 
-  
-
   @override
   void initState() {
     super.initState();
@@ -43,18 +41,20 @@ class CallPageState extends State<CallPageDoctor> {
 
   FilterStatus statusBooking = FilterStatus.upcoming;
   Alignment _alignment = Alignment.centerLeft;
-
   void fetchBookings() async {
     final url = Uri.parse('$domain/api/v1/booking/list');
 
     try {
       final response = await http.get(url);
-      // print(response.body);
       if (response.statusCode == 200) {
         // Chuyển đổi JSON thành danh sách Booking và cập nhật state
         setState(() {
+          // đoạn mã này để lọc danh sách booking theo patientId
+          int patientId = 2; // Thay thế bằng patient["id"] cụ thể
           _schedules = List<Booking>.from(jsonDecode(response.body)['data']
-              .map((booking) => Booking.fromJson(booking)));
+                  .map((booking) => Booking.fromJson(booking)))
+              .where((booking) => booking.statusBooking == 'upcoming')
+              .toList();
         });
       } else {
         // Xử lý khi có lỗi từ API
@@ -64,8 +64,7 @@ class CallPageState extends State<CallPageDoctor> {
       // Xử lý khi có lỗi kết nối
       print('Error: $e');
     }
-    //  print('schedule: $schedules');
-    print('booking length from api: ${_schedules.length}');
+    // print('booking length from api: ${schedules.length}');
   }
 
   void reloadBookings() async {
@@ -158,7 +157,6 @@ class CallPageState extends State<CallPageDoctor> {
     // final TextEditingController singleInviteeUserIDTextCtrl =
     //     TextEditingController(text: '123456');
 
-    
     return Center(
       child: ListView.builder(
         shrinkWrap: true,
@@ -167,8 +165,9 @@ class CallPageState extends State<CallPageDoctor> {
         itemBuilder: (context, index) {
           final booking = _schedules[index];
           final doctorFullName = booking.doctors?.fullName ?? 'Unknown Doctor';
-          final patientsName = booking.patients?.fullName?? 'Unknown Patients';
-            // print('>>>>>>>>>>>>>>>>>>>>>''_schedule id: ${_schedule.doc}');
+          final doctorId = booking.doctors?.id ?? 'Unknown doctor id';
+          final patientsName = booking.patients?.fullName ?? 'Unknown Patients';
+          // print('>>>>>>>>>>>>>>>>>>>>>''_schedule id: ${_schedule.doc}');
           // Booking(booking: bookings[index]);
           // print('>>>>>>>>>>>>>>>>>>>>>''_schedule id: ${_schedule.id}');
           // print('>>>>>>>>>>>>>>>>>>>>>''Doctor full name: ${_schedule.doctors!.fullName}');
@@ -215,15 +214,21 @@ class CallPageState extends State<CallPageDoctor> {
               //   style: textStyle,
               // )
 
-              Text(
-                '${booking.patients!.fullName}(${random.fromPattern([
-                      '######'
-                      
-                    ])})',
+              Column(
+                children: [
+                  Text(
+                    '${booking.patients!.fullName}   -(${random.fromPattern([
+                          '######'
+                        ])})',
+                    style: textStyle,
+                  ),
+                    Text(
+                ' Booking Id:${booking.id} ',
                 style: textStyle,
-                
               )
-              
+                ],
+              ),
+             
             ];
           }
 

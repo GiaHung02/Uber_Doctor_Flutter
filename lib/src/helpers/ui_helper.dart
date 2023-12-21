@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:one_context/one_context.dart';
 
 class UIHelper {
-  static showAlertDialog(String message, {title = ''}) {
+  static showAlertDialog(String message, {title = 'Success'}) {
     OneContext().showDialog(
       builder: (ctx) {
         return AlertDialog(

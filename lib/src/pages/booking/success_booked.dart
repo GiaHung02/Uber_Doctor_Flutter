@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:uber_doctor_flutter/src/theme/button.dart';
@@ -28,14 +27,22 @@ class AppointmentBooked extends StatelessWidget {
                 ),
               ),
             ),
+            SizedBox(height: 40,),
+            Text(
+              'Please Waite DOCTOR CONFIRM and then PAY',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             const Spacer(),
             //back to home page
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
               child: Button(
                 width: double.infinity,
-                title: 'Go to Appointment Page',
-                onPressed: () => Navigator.of(context).pushNamed('/user_appointment_page'),
+                title: 'Go to Home Page',
+                onPressed: () => Navigator.of(context).pushNamed('/home_page'),
                 disable: false,
               ),
             )

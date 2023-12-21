@@ -66,7 +66,7 @@ class Patient {
   int id;
   String? phoneNumber;
   String? password;
-  String? fullName;
+  String fullName;
   bool? role;
   String? email;
   double? wallet;

@@ -37,14 +37,19 @@ class _AppointmentPageState extends State<AppointmentPage> {
         .where((booking) => booking.patients?.id == patientId)
         .toList();
   }
+ 
 
   // Thay đổi hàm fetchBookings trong _AppointmentPageState
   void fetchBookings() async {
     final url = Uri.parse('$domain2/api/v1/booking/list');
-    //  userid = null;
-    // if (Provider.of<MyAuthProvider>(context).token != null) {
-    //   userid = Provider.of<MyAuthProvider>(context).id
-    // }
+     var userId;
+var myAuthProvider = Provider.of<MyAuthProvider>(context, listen: false);
+
+if (myAuthProvider.token != null) {
+  userId = myAuthProvider.id;
+}
+print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>User id ${userId}');
+print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>User id ${myAuthProvider}');
       try {
         final response = await http.get(url);
         if (response.statusCode == 200) {

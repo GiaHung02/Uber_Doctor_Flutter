@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_paypal/flutter_paypal.dart';
 import 'package:uber_doctor_flutter/src/api/api_service.dart';
@@ -62,7 +60,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
       // Xử lý khi có lỗi kết nối
       print('Error: $e');
     }
-    print('booking length from api: ${schedules.length}');
+    // print('booking length from api: ${schedules.length}');
   }
 
   void reloadBookings() async {
@@ -83,6 +81,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
   @override
   Widget build(BuildContext context) {
     List<dynamic> filterSchedules = schedules.where((var schedule) {
+
       FilterStatus scheduleStatus;
       switch (schedule.statusBooking) {
         case 'upcoming':
@@ -101,7 +100,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
       return scheduleStatus == statusBooking;
     }).toList();
 
-    print('fillerschedule: ${filterSchedules.length}');
+    // print('>>>>>>>>>>>>>>>>>>>>>>fillerschedule: ${filterSchedules}');
     return SafeArea(
         child: Padding(
       padding: const EdgeInsets.only(left: 20, top: 20, right: 20),
@@ -180,7 +179,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                     itemCount: filterSchedules.length,
                     itemBuilder: ((context, index) {
                       Booking _schedule = filterSchedules[index];
-                      print('_schedule id: ${_schedule.id}');
+                      // print('_schedule id: ${_schedule.id}');
 
                       bool isLastElement = filterSchedules.length + 1 == index;
                       return Card(

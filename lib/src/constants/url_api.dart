@@ -19,7 +19,6 @@ String registerDoctorAPI = domain + 'api/v1/doctor/createjson';
 
 String GetDepartmentAPI = domain + 'api/v1/department/list';
 
-
 // String sendTokenAPI = domain + 'auth/send-token';
 // String resetPassAPI = domain + 'auth/forget-password/change-password';
 
@@ -31,4 +30,3 @@ class Constants {
   static const String returnURL = 'https://samplesite.com/return';
   static const String cancelURL = 'https://samplesite.com/cancel';
 }
-

@@ -88,8 +88,8 @@ class _AppointmentPageState extends State<AppointmentPage> {
           scheduleStatus = FilterStatus.upcoming;
           break;
         case 'complete':
-          scheduleStatus = FilterStatus.complete;
-          break;
+            scheduleStatus = FilterStatus.complete;
+            break;
         case 'cancel':
           scheduleStatus = FilterStatus.cancel;
           break;

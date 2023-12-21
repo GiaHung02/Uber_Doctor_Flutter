@@ -294,6 +294,7 @@ class _PatientRegisterPageState extends State<PatientRegisterPage> {
                                             ));
                                             PatientRegisterPage.verify =
                                                 verificationId;
+                                           
 
                                             // Chuyển dataRegister sang trang verify_register
                                             Navigator.pushNamed(

@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:uber_doctor_flutter/src/controllers/auth/login_controller.dart';
+import 'package:uber_doctor_flutter/src/pages/doctor_register_page.dart';
+import 'package:uber_doctor_flutter/src/pages/patient_register_page.dart';
 import 'package:uber_doctor_flutter/src/pages/verify.dart';
 
 class LoginPage extends StatefulWidget {
@@ -8,6 +10,8 @@ class LoginPage extends StatefulWidget {
 
   static String verify = "";
   static String approle = "";
+  static String userid = "";
+
   static String phoneNum = "";
 
   @override
@@ -191,10 +195,11 @@ class _LoginPageState extends State<LoginPage> {
                                 var sendPhone = int.parse(phone).toString();
 
                                 if (_isChecked) {
-                                  var check =
-                                      loginController.loginDoctor(sendPhone,context);
+                                  var check = loginController.loginDoctor(
+                                      sendPhone, context);
+                                 
 
-                                  if (await check) {
+                                  if (await check != -1) {
                                     await FirebaseAuth.instance
                                         .verifyPhoneNumber(
                                       phoneNumber:
@@ -214,16 +219,17 @@ class _LoginPageState extends State<LoginPage> {
                                           (String verificationId) {},
                                     );
                                   } else {
-                                    Navigator.pushNamed(
-                                        context, 'doctor/register');
+                                    Navigator.push(
+                                        context,
+                                        new MaterialPageRoute(
+                                            builder: (context) =>
+                                                new DoctorRegisterPage()));
                                   }
                                 } else {
                                   var check =
                                       loginController.loginPatient(sendPhone,context);
 
-                                  print(await check);
-
-                                  if (await check) {
+                                  if (check != -1) {
                                     await FirebaseAuth.instance
                                         .verifyPhoneNumber(
                                       phoneNumber:
@@ -249,8 +255,11 @@ class _LoginPageState extends State<LoginPage> {
                                           (String verificationId) {},
                                     );
                                   } else {
-                                    Navigator.pushNamed(
-                                        context, 'patient/register');
+                                    Navigator.push(
+                                        context,
+                                        new MaterialPageRoute(
+                                            builder: (context) =>
+                                                new PatientRegisterPage()));
                                   }
                                 }
                               }

@@ -10,14 +10,17 @@ import 'package:uber_doctor_flutter/src/pages/booking/booking_detail_page.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/booking_doctor_list_page.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/booking_page.dart';
 import 'package:uber_doctor_flutter/src/pages/detail_page.dart';
+import 'package:uber_doctor_flutter/src/pages/doctorApp/call_doctor.dart';
 import 'package:uber_doctor_flutter/src/pages/doctorApp/doctor_appointment_page.dart';
 import 'package:uber_doctor_flutter/src/pages/doctorApp/doctor_home_page.dart';
+import 'package:uber_doctor_flutter/src/pages/doctorApp/doctor_phone_page.dart';
 import 'package:uber_doctor_flutter/src/pages/doctorApp/doctor_profile_page.dart';
 import 'package:uber_doctor_flutter/src/pages/doctor_register_page.dart';
 import 'package:uber_doctor_flutter/src/pages/home_page.dart';
 import 'package:uber_doctor_flutter/src/pages/login_page.dart';
 import 'package:uber_doctor_flutter/src/pages/patient_register_page.dart';
 import 'package:uber_doctor_flutter/src/pages/phone_page.dart';
+import 'package:uber_doctor_flutter/src/pages/profile_page.dart';
 import 'package:uber_doctor_flutter/src/pages/search_page.dart';
 import 'package:uber_doctor_flutter/src/pages/splash_page.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/success_booked.dart';
@@ -27,8 +30,6 @@ import 'package:uber_doctor_flutter/src/theme/theme.dart';
 import 'package:uber_doctor_flutter/src/widgets/BottomNavHexagon.dart';
 
 import 'src/model/AuthProvider.dart';
-import 'src/pages/booking/booking_list_page.dart';
-import 'src/pages/profile_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -85,7 +86,7 @@ class MyApp extends StatelessWidget {
           '/booking_detail_page': (context) => BookingDetailPage(),
           'login': (context) => LoginPage(),
           '/pages/search_page': (context) => SearchPageWidget(),
-           '/user_appointment_page': (context) => AppointmentBooked(),
+          'call_doctor': (context) => CallPageDoctor(),
 
           //Bs navigate
           '/bs_home_page': (context) => MyBsPage(title: 'bs home', 'bs home'),
@@ -136,31 +137,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // bottomNavigationBar: CurvedNavigationBar(
-      //     index: 0,
-      //     color: Colors.blue,
-      //     backgroundColor: Colors.white,
-      //     buttonBackgroundColor: Colors.blue,
-      //     animationCurve: Curves.easeInOut,
-      //     animationDuration: Duration(milliseconds: 400),
-      //     onTap: (index) {
-      //       setState(() {
-      //         _page = index;
-      //       });
-      //     },
-      //     items: [
-      //       Icon(Icons.home),
-      //       Icon(Icons.phone),
-      //       Icon(Icons.coronavirus),
-      //       Icon(Icons.calendar_month),
-      //       Icon(Icons.account_box),
-      //     ]),
-      // body: pages[_page],
-
-      // drawer: CurrentPage(
-      //   selectedIndex: _selectedIndex,
-      //   onItemTapped: _onItemTapped,
-      // ),
+     
       bottomNavigationBar: BottomBarInspiredOutside(
         items: items,
         backgroundColor: bgColor,
@@ -196,7 +173,7 @@ class _MyBsPageState extends State<MyBsPage> {
   var _page = 0;
   final pages = [
     DoctorHomePage(),
- Call(navigatorKey: GlobalKey()),
+    CallDoctor(navigatorKey: GlobalKey()),
     DoctorAppointmentPage(),
     DoctorProfilePage(),
   ];
@@ -226,7 +203,6 @@ class _MyBsPageState extends State<MyBsPage> {
         chipStyle: const ChipStyle(drawHexagon: true),
       ),
       body: pages[_page],
-    
     );
   }
 }

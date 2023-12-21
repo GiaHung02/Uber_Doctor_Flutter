@@ -30,7 +30,7 @@ class RegisterDoctorModel {
       'exp': exp,
       'address': address,
       'price': price,
-      'image': image,
+      'imagePath': image,
     };
   }
 

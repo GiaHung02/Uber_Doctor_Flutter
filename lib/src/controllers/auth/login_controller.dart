@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -17,24 +18,28 @@ class LoginController extends GetxController {
 
   onToggleShowPassword() => showPassword.value = !showPassword.value;
 
-  Future<bool> loginPatient(String phone,context) async {
+  Future<int?> loginPatient(String phone, context) async {
     isLoading.value = true;
     try {
+   
       var myUrl = loginPatientAPI + phone;
+      print(myUrl);
+
       var response = await http.get(
         Uri.parse(myUrl),
         headers: {"Content-Type": "application/json;charset=UTF-8"},
       );
 
-      print(myUrl);
-
       Map<String, dynamic> responseMap = json.decode(response.body);
       ApiResponse apiResponse = ApiResponse.fromJson(responseMap);
-      print(apiResponse.status);
+   
+
+
+
       if (apiResponse.status == 200) {
-        return true;
+        return apiResponse.data;
       } else {
-        return false;
+        return null;
       }
     } catch (e) {
       QuickAlert.show(
@@ -42,11 +47,13 @@ class LoginController extends GetxController {
         type: QuickAlertType.error,
         text: 'Switch to a different IP or a different WiFi',
       );
-      return false;
+
+         print(" have many errrrrrrrrrrrrrrrrr==============================================================");
+      return null;
     }
   }
 
-  Future<bool> loginDoctor(String phone,context) async {
+  Future<Long?> loginDoctor(String phone, context) async {
     isLoading.value = true;
     try {
       var myUrl = loginDoctorAPI + phone;
@@ -60,9 +67,9 @@ class LoginController extends GetxController {
       ApiResponse apiResponse = ApiResponse.fromJson(responseMap);
 
       if (apiResponse.status == 200) {
-        return true;
+        return apiResponse.data;
       } else {
-        return false;
+        return null;
       }
     } catch (e) {
       QuickAlert.show(
@@ -70,7 +77,7 @@ class LoginController extends GetxController {
         type: QuickAlertType.error,
         text: 'Switch to a different IP or a different WiFi',
       );
-      return false;
+      return null;
     }
   }
 }

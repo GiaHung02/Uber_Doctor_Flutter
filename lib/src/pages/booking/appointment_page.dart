@@ -49,7 +49,7 @@ if (myAuthProvider.token != null) {
   userId = myAuthProvider.id;
 }
 print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>User id ${userId}');
-print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>User id ${myAuthProvider}');
+print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>User id }');
       try {
         final response = await http.get(url);
         if (response.statusCode == 200) {

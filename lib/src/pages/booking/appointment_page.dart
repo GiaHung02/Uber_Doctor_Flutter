@@ -27,30 +27,40 @@ class _AppointmentPageState extends State<AppointmentPage> {
 
   FilterStatus statusBooking = FilterStatus.upcoming;
   Alignment _alignment = Alignment.centerLeft;
+// Thêm hàm filterBookingsByPatientId vào _AppointmentPageState
+List<Booking> filterBookingsByPatientId(int patientId) {
+  return schedules
+      .where((booking) => booking.patients?.id == patientId)
+      .toList();
+}
 
-  void fetchBookings() async {
-    final url = Uri.parse('$domain/api/v1/booking/list');
+  // Thay đổi hàm fetchBookings trong _AppointmentPageState
+void fetchBookings() async {
+  final url = Uri.parse('$domain/api/v1/booking/list');
 
-    try {
-      final response = await http.get(url);
-      // print(response.body);
-      if (response.statusCode == 200) {
-        // Chuyển đổi JSON thành danh sách Booking và cập nhật state
-        setState(() {
-          schedules = List<Booking>.from(jsonDecode(response.body)['data']
-              .map((booking) => Booking.fromJson(booking)));
-        });
-      } else {
-        // Xử lý khi có lỗi từ API
-        print('Error: ${response.statusCode}');
-      }
-    } catch (e) {
-      // Xử lý khi có lỗi kết nối
-      print('Error: $e');
+  try {
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      // Chuyển đổi JSON thành danh sách Booking và cập nhật state
+      setState(() {
+        // đoạn mã này để lọc danh sách booking theo patientId
+        int patientId = 2; // Thay thế bằng patient["id"] cụ thể
+        schedules = List<Booking>.from(jsonDecode(response.body)['data']
+            .map((booking) => Booking.fromJson(booking)))
+            .where((booking) => booking.patients?.id == patientId)
+            .toList();
+      });
+      
+    } else {
+      // Xử lý khi có lỗi từ API
+      print('Error: ${response.statusCode}');
     }
-    //  print('schedule: $schedules');
-    print('booking length from api: ${schedules.length}');
+  } catch (e) {
+    // Xử lý khi có lỗi kết nối
+    print('Error: $e');
   }
+  print('booking length from api: ${schedules.length}');
+}
 
   void reloadBookings() async {
     fetchBookings();
@@ -68,8 +78,8 @@ class _AppointmentPageState extends State<AppointmentPage> {
           scheduleStatus = FilterStatus.upcoming;
           break;
         case 'complete':
-          scheduleStatus = FilterStatus.complete;
-          break;
+            scheduleStatus = FilterStatus.complete;
+            break;
         case 'cancel':
           scheduleStatus = FilterStatus.cancel;
           break;
@@ -250,9 +260,14 @@ class _AppointmentPageState extends State<AppointmentPage> {
                                                 color: Colors.grey,
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.w600)),
-                                        Container(
+                                        
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                Container(
                                           height: 20,
-                                          width: 70,
+                                          width: 60,
                                           decoration: BoxDecoration(
                                             color: Color.fromARGB(
                                                 255, 227, 124, 15),
@@ -271,13 +286,6 @@ class _AppointmentPageState extends State<AppointmentPage> {
                                             ],
                                           ),
                                         ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 20,
-                                ),
                                 ScheduleCard(booking: _schedule),
                                 SizedBox(
                                   height: 10,
@@ -459,3 +467,5 @@ class ScheduleCard extends StatelessWidget {
     );
   }
 }
+/////
+

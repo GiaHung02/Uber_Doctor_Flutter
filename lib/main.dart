@@ -31,6 +31,7 @@ import 'package:uber_doctor_flutter/src/theme/theme.dart';
 import 'package:uber_doctor_flutter/src/widgets/BottomNavHexagon.dart';
 
 import 'src/model/AuthProvider.dart';
+import 'src/pages/booking/booking_list_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -115,9 +116,10 @@ class _MyHomePageState extends State<MyHomePage> {
     // SymptomPage(),
     // BookingDoctorListPage(),
     // ProfilePage(),
-    LoginPage(),
+    // LoginPage(),
     //  DetailPage(doctors: [], selectedIndex: 0,),
-    // BookingListPage(),
+    AppointmentPage(),
+    BookingListPage(),
     AppointmentPage()
   ];
   int visit = 0;

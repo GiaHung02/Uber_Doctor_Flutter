@@ -43,6 +43,23 @@ class Booking {
       doctors: Doctor.fromJson(json['doctors']), booking: null,
     );
   }
+  Map<String, dynamic> toJson() {
+   final Map<String, dynamic> data = {
+      'id': id,
+      'statusBooking': statusBooking,
+      'isAvailable': isAvailable,
+      'bookingDate': bookingDate?.toIso8601String(),
+      'appointmentDate': appointmentDate,
+      'appointmentTime': appointmentTime,
+      'symptoms': symptoms,
+      'notes': notes,
+      'price': price,
+      'bookingAttachedFile': bookingAttachedFile,
+      'patients': patients?.toJson(),
+      'doctors': doctors?.toJson(),
+    };
+     return data;
+  }
 }
 
 class Patient {
@@ -90,6 +107,23 @@ class Patient {
       rate: json['rate'],
     );
   }
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {
+      'id': id,
+      'phoneNumber': phoneNumber,
+      'password': password,
+      'fullName': fullName,
+      'role': role,
+      'email': email,
+      'wallet': wallet,
+      'bankingAccount': bankingAccount,
+      'medicalRecord': medicalRecord,
+      'address': address,
+      'status': status,
+      'rate': rate,
+    };
+    return data;
+  }
 }
 
 class Doctor {
@@ -103,11 +137,12 @@ class Doctor {
   String imagePath;
   String? address;
   bool? accepted;
-  bool? status;
+  bool status;
   String spectiality;
   int? rate;
   double? price;
   int? exp;
+  String? description;
 
   Doctor({
     required this.id,
@@ -125,25 +160,46 @@ class Doctor {
     required this.rate,
     required this.price,
     required this.exp,
+    this.description,
   });
 
   factory Doctor.fromJson(Map<String, dynamic> json) {
     return Doctor(
-      id: json['id'],
-      phoneNumber: json['phoneNumber'],
-      password: json['password'],
-      fullName: json['fullName'],
-      email: json['email'],
-      wallet: json['wallet'],
-      bankingAccount: json['bankingAccount'],
-      imagePath: json['imagePath'],
-      address: json['address'],
-      accepted: json['accepted'],
-      status: json['status'],
-      spectiality: json['spectiality'],
-      rate: json['rate'],
-      price: json['price'],
-      exp: json['exp'],
-    );
+        id: json['id'],
+        phoneNumber: json['phoneNumber'],
+        password: json['password'],
+        fullName: json['fullName'],
+        email: json['email'],
+        wallet: json['wallet'],
+        bankingAccount: json['bankingAccount'],
+        imagePath: json['imagePath'],
+        address: json['address'],
+        accepted: json['accepted'],
+        status: json['status'],
+        spectiality: json['spectiality'],
+        rate: json['rate'],
+        price: json['price'],
+        exp: json['exp'],
+        description: json?['description']);
+  }
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {
+      'id': id,
+      'phoneNumber': phoneNumber,
+      'fullName': fullName,
+      'email': email,
+      'bankingAccount': bankingAccount,
+      'imagePath': imagePath,
+      'address': address,
+      'accepted': accepted,
+      'status': status,
+      'spectiality':
+          spectiality, // Chỉnh sửa tên trường để phản ánh đúng tên từ API
+      'rate': rate,
+      'price': price,
+      'exp': exp,
+      'description': description
+    };
+    return data;
   }
 }

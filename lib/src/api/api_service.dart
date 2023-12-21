@@ -1,7 +1,8 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:uber_doctor_flutter/src/model/doctor.dart';
+import 'package:uber_doctor_flutter/src/model/booking.dart';
+
 
 import 'package:uber_doctor_flutter/src/model/pathologycal.dart';
 

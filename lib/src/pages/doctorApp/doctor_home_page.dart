@@ -1,9 +1,10 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:uber_doctor_flutter/src/api/api_service.dart';
-import 'package:uber_doctor_flutter/src/model/doctor.dart';
 import 'package:uber_doctor_flutter/src/pages/detail_page.dart';
 import 'package:uber_doctor_flutter/src/pages/search_page.dart';
+
+import '../../model/booking.dart';
 class DoctorHomePage extends StatefulWidget {
   DoctorHomePage({Key? key}) : super(key: key);
   List<Doctor> doctors = [];

@@ -6,16 +6,16 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:uber_doctor_flutter/src/model/booking.dart';
 import 'package:http/http.dart' as http;
 
-class AppointmentPage extends StatefulWidget {
-  const AppointmentPage({Key? key}) : super(key: key);
+class DoctorAppointmentPage extends StatefulWidget {
+  const DoctorAppointmentPage({Key? key}) : super(key: key);
 
   @override
-  State<AppointmentPage> createState() => _AppointmentPageState();
+  State<DoctorAppointmentPage> createState() => _DoctorAppointmentPageState();
 }
 
 enum FilterStatus { upcoming, complete, cancel }
 
-class _AppointmentPageState extends State<AppointmentPage> {
+class _DoctorAppointmentPageState extends State<DoctorAppointmentPage> {
   List<Booking> schedules = [];
 
   @override

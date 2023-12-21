@@ -4,26 +4,27 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uber_doctor_flutter/firebase_options.dart';
-import 'package:uber_doctor_flutter/src/call/call.dart';
 import 'package:uber_doctor_flutter/src/model/doctor_model.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/appointment_page.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/booking_detail_page.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/booking_doctor_list_page.dart';
-import 'package:uber_doctor_flutter/src/pages/booking/booking_list_page.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/booking_page.dart';
 import 'package:uber_doctor_flutter/src/pages/detail_page.dart';
+import 'package:uber_doctor_flutter/src/pages/doctorApp/call_doctor.dart';
+import 'package:uber_doctor_flutter/src/pages/doctorApp/doctor_appointment_page.dart';
+import 'package:uber_doctor_flutter/src/pages/doctorApp/doctor_home_page.dart';
+import 'package:uber_doctor_flutter/src/pages/doctorApp/doctor_phone_page.dart';
+import 'package:uber_doctor_flutter/src/pages/doctorApp/doctor_profile_page.dart';
 import 'package:uber_doctor_flutter/src/pages/doctor_register_page.dart';
 import 'package:uber_doctor_flutter/src/pages/home_page.dart';
 import 'package:uber_doctor_flutter/src/pages/login_page.dart';
 import 'package:uber_doctor_flutter/src/pages/patient_register_page.dart';
-import 'package:uber_doctor_flutter/src/pages/payment_page.dart';
 import 'package:uber_doctor_flutter/src/pages/phone_page.dart';
 import 'package:uber_doctor_flutter/src/pages/profile_page.dart';
 import 'package:uber_doctor_flutter/src/pages/push_notication.dart';
 import 'package:uber_doctor_flutter/src/pages/search_page.dart';
 import 'package:uber_doctor_flutter/src/pages/splash_page.dart';
 import 'package:uber_doctor_flutter/src/pages/booking/success_booked.dart';
-import 'package:uber_doctor_flutter/src/pages/symptom_page.dart';
 import 'package:uber_doctor_flutter/src/pages/verify.dart';
 import 'package:uber_doctor_flutter/src/pages/verify_register.dart';
 import 'package:uber_doctor_flutter/src/theme/theme.dart';
@@ -69,21 +70,27 @@ class MyApp extends StatelessWidget {
         initialRoute: 'home',
         navigatorKey: navigatorKey,
         routes: {
-          '/home': (context) => SplashPage(),
+          'home': (context) => SplashPage(),
           '/home_page': (context) => MyHomePage(title: 'home', "home"),
           'phone': (context) => LoginPage(),
           'verify': (context) => MyVerify(),
           'verify_register': (context) => MyVerifyRegister(),
           'doctor/register': (context) => DoctorRegisterPage(),
-          '/patient/register': (context) => PatientRegisterPage(),
-           'pages/detail_page': (context) =>
-            DetailPage(doctors: [], selectedIndex: 0,),
+          'patient/register': (context) => PatientRegisterPage(),
+          'pages/detail_page': (context) => DetailPage(
+                doctors: [],
+                selectedIndex: 0,
+              ),
           '/success_booking': (context) => AppointmentBooked(),
           '/booking_page': (context) => BookingPage(),
           '/booking_list_page': (context) => BookingDoctorListPage(),
           '/booking_detail_page': (context) => BookingDetailPage(),
           'login': (context) => LoginPage(),
-            '/pages/search_page': (context) => SearchPageWidget(),
+          '/pages/search_page': (context) => SearchPageWidget(),
+          'call_doctor': (context) => CallPageDoctor(),
+
+          //Bs navigate
+          '/bs_home_page': (context) => MyBsPage(title: 'bs home', 'bs home'),
         },
         debugShowCheckedModeBanner: false,
       ),
@@ -106,11 +113,10 @@ class _MyHomePageState extends State<MyHomePage> {
     HomePage(),
     Call(navigatorKey: GlobalKey()),
     // SymptomPage(),
-    BookingDoctorListPage(),
+    // BookingDoctorListPage(),
     // ProfilePage(),
     LoginPage(),
-    // Push(),
-     DetailPage(doctors: [], selectedIndex: 0,),
+    //  DetailPage(doctors: [], selectedIndex: 0,),
     // BookingListPage(),
     AppointmentPage()
   ];
@@ -159,6 +165,55 @@ class _MyHomePageState extends State<MyHomePage> {
       // ),
       bottomNavigationBar: BottomBarInspiredOutside(
         items: items,
+        backgroundColor: bgColor,
+        color: color2,
+        colorSelected: Colors.white,
+        indexSelected: visit,
+        onTap: (index) => setState(() {
+          visit = index;
+          _page = index;
+        }),
+        top: -28,
+        animated: true,
+        itemStyle: ItemStyle.hexagon,
+        chipStyle: const ChipStyle(drawHexagon: true),
+      ),
+      body: pages[_page],
+    );
+  }
+}
+
+////////////////////////////////////////////////////////////////////////
+/// Bac si Route
+class MyBsPage extends StatefulWidget {
+  const MyBsPage(String s, {Key? key, required this.title}) : super(key: key);
+  final String title;
+
+  @override
+  State<MyBsPage> createState() => _MyBsPageState();
+}
+
+// khai bao cac trang de dieu huong den
+class _MyBsPageState extends State<MyBsPage> {
+  var _page = 0;
+  final pages = [
+    DoctorHomePage(),
+    CallDoctor(navigatorKey: GlobalKey()),
+    DoctorAppointmentPage(),
+    DoctorProfilePage(),
+  ];
+  int visit = 0;
+  double height = 30;
+  Color colorSelect = const Color(0XFF0686F8);
+  Color color = const Color(0XFF7AC0FF);
+  Color color2 = const Color(0XFF96B1FD);
+  Color bgColor = const Color(0XFF1752FE);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      bottomNavigationBar: BottomBarInspiredOutside(
+        items: doctoritems,
         backgroundColor: bgColor,
         color: color2,
         colorSelected: Colors.white,

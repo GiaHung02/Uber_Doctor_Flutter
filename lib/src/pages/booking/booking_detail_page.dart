@@ -1,7 +1,10 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:ffi';
+import 'dart:io';
 
+
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_paypal/flutter_paypal.dart';
@@ -19,6 +22,23 @@ import 'package:uber_doctor_flutter/src/theme/styles.dart';
 import 'package:uber_doctor_flutter/src/widgets/custom_appbar.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 import 'package:flutter_paypal_payment/flutter_paypal_payment.dart';
+
+// void showIncompleteStepSnackBar(BuildContext context) {
+//   ScaffoldMessenger.of(context).showSnackBar(
+//     SnackBar(
+//       content: AwesomeSnackbarContent(
+//         title: 'Incomplete Step',
+//         message: 'Please fill in all required information for Step .',
+//         contentType: ContentType.failure,
+//         inMaterialBanner: true,
+//       ),
+//       behavior: SnackBarBehavior.floating,
+//       backgroundColor: Color.fromARGB(0, 255, 255, 255),
+//     ),
+//   );
+// }
+
+
 
 void sendSuccessDataToBackend(
   double? price,
@@ -46,6 +66,27 @@ void sendSuccessDataToBackend(
       "patients": {"id": 2},
       "doctors": {"id": id}
     });
+
+    void showPaymentSuccessDialog(BuildContext context) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Payment Success'),
+            content: Text('Your payment was successful.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context)
+                      .pop(); // Đóng hộp thoại khi người dùng nhấn OK
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
 
     // if (response.statusCode == 201) {
     //   // UIHelper.showAlertDialog("payment success ");
@@ -325,6 +366,7 @@ class DetailBody extends StatelessWidget {
                                 title: 'Success');
                             // Navigator.of(context as BuildContext).pushNamed("/success_booking");
                             print(params);
+                            // showIncompleteStepSnackBar(context);
 
                             sendSuccessDataToBackend(
                               doctor.price,
@@ -514,71 +556,71 @@ class DetailDoctorCard extends StatelessWidget {
   }
 }
 
-bool debugShowCheckedModeBanner = false;
-const localeEnglish = [Locale('en', '')];
+// bool debugShowCheckedModeBanner = false;
+// const localeEnglish = [Locale('en', '')];
 
-// void mainInit() {
-//   runApp(const Payment());
+// // void mainInit() {
+// //   runApp(const Payment());
+// // }
+
+// void mainInit() => OnePlatform.app = () => Payment();
+
+// class Payment extends StatelessWidget {
+//   // const Payment({super.key});
+
+//   Payment({super.key}) {
+//     print('>> MyApp2 loaded!');
+//     OneContext().key = GlobalKey<NavigatorState>();
+//   }
+
+//   // This widget is the root of your application.
+//   @override
+//   Widget build(BuildContext context) {
+//     log('>> MyApp - build()');
+//     // Place that widget on most top
+
+//     // return MaterialApp(
+//     //   title: 'Flutter Demo',
+//     //   theme: ThemeData(
+//     //     primarySwatch: Colors.blue,
+//     //   ),
+//     //   home: const PaymentPage(title: '',),
+//     // );
+
+//     return OneNotification(
+//       builder: (_, __) => MaterialApp(
+//         title: 'Flutter Demo',
+//         home: const PaymentPage(title: 'Flutter Demo Home Page'),
+//         builder: OneContext().builder,
+//         navigatorKey: OneContext().key,
+//       ),
+//     );
+//   }
 // }
 
-void mainInit() => OnePlatform.app = () => Payment();
+// class PaymentPage extends StatefulWidget {
+//   const PaymentPage({super.key, required this.title});
 
-class Payment extends StatelessWidget {
-  // const Payment({super.key});
+//   final String title;
 
-  Payment({super.key}) {
-    print('>> MyApp2 loaded!');
-    OneContext().key = GlobalKey<NavigatorState>();
-  }
+//   @override
+//   State<PaymentPage> createState() => _PaymentPageState();
+// }
 
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    log('>> MyApp - build()');
-    // Place that widget on most top
+// class _PaymentPageState extends State<PaymentPage> {
+//   int _counter = 0;
 
-    // return MaterialApp(
-    //   title: 'Flutter Demo',
-    //   theme: ThemeData(
-    //     primarySwatch: Colors.blue,
-    //   ),
-    //   home: const PaymentPage(title: '',),
-    // );
+//   void _incrementCounter() {
+//     setState(() {
+//       _counter++;
+//     });
 
-    return OneNotification(
-      builder: (_, __) => MaterialApp(
-        title: 'Flutter Demo',
-        home: const PaymentPage(title: 'Flutter Demo Home Page'),
-        builder: OneContext().builder,
-        navigatorKey: OneContext().key,
-      ),
-    );
-  }
-}
+//     mainInit();
+//   }
 
-class PaymentPage extends StatefulWidget {
-  const PaymentPage({super.key, required this.title});
+//   @override
+//   Widget build(BuildContext context) {
+//     // TODO: implement build
+//     throw UnimplementedError();
+//   }
 
-  final String title;
-
-  @override
-  State<PaymentPage> createState() => _PaymentPageState();
-}
-
-class _PaymentPageState extends State<PaymentPage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-
-    mainInit();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    throw UnimplementedError();
-  }
-}

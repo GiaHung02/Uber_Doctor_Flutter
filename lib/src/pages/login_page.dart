@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:uber_doctor_flutter/src/controllers/auth/login_controller.dart';
+import 'package:uber_doctor_flutter/src/pages/doctor_register_page.dart';
+import 'package:uber_doctor_flutter/src/pages/patient_register_page.dart';
 import 'package:uber_doctor_flutter/src/pages/verify.dart';
 
 class LoginPage extends StatefulWidget {
@@ -191,8 +193,8 @@ class _LoginPageState extends State<LoginPage> {
                                 var sendPhone = int.parse(phone).toString();
 
                                 if (_isChecked) {
-                                  var check =
-                                      loginController.loginDoctor(sendPhone,context);
+                                  var check = loginController.loginDoctor(
+                                      sendPhone, context);
 
                                   if (await check) {
                                     await FirebaseAuth.instance
@@ -208,18 +210,25 @@ class _LoginPageState extends State<LoginPage> {
                                         LoginPage.verify = verificationId;
                                         LoginPage.approle = "Doctor";
 
-                                        Navigator.pushNamed(context, 'verify');
+                                        Navigator.push(
+                                            context,
+                                            new MaterialPageRoute(
+                                                builder: (context) =>
+                                                    new MyVerify()));
                                       },
                                       codeAutoRetrievalTimeout:
                                           (String verificationId) {},
                                     );
                                   } else {
-                                    Navigator.pushNamed(
-                                        context, 'doctor/register');
+                                    Navigator.push(
+                                        context,
+                                        new MaterialPageRoute(
+                                            builder: (context) =>
+                                                new DoctorRegisterPage()));
                                   }
                                 } else {
-                                  var check =
-                                      loginController.loginPatient(sendPhone,context);
+                                  var check = loginController.loginPatient(
+                                      sendPhone, context);
 
                                   print(await check);
 
@@ -236,7 +245,11 @@ class _LoginPageState extends State<LoginPage> {
                                           int? resendToken) {
                                         LoginPage.verify = verificationId;
                                         LoginPage.approle = "Patient";
-                                        Navigator.pushNamed(context, 'verify');
+                                        Navigator.push(
+                                            context,
+                                            new MaterialPageRoute(
+                                                builder: (context) =>
+                                                    new MyVerify()));
 
                                         // Navigator.pushReplacement(
                                         //   context,
@@ -249,8 +262,11 @@ class _LoginPageState extends State<LoginPage> {
                                           (String verificationId) {},
                                     );
                                   } else {
-                                    Navigator.pushNamed(
-                                        context, 'patient/register');
+                                    Navigator.push(
+                                        context,
+                                        new MaterialPageRoute(
+                                            builder: (context) =>
+                                                new PatientRegisterPage()));
                                   }
                                 }
                               }

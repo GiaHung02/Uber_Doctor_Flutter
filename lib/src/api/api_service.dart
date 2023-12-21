@@ -8,7 +8,7 @@ import 'package:uber_doctor_flutter/src/model/pathologycal.dart';
 ///////// FIX PORT /////////
 
 /// API SEARCH SYMPTOMS AND RECOMMEND DOCTORS ///
-const String domain = "http://172.17.160.1:8080";
+const String domain = "http://192.168.1.7:8080";
 
 class FetchSymptomList {
   var data = <String, dynamic>{};

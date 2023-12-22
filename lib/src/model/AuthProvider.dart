@@ -22,7 +22,7 @@ class MyAuthProvider with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     prefs.setString('token', token ?? '');
     prefs.setString('role', role ?? '');
-    prefs.setString('id', role ?? '');
+    prefs.setString('id', id ?? '');
   }
 
   Future<void> loadTokenAndRole() async {

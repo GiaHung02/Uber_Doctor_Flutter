@@ -5,10 +5,12 @@ import 'package:uber_doctor_flutter/src/api/api_service.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:uber_doctor_flutter/src/constants/url_api.dart';
 import 'package:uber_doctor_flutter/src/helpers/ui_helper.dart';
-import 'package:uber_doctor_flutter/src/model/AuthProvider.dart';
+
 import 'package:uber_doctor_flutter/src/model/booking.dart';
 import 'package:http/http.dart' as http;
+import 'package:uber_doctor_flutter/src/model/AuthProvider.dart';
 import 'package:provider/provider.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 
 class AppointmentPage extends StatefulWidget {
   const AppointmentPage({Key? key}) : super(key: key);
@@ -37,39 +39,41 @@ class _AppointmentPageState extends State<AppointmentPage> {
         .where((booking) => booking.patients?.id == patientId)
         .toList();
   }
- 
 
   // Thay đổi hàm fetchBookings trong _AppointmentPageState
   void fetchBookings() async {
     final url = Uri.parse('$domain2/api/v1/booking/list');
-     var userId;
-var myAuthProvider = Provider.of<MyAuthProvider>(context, listen: false);
 
-if (myAuthProvider.token != null) {
-  userId = myAuthProvider.id;
-}
-print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>User id ${userId}');
-print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>User id }');
-      try {
-        final response = await http.get(url);
-        if (response.statusCode == 200) {
-          // Chuyển đổi JSON thành danh sách Booking và cập nhật state
-          setState(() {
-            // đoạn mã này để lọc danh sách booking theo patientId
-            int patientId = 2; // Thay thế bằng patient["id"] cụ thể
-            schedules = List<Booking>.from(jsonDecode(response.body)['data']
-                    .map((booking) => Booking.fromJson(booking)))
-                .where((booking) => booking.patients?.id == patientId)
-                .toList();
-          });
-        } else {
-          // Xử lý khi có lỗi từ API
-          print('Error: ${response.statusCode}');
-        }
-      } catch (e) {
-        // Xử lý khi có lỗi kết nối
-        print('Error: $e');
+    var patientId;
+    var myAuthProvider = Provider.of<MyAuthProvider>(context, listen: false);
+
+    if (myAuthProvider.token != null) {
+      patientId = myAuthProvider.id;
+    }
+    print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>User id ${patientId}');
+    print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>User id }');
+    print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>User id ${myAuthProvider.token}');
+
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        // Chuyển đổi JSON thành danh sách Booking và cập nhật state
+        setState(() {
+          // đoạn mã này để lọc danh sách booking theo patientId
+          int patientId = 2; // Thay thế bằng patient["id"] cụ thể
+          schedules = List<Booking>.from(jsonDecode(response.body)['data']
+                  .map((booking) => Booking.fromJson(booking)))
+              .where((booking) => booking.patients?.id == patientId)
+              .toList();
+        });
+      } else {
+        // Xử lý khi có lỗi từ API
+        print('Error: ${response.statusCode}');
       }
+    } catch (e) {
+      // Xử lý khi có lỗi kết nối
+      print('Error: $e');
+    }
     // print('booking length from api: ${schedules.length}');
   }
 
@@ -512,9 +516,8 @@ print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>User id }');
                   // Xoá booking thành công, bạn có thể thực hiện các hành động cần thiết
                   // (ví dụ: cập nhật UI, hiển thị thông báo, vv.)
                   print('Booking canceled successfully.');
-                  // Navigator.of(context).pushNamed(
-                  //   '/appointment_page',
-                  // );
+                      sendCancelNotification(booking);
+              
                   reloadBookings();
                   showDeleteSuccessSnackbar(
                       context); // Hiển thị thông báo thành công
@@ -528,6 +531,20 @@ print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>User id }');
           ],
         );
       },
+    );
+  }
+  // Hàm để gửi thông báo khi bệnh nhân hủy lịch hẹn
+  void sendCancelNotification(Booking booking) async {
+    String title = 'Lịch hẹn đã bị hủy';
+    String body = 'Cuộc hẹn vào ngày ${booking.appointmentDate} lúc ${booking.appointmentTime} đã bị hủy.';
+
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: booking.id.hashCode,
+        channelKey: 'key_channel_booking',
+        title: title,
+        body: body,
+      ),
     );
   }
 

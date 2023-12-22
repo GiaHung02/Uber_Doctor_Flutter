@@ -1,10 +1,10 @@
 // String domain = 'http://192.168.31.40:8080/';
 
 // School
-String domain = 'http://192.168.1.116:8080/';   
+String domain = 'http://172.168.98.205:8080/';   
 // Home   
 //  String domain = 'http://192.168.1.11:8080/'; 
-const String domain2 = "http://192.168.1.116:8080";    
+const String domain2 = "http://172.168.98.205:8080";    
 
 
 

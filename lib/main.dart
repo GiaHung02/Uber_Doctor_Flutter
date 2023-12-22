@@ -1,5 +1,6 @@
 import 'package:awesome_bottom_bar/awesome_bottom_bar.dart';
 import 'package:awesome_bottom_bar/widgets/inspired/inspired.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -28,12 +29,35 @@ import 'package:uber_doctor_flutter/src/pages/verify.dart';
 import 'package:uber_doctor_flutter/src/pages/verify_register.dart';
 import 'package:uber_doctor_flutter/src/theme/theme.dart';
 import 'package:uber_doctor_flutter/src/widgets/BottomNavHexagon.dart';
-
 import 'src/model/AuthProvider.dart';
 
+void setupNotifications() {
+  AwesomeNotifications().initialize(
+    'resource://drawable/app_icon',
+    [
+      NotificationChannel(
+        channelKey: 'key_channel_booking',
+        channelName: 'Bookings',
+        channelDescription: 'Thông báo về các cuộc hẹn',
+        defaultColor: Color.fromARGB(255, 1, 78, 141),
+        ledColor: Colors.amber,
+      ),
+    ],
+  );
+}
+// void handleReceivedNotification() {
+//   AwesomeNotifications().actionStream.listen((receivedNotification) {
+//     // Xử lý thông báo khi nhận được
+//     print('Received notification: $receivedNotification');
+//     // Thực hiện các hành động cần thiết dựa trên thông báo nhận được
+//   });
+// }
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  // setupNotifications();
+  // handleReceivedNotification();
+
   runApp(MyApp()
       // MaterialApp(
       //   initialRoute: 'home',
@@ -137,7 +161,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     
       bottomNavigationBar: BottomBarInspiredOutside(
         items: items,
         backgroundColor: bgColor,

@@ -21,13 +21,14 @@ class _SplashPageState extends State<SplashPage> {
      Future.delayed(Duration(seconds: 2)).then((_) {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) =>
       // chạy vô doctor thì uncomment dòng này
-         MyBsPage('0', title: 'Home page',)
+        //  MyBsPage('0', title: 'Home page',)
+
 
       // chạy vô User thì uncomment dòng này
       //  MyHomePage("home", title: "user home")
 
       // chạy vô Login thì uncomment dòng này
-      // LoginPage(),
+      LoginPage(),
        ));
     });
     super.initState();

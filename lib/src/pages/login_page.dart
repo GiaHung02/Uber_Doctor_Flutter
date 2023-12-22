@@ -233,9 +233,10 @@ class _LoginPageState extends State<LoginPage> {
                                                 new DoctorRegisterPage()));
                                   }
                                 } else {
-                                  var check = await loginController.loginPatient(
-                                      sendPhone, context);
-
+                                  var check = await loginController
+                                      .loginPatient(sendPhone, context);
+                                  print(
+                                      ">>>>>>>>>>>>>>>>>>>>> check: ${check}");
                                   if (check != -1) {
                                      FirebaseAuth.instance
                                         .verifyPhoneNumber(

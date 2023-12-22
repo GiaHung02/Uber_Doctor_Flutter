@@ -74,7 +74,7 @@ dependencies:
   flutter_paypal_payment: ^1.0.6
   firebase_app_check: ^0.2.1+8
   flutter_local_notifications: ^16.2.0
-  awesome_notifications: ^0.8.2
+  awesome_notifications: 0.8.2
   awesome_snackbar_content: ^0.1.3
 
   
